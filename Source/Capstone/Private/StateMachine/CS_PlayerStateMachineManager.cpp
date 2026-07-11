@@ -4,9 +4,12 @@
 #include "StateMachine/CS_PlayerStateMachineManager.h"
 
 #include "AbilitySystemComponent.h"
+#include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/Base/CS_CombatStateBase.h"
 #include "DataAssets/CS_PlayerCombatState.h"
+#include "DataAssets/Base/CS_CombatProfile.h"
+#include "Player/CS_PlayerController.h"
 #include "Player/CS_PlayerState.h"
 
 
@@ -44,10 +47,25 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_PlayerCombatState* NextState
 	if (!ValidPlayerStates.Contains(NextState)) return false;
 
 	CurrentState = NextState;
-	CurrentTransitionStateSet = NextState->TransitionStates;
+	CurrentStateTransitionSet = NextState->TransitionStates;
 	PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
 
 	return true;
+}
+
+bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
+{
+	if (UCS_PlayerCombatState* PlayerCombatState = Cast<UCS_PlayerCombatState>(NextState))
+	{
+		SwitchState(PlayerCombatState);
+		return true;
+	}
+	return false;
+}
+
+void UCS_PlayerStateMachineManager::ResetToDefaultState()
+{
+	SwitchState(CombatDefault);
 }
 
 void UCS_PlayerStateMachineManager::ConvertStatesToPlayerCombatState(const TSet<UCS_CombatStateBase*>& StateBases)
@@ -63,25 +81,33 @@ void UCS_PlayerStateMachineManager::ConvertStatesToPlayerCombatState(const TSet<
 
 void UCS_PlayerStateMachineManager::CheckForStateTransitions()
 {
-	for (const auto& State : CurrentTransitionStateSet)
+	for (const auto& State : CurrentStateTransitionSet)
 	{
-		if (CheckIfCanTransitionState(State))
+		if (UCS_PlayerCombatState* PlayerCombatState = Cast<UCS_PlayerCombatState>(State))
 		{
-			if (UCS_PlayerCombatState* PlayerCombatState = Cast<UCS_PlayerCombatState>(State))
+			if (CheckIfCanTransitionState(PlayerCombatState))
 			{
 				SwitchState(PlayerCombatState);
 				return;
 			}
 		}
+		
 	}
 }
 
-bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBase* State)
+bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_PlayerCombatState* State)
 {
-	if (!IsValid(PlayerCharacter) || !IsValid(PlayerCharacter->GetCSPlayerState()))
+	if (!IsValid(PlayerCharacter) || !IsValid(PlayerCharacter->GetCSPlayerState())) return false;
+	
 	if (PlayerCharacter->GetCSPlayerState()->bIsPerformingAction && !PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen)
 		return false;
 	
-	return false;
+	if (!PlayerCharacter->GetCSPlayerController()->CheckInputCriteria(State))
+	{
+		return false;
+	}
+
+	PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen = false;
+	return true;
 }
 

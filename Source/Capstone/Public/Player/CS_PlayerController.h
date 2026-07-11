@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "CS_PlayerController.generated.h"
 
+class UCS_PlayerCombatState;
 struct FBufferedInput;
 class ACS_PlayerState;
 struct FInputActionValue;
@@ -26,10 +27,10 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	
 	UFUNCTION(BlueprintPure, Category="Capstone", meta=(ToolTip="Gives move amount based on player input. Returns 0 idle, 0.5 walking, 1 running"))
-	float GetMoveAmount();
+	float GetMoveAmount() const { return MoveAmount; };
 
 	UFUNCTION(BlueprintCallable, Category="Capstone")
-	FVector2D GetClampedInputDirection();
+	FVector2D GetClampedInputDirection() const { return ClampedPlayerInputDirection; };;
 
 	UFUNCTION(BlueprintCallable, Category="Capstone")
 	void ResetAllMovementInputs();
@@ -38,7 +39,10 @@ public:
 	void SetInputEnabled(bool bEnabled);
 
 	UFUNCTION(BlueprintCallable, Category="Capstone")
-	ACS_PlayerState* GetCSPlayerState();
+	TSoftObjectPtr<ACS_PlayerState> GetCSPlayerState() const { return CachedPlayerState; };
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckInputCriteria(const UCS_PlayerCombatState* CombatStateInfo);
 
 protected:
 	void FixedUpdate();
@@ -58,6 +62,10 @@ private:
 	void SetMoveAmount();
 
 	void BindAxisInput(UEnhancedInputComponent* EnhancedInputComponent, UInputAction* InputAction, float* Value, EInputType PositiveType, EInputType NegativeType);
+	void ConsumeInput(const TArray<EInputType>& InputsToRemove);
+	void CleanExpiredInputs();
+	bool CheckInputsInBuffer(const TArray<EInputType>& InputsToSearch, const int FramesToCheck);
+	EInputType GetDirectionalInputInBuffer(EInputType InputType) const;
 	
 	void TickInputBuffer();
 	
@@ -102,7 +110,7 @@ private:
 	float MoveAmount;
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
-	ACS_PlayerState* CachedPlayerState;
+	TSoftObjectPtr<ACS_PlayerState> CachedPlayerState;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<FBufferedInput> InputBuffer;

@@ -21,7 +21,7 @@ public:
 	UCS_StateMachineManagerBase();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat States")
-	TObjectPtr<UCS_CombatProfile> CombatDefault;
+	TObjectPtr<UCS_CombatStateBase> CombatDefault;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat States", VisibleAnywhere)
 	TObjectPtr<UCS_CombatStateBase> CurrentState;
@@ -38,7 +38,7 @@ protected:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Combat States")
 	TSet<UCS_CombatStateBase*> CombatStateList;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<UCS_CombatStateBase*> CurrentStateTransitionSet;
 
 private:

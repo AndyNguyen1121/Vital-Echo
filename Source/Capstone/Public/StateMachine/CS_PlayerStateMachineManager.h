@@ -17,6 +17,8 @@ class CAPSTONE_API UCS_PlayerStateMachineManager : public UCS_StateMachineManage
 public:
 	UCS_PlayerStateMachineManager();
 	virtual bool SwitchState(UCS_PlayerCombatState* NextState) override;
+	bool SwitchState(UCS_CombatStateBase* NextState);
+	void ResetToDefaultState();
 
 protected:
 	virtual void BeginPlay() override;
@@ -29,12 +31,9 @@ protected:
 private:
 	void ConvertStatesToPlayerCombatState(const TSet<UCS_CombatStateBase*>& StateBases);
 	void CheckForStateTransitions();
-	bool CheckIfCanTransitionState(UCS_CombatStateBase* State);
+	bool CheckIfCanTransitionState(UCS_PlayerCombatState* State);
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	TSet<UCS_PlayerCombatState*> ValidPlayerStates;
-
-	UPROPERTY()
-	TArray<UCS_CombatStateBase*> CurrentTransitionStateSet;
 };

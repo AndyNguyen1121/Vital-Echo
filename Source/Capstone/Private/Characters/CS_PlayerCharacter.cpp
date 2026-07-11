@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Player/CS_PlayerController.h"
 #include "StateMachine/CS_PlayerStateMachineManager.h"
 
 
@@ -49,6 +50,7 @@ void ACS_PlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CachedPlayerState = Cast<ACS_PlayerState>(GetPlayerState());
+	CachedPlayerController = Cast<ACS_PlayerController>(GetController());
 }
 
 UAbilitySystemComponent* ACS_PlayerCharacter::GetAbilitySystemComponent() const

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CS_BaseCharacter.h"
 #include "CS_PlayerCharacter.generated.h"
+class ACS_PlayerController;
 class ACS_PlayerState;
 class UCS_PlayerStateMachineManager;
 class USpringArmComponent;
@@ -29,6 +30,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerState* GetCSPlayerState() const {return CachedPlayerState;}
 
+	UFUNCTION(BlueprintPure)
+	ACS_PlayerController* GetCSPlayerController() const {return CachedPlayerController;}
+
 private:
 	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
 	TObjectPtr<UCameraComponent> FollowCamera;
@@ -42,4 +46,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	ACS_PlayerState* CachedPlayerState;
 
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	ACS_PlayerController* CachedPlayerController;
 };

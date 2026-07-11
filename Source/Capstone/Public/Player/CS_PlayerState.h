@@ -30,7 +30,7 @@ public:
 	bool bAttackWindowOpen{false};
 
 	UFUNCTION(BlueprintCallable)
-	void ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate);
+	void ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState);
 
 private:
 	UPROPERTY()

@@ -27,7 +27,12 @@ void UCS_StateMachineManagerBase::BeginPlay()
 	if (!CombatDefault) return;
 	
 	RetrieveStates(CombatDefault, CombatStateList);
-	GiveStartupAbilities(CombatDefault);
+
+	if (UCS_CombatProfile* CombatProfile = Cast<UCS_CombatProfile>(CombatDefault))
+	{
+		GiveStartupAbilities(CombatProfile);
+	}
+	
 	CurrentState = CombatDefault;
 	CurrentStateTransitionSet = CurrentState->TransitionStates;
 }
@@ -41,19 +46,14 @@ void UCS_StateMachineManagerBase::RetrieveStates(UCS_CombatStateBase* State, TSe
 {
 	if (!State)
 		return;
-	
-	StateList.Add(State);
+
+	if (StateList.Contains(State))
+		return;
 	
 	if (State->TransitionStates.Num() == 0)
 		return;
 
-	/*if (UCS_CombatProfile* CombatProfile = Cast<UCS_CombatProfile>(State))
-	{
-		for (UCS_CombatProfile* DataAsset : CombatProfile->AdditionalStates)
-		{
-			RetrieveStates(DataAsset, StateList);
-		}
-	}*/
+	StateList.Add(State);
 	
 	for (UCS_CombatStateBase* DataAsset : State->TransitionStates)
 	{

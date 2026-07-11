@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Base/CS_CombatStateBase.h"
 #include "Engine/DataAsset.h"
+#include "Enums/InputTypes.h"
 #include "CS_PlayerCombatState.generated.h"
 
 /**
@@ -14,4 +15,12 @@ UCLASS()
 class CAPSTONE_API UCS_PlayerCombatState : public UCS_CombatStateBase
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, Category="Inputs")
+	TArray<EInputType> RequiredInputs;
+
+	UPROPERTY(EditAnywhere, Category="Inputs")
+	int InputBufferWindow;
+	
 };

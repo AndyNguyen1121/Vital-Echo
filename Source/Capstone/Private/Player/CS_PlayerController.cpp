@@ -5,6 +5,8 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Capstone/DebugMacros.h"
+#include "DataAssets/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
 #include "Player/CS_PlayerState.h"
 #include "Structs/BufferedInput.h"
@@ -95,11 +97,6 @@ void ACS_PlayerController::SetInputEnabled(bool bEnabled)
 	}
 }
 
-ACS_PlayerState* ACS_PlayerController::GetCSPlayerState()
-{
-	return CachedPlayerState;
-}
-
 void ACS_PlayerController::ClampInputDirection(FVector2D InputDirection, float InputDeadzone)
 {
 	auto QuantizeAxis = [InputDeadzone](float Value)
@@ -178,6 +175,138 @@ void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputC
 	});
 }
 
+void ACS_PlayerController::ConsumeInput(const TArray<EInputType>& InputsToRemove)
+{
+	int NumInputsToCheck = InputsToRemove.Num();
+	
+	if (InputBuffer.Num() < NumInputsToCheck || NumInputsToCheck < 0)
+		return;
+	
+	for (int32 i = InputBuffer.Num() - 1; i >= 0; --i)
+	{
+		EInputType InputType = InputBuffer[i].Input;
+
+		if (InputType == EInputType::EIT_Left ||
+			InputType == EInputType::EIT_Right ||
+			InputType == EInputType::EIT_Up ||
+			InputType == EInputType::EIT_Down ||
+			InputType == EInputType::EIT_Neutral)
+		{
+			continue; // keep movement and neutral
+		}
+
+		if (InputsToRemove.Contains(InputType))
+		{
+			InputBuffer[i].bIsConsumed = true;
+		}
+	}
+}
+
+void ACS_PlayerController::CleanExpiredInputs()
+{
+	InputBuffer.RemoveAll([] (FBufferedInput& Input)
+	{
+		return Input.FramesElapsedSincePressed > 60 && !Input.bIsBeingHeld;
+	});
+}
+
+bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsToSearch, const int FramesToCheck)
+{
+	int NumInputsToCheck = InputsToSearch.Num();
+
+	if (NumInputsToCheck == 0)
+		return true;
+
+	// Make a copy of InputsToSearch to remove EIT_Neutral from list as needed
+	TArray<EInputType> CopyOfInputsToSearch(InputsToSearch);
+
+	// SPECIAL CASE: Account for neutral input
+	if (InputsToSearch.Contains(EInputType::EIT_Neutral))
+	{
+		if (!ClampedPlayerInputDirection.IsNearlyZero())
+		{
+			return false;
+		}
+		
+		NumInputsToCheck -= 1;
+		CopyOfInputsToSearch.Remove(EInputType::EIT_Neutral);
+	}
+
+	if (InputBuffer.Num() < NumInputsToCheck || InputBuffer.Num() == 0)
+		return false;
+
+	bool bRequiresDirectionalInput = 
+	CopyOfInputsToSearch.Contains(EInputType::EIT_Left)  ||
+	CopyOfInputsToSearch.Contains(EInputType::EIT_Back)  ||
+	CopyOfInputsToSearch.Contains(EInputType::EIT_Up)    ||
+	CopyOfInputsToSearch.Contains(EInputType::EIT_Down);
+
+	if (bRequiresDirectionalInput && ClampedPlayerInputDirection.IsNearlyZero())
+		return false;
+	
+	for (int i = 0; i < InputBuffer.Num(); ++i)
+	{
+
+		if (!InputBuffer[i].bIsConsumed && (InputBuffer[i].FramesElapsedSincePressed <= FramesToCheck || InputBuffer[i].bIsBeingHeld))
+		{
+			if (CopyOfInputsToSearch.Contains(InputBuffer[i].Input))
+			{
+				CopyOfInputsToSearch.Remove(InputBuffer[i].Input);
+			}
+			else if ((InputBuffer[i].Input == EInputType::EIT_Up || InputBuffer[i].Input == EInputType::EIT_Down) && ClampedPlayerInputDirection.Y != 0)
+			{
+				EInputType DirectionalInput = GetDirectionalInputInBuffer(InputBuffer[i].Input);
+	
+				if (CopyOfInputsToSearch.Contains(DirectionalInput))
+				{
+					CopyOfInputsToSearch.Remove(DirectionalInput);
+				}
+			}
+		}
+		
+		// SUCCESS: consume inputs if check is successful
+		if (CopyOfInputsToSearch.Num() == 0)
+		{
+			ConsumeInput(InputsToSearch);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+EInputType ACS_PlayerController::GetDirectionalInputInBuffer(EInputType InputType) const
+{
+	if (InputType != EInputType::EIT_Up && InputType != EInputType::EIT_Down)
+	{
+		return EInputType::EIT_Neutral;
+	}
+
+	FVector DotA = GetCharacter()->GetActorForwardVector();
+	FVector DotB = InputType == EInputType::EIT_Up ? PlayerCameraManager->GetActorForwardVector() : -PlayerCameraManager->GetActorForwardVector();
+
+	float DotProduct = FVector::DotProduct(DotA, DotB);
+	
+	if (DotProduct >= 0.f)
+	{
+		return EInputType::EIT_Forward;
+	}
+	else
+	{
+		return EInputType::EIT_Back;
+	}
+}
+
+bool ACS_PlayerController::CheckInputCriteria(const UCS_PlayerCombatState* CombatStateInfo)
+{
+	if (!CombatStateInfo)
+		return false;
+	
+	CleanExpiredInputs();
+
+	return CheckInputsInBuffer(CombatStateInfo->RequiredInputs, CombatStateInfo->InputBufferWindow);
+}
+
 void ACS_PlayerController::TickInputBuffer()
 {
 	for (FBufferedInput& BufferedInput : InputBuffer)
@@ -187,11 +316,6 @@ void ACS_PlayerController::TickInputBuffer()
 		if (BufferedInput.bIsBeingHeld)
 			BufferedInput.FramesHeld++;
 	}
-
-	InputBuffer.RemoveAll([] (FBufferedInput& Input)
-	{
-		return Input.FramesElapsedSincePressed > 150 && !Input.bIsBeingHeld;
-	});
 }
 
 void ACS_PlayerController::BeginPlay()
@@ -217,12 +341,3 @@ void ACS_PlayerController::FixedUpdate()
 	TickInputBuffer();
 }
 
-float ACS_PlayerController::GetMoveAmount()
-{
-	return MoveAmount;
-}
-
-FVector2D ACS_PlayerController::GetClampedInputDirection()
-{
-	return ClampedPlayerInputDirection;
-}

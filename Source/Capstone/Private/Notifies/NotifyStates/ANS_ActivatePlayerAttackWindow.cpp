@@ -11,11 +11,17 @@ void UANS_ActivatePlayerAttackWindow::NotifyBegin(USkeletalMeshComponent* MeshCo
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	if (!IsValid(MeshComp) || !IsValid(MeshComp->GetOwner())) return;
+	if (!IsValid(MeshComp))
+		return;
 
-	if (ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(MeshComp->GetOwner()); PlayerCharacter->GetCSPlayerState())
+	ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(MeshComp->GetOwner());
+
+	if (!IsValid(PlayerCharacter))
+		return;
+
+	if (ACS_PlayerState* PlayerState = PlayerCharacter->GetCSPlayerState())
 	{
-		PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen = true;
+		PlayerState->bAttackWindowOpen = true;
 	}
 }
 
@@ -25,11 +31,17 @@ void UANS_ActivatePlayerAttackWindow::NotifyEnd(USkeletalMeshComponent* MeshComp
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (!IsValid(MeshComp) || !IsValid(MeshComp->GetOwner())) return;
+	if (!IsValid(MeshComp))
+		return;
 
-	if (ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(MeshComp->GetOwner()); PlayerCharacter->GetCSPlayerState())
+	ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(MeshComp->GetOwner());
+
+	if (!IsValid(PlayerCharacter))
+		return;
+
+	if (ACS_PlayerState* PlayerState = PlayerCharacter->GetCSPlayerState())
 	{
-		PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen = false;
+		PlayerState->bAttackWindowOpen = false;
 	}
 	
 }
