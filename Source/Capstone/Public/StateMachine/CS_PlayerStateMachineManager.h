@@ -21,13 +21,20 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	UPROPERTY()
 	TObjectPtr<ACS_PlayerCharacter> PlayerCharacter;
 
 private:
 	void ConvertStatesToPlayerCombatState(const TSet<UCS_CombatStateBase*>& StateBases);
+	void CheckForStateTransitions();
+	bool CheckIfCanTransitionState(UCS_CombatStateBase* State);
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	TSet<UCS_PlayerCombatState*> ValidPlayerStates;
+
+	UPROPERTY()
+	TArray<UCS_CombatStateBase*> CurrentTransitionStateSet;
 };

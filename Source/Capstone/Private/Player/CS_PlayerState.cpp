@@ -14,3 +14,10 @@ UAbilitySystemComponent* ACS_PlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
+
+void ACS_PlayerState::ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate)
+{
+	bCanMove = CanMove;
+	bIsPerformingAction = IsPerformingAction;
+	bCanRotate = CanRotate;
+}

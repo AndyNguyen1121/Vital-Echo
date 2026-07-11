@@ -29,6 +29,7 @@ void UCS_StateMachineManagerBase::BeginPlay()
 	RetrieveStates(CombatDefault, CombatStateList);
 	GiveStartupAbilities(CombatDefault);
 	CurrentState = CombatDefault;
+	CurrentStateTransitionSet = CurrentState->TransitionStates;
 }
 
 bool UCS_StateMachineManagerBase::SwitchState(UCS_PlayerCombatState* NextState)

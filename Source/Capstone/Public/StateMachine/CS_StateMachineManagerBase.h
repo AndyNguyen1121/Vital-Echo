@@ -38,6 +38,9 @@ protected:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Combat States")
 	TSet<UCS_CombatStateBase*> CombatStateList;
 
+	UPROPERTY()
+	TArray<UCS_CombatStateBase*> CurrentStateTransitionSet;
+
 private:
 	void RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList);
 	void GiveStartupAbilities(UCS_CombatProfile* DefaultState);

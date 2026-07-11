@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CS_BaseCharacter.h"
 #include "CS_PlayerCharacter.generated.h"
+class ACS_PlayerState;
 class UCS_PlayerStateMachineManager;
 class USpringArmComponent;
 class UCameraComponent;
@@ -18,11 +19,15 @@ class CAPSTONE_API ACS_PlayerCharacter : public ACS_BaseCharacter
 public:
 	// Sets default values for this character's properties
 	ACS_PlayerCharacter();
+	virtual void BeginPlay() override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void PossessedBy(AController* NewController) override;
 
 	UFUNCTION(BlueprintPure)
 	UCS_PlayerStateMachineManager* GetStateMachineManager() {return PlayerStateMachineManager;}
+
+	UFUNCTION(BlueprintPure)
+	ACS_PlayerState* GetCSPlayerState() const {return CachedPlayerState;}
 
 private:
 	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
@@ -33,5 +38,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_PlayerStateMachineManager> PlayerStateMachineManager;
+
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	ACS_PlayerState* CachedPlayerState;
 
 };

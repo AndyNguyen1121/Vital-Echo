@@ -7,9 +7,6 @@
 #include "GameFramework/PlayerState.h"
 #include "CS_PlayerState.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class CAPSTONE_API ACS_PlayerState : public APlayerState, public IAbilitySystemInterface
 {
@@ -18,6 +15,22 @@ class CAPSTONE_API ACS_PlayerState : public APlayerState, public IAbilitySystemI
 public:
 	ACS_PlayerState();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanMove{true};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsPerformingAction{false};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanRotate{true};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAttackWindowOpen{false};
+
+	UFUNCTION(BlueprintCallable)
+	void ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate);
 
 private:
 	UPROPERTY()

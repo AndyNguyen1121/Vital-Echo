@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
+#include "Player/CS_PlayerState.h"
+#include "Structs/BufferedInput.h"
 
 
 void ACS_PlayerController::SetupInputComponent()
@@ -26,13 +28,24 @@ void ACS_PlayerController::SetupInputComponent()
 	if (!IsValid(EnhancedInputComponent))
 		return;
 
+	BindAxisInput(EnhancedInputComponent,LeftAction, &LeftInputValue, EInputType::EIT_Left, EInputType::EIT_Right);
+	BindAxisInput(EnhancedInputComponent,RightAction, &RightInputValue, EInputType::EIT_Right, EInputType::EIT_Left);
+	BindAxisInput(EnhancedInputComponent,UpAction, &UpInputValue, EInputType::EIT_Up, EInputType::EIT_Down);
+	BindAxisInput(EnhancedInputComponent,DownAction, &DownInputValue, EInputType::EIT_Down, EInputType::EIT_Up);
 	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
 	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ACS_PlayerController::ResetAllMovementInputs);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
+	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
 {
+	if (!CachedPlayerState->bCanMove)
+	{
+		ResetAllMovementInputs();
+		return;
+	}
+	
 	ACharacter* CachedCharacter = GetCharacter();
 	if (!IsValid(CachedCharacter)) return;
 
@@ -52,6 +65,7 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 
 void ACS_PlayerController::Primary(const FInputActionValue& Value)
 {
+	InputBuffer.Add(FBufferedInput(EInputType::EIT_Primary));
 }
 
 void ACS_PlayerController::Look(const FInputActionValue& Value)
@@ -79,6 +93,11 @@ void ACS_PlayerController::SetInputEnabled(bool bEnabled)
 		DisableInput(this);
 		ResetAllMovementInputs();
 	}
+}
+
+ACS_PlayerState* ACS_PlayerController::GetCSPlayerState()
+{
+	return CachedPlayerState;
 }
 
 void ACS_PlayerController::ClampInputDirection(FVector2D InputDirection, float InputDeadzone)
@@ -110,6 +129,92 @@ void ACS_PlayerController::SetMoveAmount()
 	{
 		MoveAmount = 1;
 	}
+	
+}
+
+void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputComponent,
+	UInputAction* InputAction, float* Value, EInputType PositiveType, EInputType NegativeType)
+{
+	if (!IsValid(EnhancedInputComponent) || !IsValid(InputAction) || !Value)
+		return;
+
+	EnhancedInputComponent->BindActionValueLambda(InputAction, ETriggerEvent::Started,
+		[this, Value, PositiveType, NegativeType](const FInputActionValue& InputValue)
+	{
+		*Value = InputValue.Get<float>();
+
+		FBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FBufferedInput& Input)
+		{
+			if (Input.Input != PositiveType && Input.Input != NegativeType)
+				return false;
+
+			return Input.bIsBeingHeld;
+		});
+
+		if (PreviousHeld)
+			PreviousHeld->bIsBeingHeld = false;
+
+		FBufferedInput NewInput;
+		NewInput.Input = PositiveType;
+		NewInput.bIsBeingHeld = true;
+		InputBuffer.Add(NewInput);
+	});
+
+	EnhancedInputComponent->BindActionValueLambda(InputAction, ETriggerEvent::Completed,
+		[this, Value, PositiveType, NegativeType](const FInputActionValue& InputValue)
+	{
+		*Value = 0;
+
+		FBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FBufferedInput& Input)
+		{
+			if (Input.Input != PositiveType && Input.Input != NegativeType)
+				return false;
+
+			return Input.bIsBeingHeld;
+		});
+
+		if (PreviousHeld)
+			PreviousHeld->bIsBeingHeld = false;
+	});
+}
+
+void ACS_PlayerController::TickInputBuffer()
+{
+	for (FBufferedInput& BufferedInput : InputBuffer)
+	{
+		BufferedInput.FramesElapsedSincePressed++;
+
+		if (BufferedInput.bIsBeingHeld)
+			BufferedInput.FramesHeld++;
+	}
+
+	InputBuffer.RemoveAll([] (FBufferedInput& Input)
+	{
+		return Input.FramesElapsedSincePressed > 150 && !Input.bIsBeingHeld;
+	});
+}
+
+void ACS_PlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	CachedPlayerState = Cast<ACS_PlayerState>(PlayerState);
+}
+
+void ACS_PlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	while (FixedUpdateAccumulator >= FixedUpdateInterval)
+	{
+		FixedUpdate();
+		FixedUpdateAccumulator -= FixedUpdateInterval;
+	}
+	FixedUpdateAccumulator += DeltaSeconds;
+}
+
+void ACS_PlayerController::FixedUpdate()
+{
+	TickInputBuffer();
 }
 
 float ACS_PlayerController::GetMoveAmount()

@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums/InputTypes.h"
 #include "GameFramework/PlayerController.h"
 #include "CS_PlayerController.generated.h"
 
+struct FBufferedInput;
+class ACS_PlayerState;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -18,6 +21,10 @@ class CAPSTONE_API ACS_PlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+	
 	UFUNCTION(BlueprintPure, Category="Capstone", meta=(ToolTip="Gives move amount based on player input. Returns 0 idle, 0.5 walking, 1 running"))
 	float GetMoveAmount();
 
@@ -30,6 +37,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Capstone")
 	void SetInputEnabled(bool bEnabled);
 
+	UFUNCTION(BlueprintCallable, Category="Capstone")
+	ACS_PlayerState* GetCSPlayerState();
+
+protected:
+	void FixedUpdate();
+
+protected:
+	float FixedUpdateInterval = 1.0f / 60.0f; 
+	float FixedUpdateAccumulator = 0.0f;
+
 private:
 	virtual void SetupInputComponent() override;
 
@@ -39,10 +56,26 @@ private:
 	
 	void ClampInputDirection(FVector2D InputDirection, float InputDeadzone);
 	void SetMoveAmount();
+
+	void BindAxisInput(UEnhancedInputComponent* EnhancedInputComponent, UInputAction* InputAction, float* Value, EInputType PositiveType, EInputType NegativeType);
+	
+	void TickInputBuffer();
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TArray<TObjectPtr<UInputMappingContext>> InputMappingContexts;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> UpAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> DownAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> LeftAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> RightAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TObjectPtr<UInputAction> MovementAction;
@@ -67,6 +100,21 @@ private:
 
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess="true"))
 	float MoveAmount;
+
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	ACS_PlayerState* CachedPlayerState;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<FBufferedInput> InputBuffer;
+
+	UPROPERTY(VisibleAnywhere)
+	float LeftInputValue;
+	UPROPERTY(VisibleAnywhere)
+	float RightInputValue;
+	UPROPERTY(VisibleAnywhere)
+	float UpInputValue;
+	UPROPERTY(VisibleAnywhere)
+	float DownInputValue;
 	
 };
 

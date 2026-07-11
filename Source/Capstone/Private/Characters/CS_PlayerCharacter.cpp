@@ -17,7 +17,6 @@ ACS_PlayerCharacter::ACS_PlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 	PlayerStateMachineManager = CreateDefaultSubobject<UCS_PlayerStateMachineManager>("StateMachine");
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
@@ -43,6 +42,13 @@ ACS_PlayerCharacter::ACS_PlayerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+}
+
+void ACS_PlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CachedPlayerState = Cast<ACS_PlayerState>(GetPlayerState());
 }
 
 UAbilitySystemComponent* ACS_PlayerCharacter::GetAbilitySystemComponent() const
