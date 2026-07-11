@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CS_BaseCharacter.h"
 #include "CS_PlayerCharacter.generated.h"
+class UCS_PlayerStateMachineManager;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -20,11 +21,17 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void PossessedBy(AController* NewController) override;
 
+	UFUNCTION(BlueprintPure)
+	UCS_PlayerStateMachineManager* GetStateMachineManager() {return PlayerStateMachineManager;}
+
 private:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> CameraBoom;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UCS_PlayerStateMachineManager> PlayerStateMachineManager;
 
 };
