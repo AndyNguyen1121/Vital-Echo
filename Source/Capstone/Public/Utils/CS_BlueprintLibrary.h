@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CS_BlueprintLibrary.generated.h"
 
@@ -18,4 +19,12 @@ class CAPSTONE_API UCS_BlueprintLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable)
 	static void PlayLevelSequenceWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence, FTransform OriginTransform);
+
+	UFUNCTION(BlueprintCallable)
+	static TArray<AActor*> SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset = FVector::ZeroVector,
+	                                         bool DrawDebug = false, FGameplayTagContainer TagsToFilter = FGameplayTagContainer());
+
+	static void DrawSphereOverlapDebug(UObject* ContextObject, const TArray<AActor*>& Actors, const FVector& HitBoxLocation, const float HitBoxRadius);
+
+	static void FilterGameplayTags(const FGameplayTagContainer& TagsToCheck, UPARAM(ref) TArray<AActor*>& ActorsToFilter);
 };

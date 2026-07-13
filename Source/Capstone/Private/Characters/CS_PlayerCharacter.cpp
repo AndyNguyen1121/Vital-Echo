@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameplayTags/CSTags.h"
 #include "Player/CS_PlayerController.h"
 #include "StateMachine/CS_PlayerStateMachineManager.h"
 
@@ -42,6 +43,8 @@ ACS_PlayerCharacter::ACS_PlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	GameplayTags.AddTag(CSTags::IDs::Player);
 
 }
 

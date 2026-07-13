@@ -9,4 +9,15 @@ namespace CSTags
 		UE_DEFINE_GAMEPLAY_TAG(ActivateOnGiven, "CSTags.Abilities.ActivateOnGiven");
 
 	}
+
+	namespace Events
+	{
+		UE_DEFINE_GAMEPLAY_TAG(TraceAttack, "CSTags.Events.TraceAttack");
+	}
+
+	namespace IDs
+	{
+		UE_DEFINE_GAMEPLAY_TAG(Enemy, "CSTags.IDs.Enemy");
+		UE_DEFINE_GAMEPLAY_TAG(Player, "CSTags.IDs.Player");
+	}
 }

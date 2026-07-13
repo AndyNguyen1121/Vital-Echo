@@ -11,4 +11,15 @@ namespace CSTags
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(ActivateOnGiven);
 	}
+
+	namespace Events
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TraceAttack);
+	}
+
+	namespace IDs
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player);
+	}
 }
