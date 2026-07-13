@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
-#include "ANS_ActivatePlayerAttackWindow.generated.h"
+#include "ANS_ActivateInputWindow.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CAPSTONE_API UANS_ActivatePlayerAttackWindow : public UAnimNotifyState
+class CAPSTONE_API UANS_ActivateInputWindow : public UAnimNotifyState
 {
 	GENERATED_BODY()
 

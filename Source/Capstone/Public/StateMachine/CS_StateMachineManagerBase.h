@@ -28,7 +28,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	virtual bool SwitchState(UCS_PlayerCombatState* NextState);
+	virtual bool SwitchState(UCS_CombatStateBase* NextState);
 
 protected:
 	// Called when the game starts

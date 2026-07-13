@@ -22,5 +22,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Inputs")
 	int InputBufferWindow;
+
+	UPROPERTY(EditAnywhere, Category="Inputs")
+	bool bRequireLockOn;
 	
 };

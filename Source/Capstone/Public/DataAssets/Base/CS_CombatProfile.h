@@ -11,7 +11,7 @@ class UGameplayAbility;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class CAPSTONE_API UCS_CombatProfile : public UCS_CombatStateBase
 {
 	GENERATED_BODY()

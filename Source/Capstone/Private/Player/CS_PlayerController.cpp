@@ -253,7 +253,9 @@ bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsT
 			{
 				CopyOfInputsToSearch.Remove(InputBuffer[i].Input);
 			}
-			else if ((InputBuffer[i].Input == EInputType::EIT_Up || InputBuffer[i].Input == EInputType::EIT_Down) && ClampedPlayerInputDirection.Y != 0)
+			else if ((InputBuffer[i].Input == EInputType::EIT_Up || InputBuffer[i].Input == EInputType::EIT_Down
+				|| InputBuffer[i].Input == EInputType::EIT_Left || InputBuffer[i].Input == EInputType::EIT_Right)
+				&& !ClampedPlayerInputDirection.IsNearlyZero())
 			{
 				EInputType DirectionalInput = GetDirectionalInputInBuffer(InputBuffer[i].Input);
 	
@@ -277,13 +279,31 @@ bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsT
 
 EInputType ACS_PlayerController::GetDirectionalInputInBuffer(EInputType InputType) const
 {
-	if (InputType != EInputType::EIT_Up && InputType != EInputType::EIT_Down)
+	if (InputType != EInputType::EIT_Up && InputType != EInputType::EIT_Down && InputType != EInputType::EIT_Left && InputType != EInputType::EIT_Right)
 	{
 		return EInputType::EIT_Neutral;
 	}
 
 	FVector DotA = GetCharacter()->GetActorForwardVector();
-	FVector DotB = InputType == EInputType::EIT_Up ? PlayerCameraManager->GetActorForwardVector() : -PlayerCameraManager->GetActorForwardVector();
+
+	FVector DotB;
+
+	if (InputType == EInputType::EIT_Up)
+	{
+		DotB = PlayerCameraManager->GetActorForwardVector();
+	}
+	else if (InputType == EInputType::EIT_Right)
+	{
+		DotB = PlayerCameraManager->GetActorRightVector();
+	}
+	else if (InputType == EInputType::EIT_Down)
+	{
+		DotB = -PlayerCameraManager->GetActorForwardVector();
+	}
+	else if (InputType == EInputType::EIT_Left)
+	{
+		DotB = -PlayerCameraManager->GetActorRightVector();
+	}
 
 	float DotProduct = FVector::DotProduct(DotA, DotB);
 	

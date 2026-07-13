@@ -33,6 +33,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerController* GetCSPlayerController() const {return CachedPlayerController;}
 
+
 private:
 	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
 	TObjectPtr<UCameraComponent> FollowCamera;

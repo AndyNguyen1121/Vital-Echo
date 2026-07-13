@@ -17,4 +17,8 @@ public:
 	ACS_BaseCharacter();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+public:
+	UPROPERTY(VisibleAnywhere)
+	TSet<AActor*> ActorsHit;
+
 };

@@ -37,7 +37,7 @@ void UCS_StateMachineManagerBase::BeginPlay()
 	CurrentStateTransitionSet = CurrentState->TransitionStates;
 }
 
-bool UCS_StateMachineManagerBase::SwitchState(UCS_PlayerCombatState* NextState)
+bool UCS_StateMachineManagerBase::SwitchState(UCS_CombatStateBase* NextState)
 {
 	return true;
 }
@@ -46,21 +46,22 @@ void UCS_StateMachineManagerBase::RetrieveStates(UCS_CombatStateBase* State, TSe
 {
 	if (!State)
 		return;
-
-	if (StateList.Contains(State))
-		return;
+	
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
+	
+	if (!ASC) return;
+	
+	if (!StateList.Contains(State))
+		StateList.Add(State);
 	
 	if (State->TransitionStates.Num() == 0)
 		return;
-
-	StateList.Add(State);
 	
 	for (UCS_CombatStateBase* DataAsset : State->TransitionStates)
 	{
 		RetrieveStates(DataAsset, StateList);
-
-		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
-		if (!DataAsset || !ASC || !DataAsset->GameplayAbility) continue;
+		
+		if (!DataAsset->GameplayAbility) continue;
 			ASC->GiveAbility(DataAsset->GameplayAbility);
 	}
 }

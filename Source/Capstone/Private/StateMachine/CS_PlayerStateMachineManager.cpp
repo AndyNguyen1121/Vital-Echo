@@ -29,8 +29,6 @@ void UCS_PlayerStateMachineManager::BeginPlay()
 	
 	PlayerCharacter = Cast<ACS_PlayerCharacter>(GetOwner());
 	if (!IsValid(PlayerCharacter)) return;
-	
-	ConvertStatesToPlayerCombatState(CombatStateList);
 }
 
 void UCS_PlayerStateMachineManager::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -41,26 +39,17 @@ void UCS_PlayerStateMachineManager::TickComponent(float DeltaTime, enum ELevelTi
 	CheckForStateTransitions();
 }
 
-bool UCS_PlayerStateMachineManager::SwitchState(UCS_PlayerCombatState* NextState)
+bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 {
 	if (!NextState || !IsValid(PlayerCharacter)) return false;
-	if (!ValidPlayerStates.Contains(NextState)) return false;
+	if (!CombatStateList.Contains(NextState)) return false;
 
 	CurrentState = NextState;
 	CurrentStateTransitionSet = NextState->TransitionStates;
 	PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
+	PlayerCharacter->ActorsHit.Empty();
 
 	return true;
-}
-
-bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
-{
-	if (UCS_PlayerCombatState* PlayerCombatState = Cast<UCS_PlayerCombatState>(NextState))
-	{
-		SwitchState(PlayerCombatState);
-		return true;
-	}
-	return false;
 }
 
 void UCS_PlayerStateMachineManager::ResetToDefaultState()
@@ -68,41 +57,35 @@ void UCS_PlayerStateMachineManager::ResetToDefaultState()
 	SwitchState(CombatDefault);
 }
 
-void UCS_PlayerStateMachineManager::ConvertStatesToPlayerCombatState(const TSet<UCS_CombatStateBase*>& StateBases)
-{
-	for (UCS_CombatStateBase* State : StateBases)
-	{
-		if (UCS_PlayerCombatState* PlayerState = Cast<UCS_PlayerCombatState>(State))
-		{
-			ValidPlayerStates.Add(PlayerState);
-		}
-	}
-}
-
 void UCS_PlayerStateMachineManager::CheckForStateTransitions()
 {
+	if (CurrentStateTransitionSet.Num() == 0) return;
+	
 	for (const auto& State : CurrentStateTransitionSet)
 	{
-		if (UCS_PlayerCombatState* PlayerCombatState = Cast<UCS_PlayerCombatState>(State))
+		if (CheckIfCanTransitionState(State))
 		{
-			if (CheckIfCanTransitionState(PlayerCombatState))
-			{
-				SwitchState(PlayerCombatState);
-				return;
-			}
+			SwitchState(State);
+			return;
 		}
 		
 	}
 }
 
-bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_PlayerCombatState* State)
+bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBase* State)
 {
 	if (!IsValid(PlayerCharacter) || !IsValid(PlayerCharacter->GetCSPlayerState())) return false;
 	
+	UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State);
+	if (!CombatState) return false;
+	
 	if (PlayerCharacter->GetCSPlayerState()->bIsPerformingAction && !PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen)
 		return false;
-	
-	if (!PlayerCharacter->GetCSPlayerController()->CheckInputCriteria(State))
+
+	if (!PlayerCharacter->GetCSPlayerState()->bIsLockedOn && CombatState->bRequireLockOn)
+		return false;
+	 
+	if (!PlayerCharacter->GetCSPlayerController()->CheckInputCriteria(CombatState))
 	{
 		return false;
 	}
