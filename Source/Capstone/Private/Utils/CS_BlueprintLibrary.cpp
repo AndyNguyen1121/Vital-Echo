@@ -9,7 +9,9 @@
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 #include "MovieSceneSequencePlayer.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
 #include "Engine/OverlapResult.h"
+#include "GameplayTags/CSTags.h"
 
 void UCS_BlueprintLibrary::PlayLevelSequenceWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence,
                                                                 FTransform OriginTransform)
@@ -94,6 +96,8 @@ void UCS_BlueprintLibrary::DrawSphereOverlapDebug(UObject* ContextObject, const 
 void UCS_BlueprintLibrary::FilterGameplayTags(const FGameplayTagContainer& TagsToCheck,
 	TArray<AActor*>& ActorsToFilter)
 {
+	if (TagsToCheck.IsEmpty() || TagsToCheck.HasAllExact(FGameplayTagContainer(CSTags::None))) return;
+
 	ActorsToFilter.RemoveAll([&TagsToCheck](AActor* Actor)
 	{
 		bool RemoveActor = true;

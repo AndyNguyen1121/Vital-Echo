@@ -8,6 +8,7 @@
 #include "Capstone/DebugMacros.h"
 #include "DataAssets/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/CS_PlayerState.h"
 #include "Structs/BufferedInput.h"
 
@@ -42,17 +43,19 @@ void ACS_PlayerController::SetupInputComponent()
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
 {
+	FVector2D MovementValue = Value.Get<FVector2D>();
+	PlayerInputDirection = MovementValue;
+	
 	if (!CachedPlayerState->bCanMove)
 	{
-		ResetAllMovementInputs();
+		ClampedPlayerInputDirection = FVector2D::ZeroVector;
+		MoveAmount = 0;
 		return;
 	}
 	
 	ACharacter* CachedCharacter = GetCharacter();
 	if (!IsValid(CachedCharacter)) return;
-
-	FVector2D MovementValue = Value.Get<FVector2D>();
-	PlayerInputDirection = MovementValue;
+	
 	ClampInputDirection(MovementValue, Deadzone);
 	SetMoveAmount();
 	
@@ -325,6 +328,26 @@ bool ACS_PlayerController::CheckInputCriteria(const UCS_PlayerCombatState* Comba
 	CleanExpiredInputs();
 
 	return CheckInputsInBuffer(CombatStateInfo->RequiredInputs, CombatStateInfo->InputBufferWindow);
+}
+
+FVector ACS_PlayerController::GetWorldDirectionFromInput()
+{
+	if (PlayerInputDirection.IsNearlyZero()) return FVector::ZeroVector;
+	
+	FVector TargetDirection =
+		PlayerCameraManager->GetActorForwardVector() * PlayerInputDirection.Y +
+			PlayerCameraManager->GetActorRightVector() * PlayerInputDirection.X;
+
+	TargetDirection.Z = 0;
+	TargetDirection.Normalize();
+
+	/*
+	return UKismetMathLibrary::TransformDirection(GetCharacter()->GetTransform(), FVector(PlayerInputDirection.Y, PlayerInputDirection.X, 0));
+
+	
+*/
+
+	return TargetDirection;
 }
 
 void ACS_PlayerController::TickInputBuffer()

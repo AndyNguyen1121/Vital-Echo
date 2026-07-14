@@ -44,6 +44,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CheckInputCriteria(const UCS_PlayerCombatState* CombatStateInfo);
 
+	UFUNCTION(BlueprintPure)
+	FVector GetWorldDirectionFromInput();
+
 protected:
 	void FixedUpdate();
 

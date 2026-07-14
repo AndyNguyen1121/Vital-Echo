@@ -33,6 +33,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerController* GetCSPlayerController() const {return CachedPlayerController;}
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void RotatePlayerToTargetRotation(FRotator TargetRotation, float Duration);
+
 
 private:
 	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
