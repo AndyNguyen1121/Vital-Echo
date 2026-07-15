@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CS_BaseCharacter.h"
 #include "CS_PlayerCharacter.generated.h"
+class ACS_PlayerCameraManager;
 class ACS_PlayerController;
 class ACS_PlayerState;
 class UCS_PlayerStateMachineManager;
@@ -21,6 +22,7 @@ public:
 	// Sets default values for this character's properties
 	ACS_PlayerCharacter();
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -33,16 +35,21 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerController* GetCSPlayerController() const {return CachedPlayerController;}
 
+	UFUNCTION(BlueprintPure)
+	ACS_PlayerCameraManager* GetCSCameraManager() const;
+
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void RotatePlayerToTargetRotation(FRotator TargetRotation, float Duration);
 
+	UFUNCTION(BlueprintCallable)
+	void ToggleLockOn();
 
 private:
-	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
+	/*UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
-	TObjectPtr<USpringArmComponent> CameraBoom;
+	TObjectPtr<USpringArmComponent> CameraBoom;*/
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_PlayerStateMachineManager> PlayerStateMachineManager;
@@ -52,4 +59,15 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	ACS_PlayerController* CachedPlayerController;
+
+	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
+	float LockOnSearchRadius{500.f};
+
+	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
+	float LockOnMaxAngle{45};
+
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
+	TSoftObjectPtr<AActor> LockOnTarget;
+
+	FVector FrozenLocation;
 };

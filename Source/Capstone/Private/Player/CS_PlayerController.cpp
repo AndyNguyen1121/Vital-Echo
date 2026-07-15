@@ -5,10 +5,11 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Camera/CS_CameraActor.h"
 #include "Capstone/DebugMacros.h"
+#include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Player/CS_PlayerState.h"
 #include "Structs/BufferedInput.h"
 
@@ -39,6 +40,8 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ACS_PlayerController::ResetAllMovementInputs);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
+	EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOn);
+	
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -55,7 +58,6 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 	
 	ACharacter* CachedCharacter = GetCharacter();
 	if (!IsValid(CachedCharacter)) return;
-	
 	ClampInputDirection(MovementValue, Deadzone);
 	SetMoveAmount();
 	
@@ -75,9 +77,20 @@ void ACS_PlayerController::Primary(const FInputActionValue& Value)
 
 void ACS_PlayerController::Look(const FInputActionValue& Value)
 {
+	if (!GetCSPlayerState() || GetCSPlayerState()->bIsLockedOn) return;
+	
 	FVector2D LookValue = Value.Get<FVector2D>();
+	
 	AddYawInput(LookValue.X * LookSensitivity);
 	AddPitchInput(-LookValue.Y * LookSensitivity);
+}
+
+void ACS_PlayerController::LockOn()
+{
+	if (ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(GetCharacter()))
+	{
+		PlayerCharacter->ToggleLockOn();
+	}
 }
 
 void ACS_PlayerController::ResetAllMovementInputs()
@@ -341,12 +354,6 @@ FVector ACS_PlayerController::GetWorldDirectionFromInput()
 	TargetDirection.Z = 0;
 	TargetDirection.Normalize();
 
-	/*
-	return UKismetMathLibrary::TransformDirection(GetCharacter()->GetTransform(), FVector(PlayerInputDirection.Y, PlayerInputDirection.X, 0));
-
-	
-*/
-
 	return TargetDirection;
 }
 
@@ -365,6 +372,11 @@ void ACS_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	CachedPlayerState = Cast<ACS_PlayerState>(PlayerState);
+
+	FActorSpawnParameters SpawnParams;
+
+	CameraActor = Cast<ACS_CameraActor>(GetWorld()->SpawnActor(CameraClass));
+	SetViewTarget(CameraActor);
 }
 
 void ACS_PlayerController::Tick(float DeltaSeconds)

@@ -36,7 +36,7 @@ void UCS_BlueprintLibrary::PlayLevelSequenceWithOriginTransform(AActor* ContextA
 }
 
 TArray<AActor*> UCS_BlueprintLibrary::SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset,
-                                                        bool DrawDebug, FGameplayTagContainer TagsToFilter)
+                                                        FGameplayTagContainer TagsToFilter, bool DrawDebug, FLinearColor DebugColor)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(AvatarActor, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return TArray<AActor*>();
@@ -69,19 +69,19 @@ TArray<AActor*> UCS_BlueprintLibrary::SphereOverlapTest(AActor* AvatarActor, flo
 
 	if (DrawDebug)
 	{
-		DrawSphereOverlapDebug(AvatarActor, ActorsHit, DesiredOffset, Radius);	
+		DrawSphereOverlapDebug(AvatarActor, ActorsHit, DesiredOffset, Radius, DebugColor);	
 	}
 	
 	return ActorsHit;
 }
 
 void UCS_BlueprintLibrary::DrawSphereOverlapDebug(UObject* ContextObject, const TArray<AActor*>& Actors,
-	const FVector& HitBoxLocation, const float HitBoxRadius)
+                                                  const FVector& HitBoxLocation, const float HitBoxRadius, FLinearColor DebugColor)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(ContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return;
 	
-	DrawDebugSphere(World, HitBoxLocation, HitBoxRadius, 16, FColor::Red, false, 3.f);
+	DrawDebugSphere(World, HitBoxLocation, HitBoxRadius, 16, DebugColor.ToFColor(true), false, 3.f);
 
 	for (const AActor* Actor : Actors)
 	{

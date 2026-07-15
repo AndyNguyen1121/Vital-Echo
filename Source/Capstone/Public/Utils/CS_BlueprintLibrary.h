@@ -22,9 +22,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static TArray<AActor*> SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset = FVector::ZeroVector,
-	                                         bool DrawDebug = false, FGameplayTagContainer TagsToFilter = FGameplayTagContainer());
+	                                         FGameplayTagContainer TagsToFilter = FGameplayTagContainer(), bool DrawDebug = false, FLinearColor DebugColor =
+		                                         FLinearColor::Red);
 
-	static void DrawSphereOverlapDebug(UObject* ContextObject, const TArray<AActor*>& Actors, const FVector& HitBoxLocation, const float HitBoxRadius);
+	static void DrawSphereOverlapDebug(UObject* ContextObject, const TArray<AActor*>& Actors, const FVector& HitBoxLocation, const float HitBoxRadius, FLinearColor
+	                                   DebugColor);
 
 	static void FilterGameplayTags(const FGameplayTagContainer& TagsToCheck, UPARAM(ref) TArray<AActor*>& ActorsToFilter);
 };

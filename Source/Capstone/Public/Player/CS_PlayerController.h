@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CS_CameraActor.h"
 #include "Enums/InputTypes.h"
 #include "GameFramework/PlayerController.h"
 #include "CS_PlayerController.generated.h"
 
+class ACS_CameraActor;
 class UCS_PlayerCombatState;
 struct FBufferedInput;
 class ACS_PlayerState;
@@ -47,6 +49,13 @@ public:
 	UFUNCTION(BlueprintPure)
 	FVector GetWorldDirectionFromInput();
 
+	UFUNCTION(BlueprintPure)
+	USpringArmComponent* GetCameraBoom() const { return CameraActor->CameraBoom; }
+
+public:
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
+	ACS_CameraActor* CameraActor;
+
 protected:
 	void FixedUpdate();
 
@@ -60,6 +69,7 @@ private:
 	void Move(const FInputActionValue& Value);
 	void Primary(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void LockOn();
 	
 	void ClampInputDirection(FVector2D InputDirection, float InputDeadzone);
 	void SetMoveAmount();
@@ -73,6 +83,9 @@ private:
 	void TickInputBuffer();
 	
 private:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACS_CameraActor> CameraClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TArray<TObjectPtr<UInputMappingContext>> InputMappingContexts;
 
@@ -96,6 +109,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> LockOnAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	float LookSensitivity{0.5f};
