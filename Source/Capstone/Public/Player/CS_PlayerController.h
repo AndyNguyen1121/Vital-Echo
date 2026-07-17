@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "Camera/CS_CameraActor.h"
 #include "Enums/InputTypes.h"
 #include "GameFramework/PlayerController.h"
 #include "CS_PlayerController.generated.h"
 
+class ACS_PlayerCameraManager;
+class ACS_PlayerCharacter;
+class ACS_CameraContainer;
 class ACS_CameraActor;
 class UCS_PlayerCombatState;
 struct FBufferedInput;
@@ -50,11 +54,16 @@ public:
 	FVector GetWorldDirectionFromInput();
 
 	UFUNCTION(BlueprintPure)
-	USpringArmComponent* GetCameraBoom() const { return CameraActor->CameraBoom; }
+	ACS_CameraContainer* GetCameraContainer() { return CameraContainer; }
+
+	UFUNCTION(BlueprintPure)
+	ACS_PlayerCharacter* GetCSPlayerCharacter() const;
+
+	UFUNCTION(BlueprintPure)
+	ACS_PlayerCameraManager* GetCSPlayerCameraManager() const;
 
 public:
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
-	ACS_CameraActor* CameraActor;
+	
 
 protected:
 	void FixedUpdate();
@@ -70,6 +79,7 @@ private:
 	void Primary(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void LockOn();
+	void LockOnChange(const FInputActionValue& Value);
 	
 	void ClampInputDirection(FVector2D InputDirection, float InputDeadzone);
 	void SetMoveAmount();
@@ -84,7 +94,10 @@ private:
 	
 private:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ACS_CameraActor> CameraClass;
+	TSubclassOf<ACS_CameraContainer> CameraContainerClass;
+
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
+	TObjectPtr<ACS_CameraContainer> CameraContainer;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TArray<TObjectPtr<UInputMappingContext>> InputMappingContexts;
@@ -112,6 +125,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TObjectPtr<UInputAction> LockOnAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> ChangeLockOnAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	float LookSensitivity{0.5f};

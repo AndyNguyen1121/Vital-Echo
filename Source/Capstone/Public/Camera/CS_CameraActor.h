@@ -19,16 +19,20 @@ public:
 	ACS_CameraActor();
 
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
-	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
+	void InitializeCamera(APlayerController* PlayerController);
 
+public:
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	TObjectPtr<UChildActorComponent> MainCam;
+	
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<USceneComponent> SceneComponent;
 
 	UPROPERTY()
@@ -37,9 +41,7 @@ public:
 	UPROPERTY()
 	TWeakObjectPtr<APawn> PlayerPawn;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bFollowPlayer{true};
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bRotateWithController{true};
+private:
+	UPROPERTY(VisibleAnywhere)
+	bool bIsInitialized{false};
 };

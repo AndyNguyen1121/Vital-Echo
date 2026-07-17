@@ -20,7 +20,7 @@ ACS_CameraActor::ACS_CameraActor()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->TargetArmLength = 600.f;
+	CameraBoom->TargetArmLength = 400.f;
 	CameraBoom->bUsePawnControlRotation = true;
 	
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>("Camera");
@@ -31,23 +31,16 @@ ACS_CameraActor::ACS_CameraActor()
 void ACS_CameraActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Controller =  UGameplayStatics::GetPlayerController(this, 0);
-	PlayerPawn = UGameplayStatics::GetPlayerController(this, 0)->GetPawn();
 	
 }
 
-void ACS_CameraActor::Tick(float DeltaSeconds)
+void ACS_CameraActor::InitializeCamera(APlayerController* PlayerController)
 {
-	Super::Tick(DeltaSeconds);
-
-	if (PlayerPawn.IsValid())
-	{
-		if (bFollowPlayer)
-			SetActorLocation(PlayerPawn->GetActorLocation());
-
-		if (bRotateWithController)
-			SetActorRotation(Controller->GetControlRotation());
-	}
+	if (!IsValid(PlayerController)) return;
+	
+	bIsInitialized = true;
+	Controller = PlayerController; 
+	PlayerPawn = Controller->GetPawn();
+	
 }
 

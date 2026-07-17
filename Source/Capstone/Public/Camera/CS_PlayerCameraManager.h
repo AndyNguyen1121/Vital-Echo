@@ -6,6 +6,8 @@
 #include "Camera/PlayerCameraManager.h"
 #include "CS_PlayerCameraManager.generated.h"
 
+class ACS_PlayerCharacter;
+class ACS_CameraContainer;
 class UCameraComponent;
 class USpringArmComponent;
 /**
@@ -22,10 +24,16 @@ protected:
 public:
 	AActor* EnableLockOn(float SearchRadius, float MaxAngle);
 	void DisableLockOn();
+
+	UFUNCTION(BlueprintPure)
+	ACS_CameraContainer* GetCameraContainer() const;
+
+	void SwitchLockOnTargets(const FVector2D ControllerInput, ACS_PlayerCharacter* PlayerCharacter);
 	
 private:
-	void SwitchLockOnTargets(const FVector2D ControllerInput);
-	AActor* FindValidLockOnTarget(float SearchRadius, float MaxAngle, FLinearColor DebugColor = FLinearColor::Blue);
+	AActor* FindClosestLockOnTarget(float SearchRadius, float MaxAngle, FLinearColor DebugColor = FLinearColor::Blue);
+
+	TArray<AActor*> FindValidLockOnTargets(float SearchRadius, float MaxAngle, FLinearColor DebugColor = FLinearColor::Blue);
 
 	UPROPERTY(EditAnywhere)
 	bool bShowLockOnDebug{true};

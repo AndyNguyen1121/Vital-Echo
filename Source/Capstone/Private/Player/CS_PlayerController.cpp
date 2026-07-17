@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CS_CameraActor.h"
+#include "Camera/CS_CameraContainer.h"
+#include "Camera/CS_PlayerCameraManager.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/CS_PlayerCombatState.h"
@@ -41,7 +43,7 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
 	EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOn);
-	
+	EnhancedInputComponent->BindAction(ChangeLockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOnChange);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -60,8 +62,8 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 	if (!IsValid(CachedCharacter)) return;
 	ClampInputDirection(MovementValue, Deadzone);
 	SetMoveAmount();
-	
-	FRotator YawRotation(0, GetControlRotation().Yaw, 0);
+
+	FRotator YawRotation(0, PlayerCameraManager->GetCameraRotation().Yaw, 0);
 	
 	FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
@@ -90,6 +92,14 @@ void ACS_PlayerController::LockOn()
 	if (ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(GetCharacter()))
 	{
 		PlayerCharacter->ToggleLockOn();
+	}
+}
+
+void ACS_PlayerController::LockOnChange(const FInputActionValue& Value)
+{
+	if (GetCSPlayerCharacter())
+	{
+		GetCSPlayerCameraManager()->SwitchLockOnTargets(Value.Get<FVector2D>(), GetCSPlayerCharacter());
 	}
 }
 
@@ -375,8 +385,11 @@ void ACS_PlayerController::BeginPlay()
 
 	FActorSpawnParameters SpawnParams;
 
-	CameraActor = Cast<ACS_CameraActor>(GetWorld()->SpawnActor(CameraClass));
-	SetViewTarget(CameraActor);
+	if (CameraContainerClass)
+	{
+		CameraContainer = Cast<ACS_CameraContainer>(GetWorld()->SpawnActor(CameraContainerClass));
+		CameraContainer->InitializeContainer(this);
+	}
 }
 
 void ACS_PlayerController::Tick(float DeltaSeconds)
@@ -389,6 +402,18 @@ void ACS_PlayerController::Tick(float DeltaSeconds)
 		FixedUpdateAccumulator -= FixedUpdateInterval;
 	}
 	FixedUpdateAccumulator += DeltaSeconds;
+}
+
+ACS_PlayerCharacter* ACS_PlayerController::GetCSPlayerCharacter() const
+{
+	if (!IsValid(GetPawn())) return nullptr;
+
+	return Cast<ACS_PlayerCharacter>(GetPawn());
+}
+
+ACS_PlayerCameraManager* ACS_PlayerController::GetCSPlayerCameraManager() const
+{
+	return Cast<ACS_PlayerCameraManager>(PlayerCameraManager);
 }
 
 void ACS_PlayerController::FixedUpdate()

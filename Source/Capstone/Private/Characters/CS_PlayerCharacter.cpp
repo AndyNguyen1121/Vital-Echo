@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CS_CameraActor.h"
+#include "Camera/CS_CameraContainer.h"
 #include "Camera/CS_PlayerCameraManager.h"
 #include "Capstone/DebugMacros.h"
 #include "Capstone/Public/Player/CS_PlayerState.h"
@@ -57,23 +58,15 @@ void ACS_PlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (LockOnTarget.IsValid() && GetCSCameraManager() && LockOnTarget->GetDistanceTo(this) > 250.f)
+	if (LockOnTarget.IsValid() && GetCSPlayerState()->bCanRotate)
 	{
-		FVector Location = GetCSCameraManager()->GetCameraLocation();
-		Location.Z = 0;
-		
-		FRotator DesiredRotation = UKismetMathLibrary::FindLookAtRotation(Location + GetCSPlayerController()->GetCameraBoom()->TargetOffset, LockOnTarget->GetActorLocation());
-		Controller->SetControlRotation(DesiredRotation);
-		GetCSPlayerController()->CameraActor->bFollowPlayer = true;
-	}
-	else if (LockOnTarget.IsValid())
-	{
-		FVector Location = GetCSCameraManager()->GetCameraLocation();
-		Location.Z = 0;
-		
-		FRotator DesiredRotation = UKismetMathLibrary::FindLookAtRotation(Location + GetCSPlayerController()->GetCameraBoom()->TargetOffset, LockOnTarget->GetActorLocation());
-		DesiredRotation.Pitch = GetCSCameraManager()->GetCameraRotation().Pitch;
-		Controller->SetControlRotation(DesiredRotation);
+		FVector DirToLockOnEnemy = CachedPlayerController->GetCameraContainer()->GetLockOnActor()->GetActorLocation() - GetActorLocation();
+		DirToLockOnEnemy.Z = 0;
+		DirToLockOnEnemy.Normalize();
+
+		FRotator DesiredRotation = UKismetMathLibrary::RInterpTo_Constant(GetActorRotation(), DirToLockOnEnemy.Rotation(), DeltaSeconds, 500.f);
+
+		SetActorRotation(DesiredRotation);
 	}
 }
 
@@ -111,19 +104,13 @@ void ACS_PlayerCharacter::ToggleLockOn()
 	if (!GetCSPlayerState()->bIsLockedOn)
 	{
 		LockOnTarget = CachedCamera->EnableLockOn(LockOnSearchRadius, LockOnMaxAngle);
-
-		if (!LockOnTarget.IsValid()) return;
-		
-		GetCSPlayerState()->bIsLockedOn = true;
-
-		/*FRotator DesiredRotation = UKismetMathLibrary::FindLookAtRotation(CameraBoom->GetComponentLocation(), LockOnTarget->GetActorLocation());
-		GetCSPlayerController()->SetControlRotation(DesiredRotation);*/
+		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
 	else
 	{
 		LockOnTarget = nullptr;
-		GetCSPlayerState()->bIsLockedOn = false;
 		CachedCamera->DisableLockOn();
+		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 }
 #pragma endregion 

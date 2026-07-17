@@ -37,6 +37,12 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerCameraManager* GetCSCameraManager() const;
+	
+	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
+	float LockOnSearchRadius{500.f};
+
+	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
+	float LockOnMaxAngle{45};
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void RotatePlayerToTargetRotation(FRotator TargetRotation, float Duration);
@@ -59,12 +65,6 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	ACS_PlayerController* CachedPlayerController;
-
-	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
-	float LockOnSearchRadius{500.f};
-
-	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
-	float LockOnMaxAngle{45};
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	TSoftObjectPtr<AActor> LockOnTarget;
