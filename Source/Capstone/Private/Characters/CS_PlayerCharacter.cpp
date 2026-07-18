@@ -104,13 +104,11 @@ void ACS_PlayerCharacter::ToggleLockOn()
 	if (!GetCSPlayerState()->bIsLockedOn)
 	{
 		LockOnTarget = CachedCamera->EnableLockOn(LockOnSearchRadius, LockOnMaxAngle);
-		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
 	else
 	{
 		LockOnTarget = nullptr;
 		CachedCamera->DisableLockOn();
-		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 }
 #pragma endregion 

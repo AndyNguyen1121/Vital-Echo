@@ -42,10 +42,11 @@ void ACS_CameraContainer::Tick(float DeltaSeconds)
 			FRotator DesiredRotation;
 			DesiredRotation = UKismetMathLibrary::FindLookAtRotation(LockOnCamera->GetActorLocation() + LockOnCamera->CameraBoom->TargetOffset, CurrentLockOnTarget->GetActorLocation());
 			
-			if (CurrentLockOnTarget->GetDistanceTo(Controller->GetPawn()) < 250.f)
+			/*if (CurrentLockOnTarget->GetDistanceTo(Controller->GetPawn()) < 250.f)
 			{
 				DesiredRotation.Pitch = LockOnCamera->GetActorRotation().Pitch;
 			}
+			*/
 			
 			Controller->SetControlRotation(DesiredRotation);
 		}

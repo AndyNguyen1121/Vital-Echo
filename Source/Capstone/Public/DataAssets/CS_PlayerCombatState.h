@@ -25,5 +25,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Inputs")
 	bool bRequireLockOn;
+
+	UPROPERTY(EditAnywhere, Category="Criteria")
+	bool Grounded;
 	
 };

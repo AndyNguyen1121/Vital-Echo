@@ -7,6 +7,7 @@
 #include "Camera/CS_CameraContainer.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayTags/CSTags.h"
 #include "Player/CS_PlayerController.h"
@@ -30,6 +31,7 @@ AActor* ACS_PlayerCameraManager::EnableLockOn(float SearchRadius, float MaxAngle
 	if (IsValid(PlayerController) && IsValid(TargetActor))
 	{
 		PlayerController->GetCSPlayerState()->bIsLockedOn = true;
+		PlayerController->GetCSPlayerCharacter()->GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCameraContainer()->SetLockOnTarget(TargetActor);
 		GetCameraContainer()->SwitchToLockOnCamera();
 	}
@@ -43,6 +45,7 @@ void ACS_PlayerCameraManager::DisableLockOn()
 	if (IsValid(PlayerController))
 	{
 		PlayerController->GetCSPlayerState()->bIsLockedOn = false;
+		PlayerController->GetCSPlayerCharacter()->GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCameraContainer()->SetLockOnTarget(nullptr);
 		GetCameraContainer()->SwitchToMainCamera();
 	}
@@ -112,7 +115,7 @@ AActor* ACS_PlayerCameraManager::FindClosestLockOnTarget(float SearchRadius, flo
 	float ClosestDistance = CachedOwnerPawn->GetDistanceTo(ClosestActor);
 	for (int32 i = 1; i < ValidActors.Num(); ++i)
 	{
-		float DistanceTo = ValidActors[i]->GetDistanceTo(CachedOwnerPawn) < ClosestDistance;
+		float DistanceTo = ValidActors[i]->GetDistanceTo(CachedOwnerPawn);
 		if (DistanceTo < ClosestDistance)
 		{
 			ClosestDistance = DistanceTo;

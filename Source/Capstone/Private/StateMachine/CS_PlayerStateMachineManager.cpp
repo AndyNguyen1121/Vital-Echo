@@ -9,6 +9,7 @@
 #include "DataAssets/Base/CS_CombatStateBase.h"
 #include "DataAssets/CS_PlayerCombatState.h"
 #include "DataAssets/Base/CS_CombatProfile.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Player/CS_PlayerController.h"
 #include "Player/CS_PlayerState.h"
 
@@ -86,9 +87,10 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 		return false;
 	 
 	if (!PlayerCharacter->GetCSPlayerController()->CheckInputCriteria(CombatState))
-	{
 		return false;
-	}
+
+	if (!PlayerCharacter->GetCharacterMovement()->IsFalling() != CombatState->Grounded)
+		return false;
 
 	PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen = false;
 	return true;
