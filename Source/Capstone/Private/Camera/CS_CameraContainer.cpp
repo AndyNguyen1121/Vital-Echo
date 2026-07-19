@@ -29,6 +29,7 @@ void ACS_CameraContainer::BeginPlay()
 
 	MainCamera = Cast<ACS_CameraActor>(MainCameraChildActor->GetChildActor());
 	LockOnCamera = Cast<ACS_CameraActor>(LockOnCameraChildActor->GetChildActor());
+	InitialLockOnSocketOffset = LockOnCamera->CameraBoom->SocketOffset;
 }
 
 void ACS_CameraContainer::Tick(float DeltaSeconds)
@@ -37,17 +38,21 @@ void ACS_CameraContainer::Tick(float DeltaSeconds)
 
 	if (Controller.IsValid() && IsValid(Controller->GetPawn()))
 	{
-		if (GetActiveCamera() == LockOnCamera)
+		if (GetActiveCamera() == LockOnCamera && CurrentLockOnTarget.IsValid())
 		{
 			FRotator DesiredRotation;
 			DesiredRotation = UKismetMathLibrary::FindLookAtRotation(LockOnCamera->GetActorLocation() + LockOnCamera->CameraBoom->TargetOffset, CurrentLockOnTarget->GetActorLocation());
+
+			float HeightDifference = CurrentLockOnTarget->GetActorLocation().Z - Controller->GetPawn()->GetActorLocation().Z;
 			
-			/*if (CurrentLockOnTarget->GetDistanceTo(Controller->GetPawn()) < 250.f)
+			if (DesiredRotation.Yaw < MinLockOnPitch || DesiredRotation.Yaw > MaxLockOnPitch)
 			{
-				DesiredRotation.Pitch = LockOnCamera->GetActorRotation().Pitch;
+				DesiredRotation.Pitch = FMath::Clamp(
+						DesiredRotation.Pitch,
+						MinLockOnPitch,
+						MaxLockOnPitch);
 			}
-			*/
-			
+			LockOnCamera->CameraBoom->SocketOffset.Z = (InitialLockOnSocketOffset.Z + (HeightDifference * 0.3f));
 			Controller->SetControlRotation(DesiredRotation);
 		}
 	}

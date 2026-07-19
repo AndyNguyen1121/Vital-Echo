@@ -54,13 +54,16 @@ public:
 	float TraceRadius{30.f};
 
 	UPROPERTY(EditAnywhere)
-	float TraceHalfHeight{30.f};
+	float TraceHalfHeight{90.f};
 
 	UPROPERTY(EditAnywhere)
-	FVector PositionOffset;
+	FVector PositionOffset = FVector(0, 0, 100);
 
 	UPROPERTY(EditAnywhere)
 	FRotator RotationOffset;
+
+	UPROPERTY(EditAnywhere)
+	FVector KnockBackForce;
 
 	UPROPERTY(EditAnywhere)
 	bool bDebug;

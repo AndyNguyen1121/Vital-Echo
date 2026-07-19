@@ -45,6 +45,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float BlendTime{0.25f};
+	
+	UPROPERTY(EditDefaultsOnly)
+	float MinLockOnPitch{-20.f};
+	
+	UPROPERTY(EditDefaultsOnly)
+	float MaxLockOnPitch{20.f};
 
 	UPROPERTY(EditDefaultsOnly)
 	TEnumAsByte<EViewTargetBlendFunction> BlendFunction = EViewTargetBlendFunction::VTBlend_Cubic;
@@ -71,5 +77,7 @@ private:
 
 	UPROPERTY()
 	TWeakObjectPtr<AActor> CurrentLockOnTarget;
+
+	FVector InitialLockOnSocketOffset;
 	
 };

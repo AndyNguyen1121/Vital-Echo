@@ -6,6 +6,8 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "ANS_DragHitActors.generated.h"
 
+class ACS_BaseCharacter;
+class ACS_PlayerCharacter;
 /**
  * 
  */
@@ -16,6 +18,7 @@ class CAPSTONE_API UANS_DragHitActors : public UAnimNotifyState
 
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+	
 
 public:
 	UPROPERTY(EditAnywhere)
@@ -23,4 +26,11 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FVector MovementMultiplier = FVector::OneVector;
+
+private:
+	UFUNCTION()
+	void OnMontageEnded(UAnimMontage* Montage, bool Interrupted);
+
+	UPROPERTY()
+	TWeakObjectPtr<ACS_BaseCharacter> CachedCharacter;
 };

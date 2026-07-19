@@ -79,6 +79,13 @@ Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 					if (!SourceCharacter->ActorsHit.Contains(TargetCharacter))
 					{
 						DEBUG_LOG("Hit")
+						FVector DesiredLaunchVelocity =
+						(SourceCharacter->GetActorForwardVector() * KnockBackForce.X) +
+							(SourceCharacter->GetActorRightVector() * KnockBackForce.Y) +
+								(SourceCharacter->GetActorUpVector() * KnockBackForce.Z);
+			
+						TargetCharacter->LaunchCharacter(DesiredLaunchVelocity, true, true);
+						
 						SourceCharacter->ActorsHit.Add(TargetCharacter);
 					}
 				}

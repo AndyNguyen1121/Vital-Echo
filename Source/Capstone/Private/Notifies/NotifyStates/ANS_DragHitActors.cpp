@@ -3,7 +3,9 @@
 
 #include "Notifies/NotifyStates/ANS_DragHitActors.h"
 
+#include "Capstone/DebugMacros.h"
 #include "Characters/CS_BaseCharacter.h"
+#include "Characters/CS_PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UANS_DragHitActors::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -31,6 +33,13 @@ void UANS_DragHitActors::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 			EnemyCharacter->AddActorWorldOffset(ModifiedVelocity * FrameDeltaTime, true);
 		}
 	}
+
+	CachedCharacter = Character;
+
+	if (UAnimInstance* AnimInstance = MeshComp->GetAnimInstance())
+	{
+		AnimInstance->OnMontageBlendingOut.AddDynamic(this, &UANS_DragHitActors::OnMontageEnded);
+	}
 }
 
 void UANS_DragHitActors::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -51,15 +60,28 @@ void UANS_DragHitActors::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 				(Character->GetActorForwardVector() * EndLaunchVelocity.X) +
 					(Character->GetActorRightVector() * EndLaunchVelocity.Y) +
 						(Character->GetActorUpVector() * EndLaunchVelocity.Z);
-
-			if (EndLaunchVelocity.IsNearlyZero())
-			{
-				EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
-			}
-			else
-			{
-				EnemyCharacter->LaunchCharacter(DesiredLaunchVelocity, true, true);
-			}
+			
+			EnemyCharacter->LaunchCharacter(DesiredLaunchVelocity, true, true);
+			EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 		}
 	}
+}
+
+
+
+void UANS_DragHitActors::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
+{
+	if (!CachedCharacter.IsValid()) return;
+
+	for (AActor* Actor : CachedCharacter->ActorsHit)
+	{
+		if (ACharacter* EnemyCharacter = Cast<ACharacter>(Actor))
+		{
+			EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+		}
+	}
+
+	CachedCharacter = nullptr;
+
+	DEBUG_LOG("Ended");
 }
