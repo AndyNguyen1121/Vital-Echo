@@ -11,6 +11,16 @@ class ULevelSequence;
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EHitDirection : uint8
+{
+	Left,
+	Right,
+	Back,
+	Forward
+};
+
 UCLASS()
 class CAPSTONE_API UCS_BlueprintLibrary : public UBlueprintFunctionLibrary
 {
@@ -29,4 +39,7 @@ public:
 	                                   DebugColor);
 
 	static void FilterGameplayTags(const FGameplayTagContainer& TagsToCheck, UPARAM(ref) TArray<AActor*>& ActorsToFilter);
+
+	UFUNCTION(BlueprintCallable)
+	static EHitDirection GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator);
 };

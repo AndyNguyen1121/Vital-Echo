@@ -4,11 +4,14 @@
 #include "Notifies/NotifyStates/ANS_ActivateAttackWindow.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
 #include "KismetTraceUtils.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayTags/CSTags.h"
 
 void UANS_ActivateAttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                            float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -49,23 +52,25 @@ Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 	const bool bHit = World->SweepMultiByChannel(Hits, StartLocation, EndLocation, DesiredRotation.Quaternion(), ECC_Visibility, Shape, QueryParams, ResponseParams);
 	
 #if WITH_EDITOR
-	if (World && bDebug)
-	{
-		DrawDebugCapsuleTraceMulti(
-			World,
-			StartLocation,
-			EndLocation,
-			TraceRadius,
-			TraceHalfHeight,
-			DesiredRotation,
-			EDrawDebugTrace::ForDuration,
-			bHit,
-			Hits,         
-			FColor::Green, 
-			FColor::Red,  
-			0.25f          
-		);
-	}
+
+if (World && bDebug)
+{
+	DrawDebugCapsuleTraceMulti(
+		World,
+		StartLocation,
+		EndLocation,
+		TraceRadius,
+		TraceHalfHeight,
+		DesiredRotation,
+		EDrawDebugTrace::ForDuration,
+		bHit,
+		Hits,         
+		FColor::Green, 
+		FColor::Red,  
+		0.25f          
+	);
+}
+
 #endif
 
 	if (Hits.Num() > 0)
@@ -78,15 +83,30 @@ Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 				{
 					if (!SourceCharacter->ActorsHit.Contains(TargetCharacter))
 					{
-						DEBUG_LOG("Hit")
 						FVector DesiredLaunchVelocity =
 						(SourceCharacter->GetActorForwardVector() * KnockBackForce.X) +
 							(SourceCharacter->GetActorRightVector() * KnockBackForce.Y) +
 								(SourceCharacter->GetActorUpVector() * KnockBackForce.Z);
-			
-						TargetCharacter->LaunchCharacter(DesiredLaunchVelocity, true, true);
+
+						if (!DesiredLaunchVelocity.IsNearlyZero())
+						{
+							if (DesiredLaunchVelocity.Z > 0)
+							{
+								TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+								TargetCharacter->GetAbilitySystemComponent()->SetLooseGameplayTagCount(FGameplayTag(CSTags::Status::KnockedUp), 1);
+							}
+							TargetCharacter->GetCharacterMovement()->Velocity = DesiredLaunchVelocity;
+						}
 						
 						SourceCharacter->ActorsHit.Add(TargetCharacter);
+
+
+						// Replace this with generalized damage event
+						FGameplayEventData Payload;
+						Payload.Instigator = SourceCharacter;
+						Payload.Target = TargetCharacter;
+						
+						UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::HitReact), Payload);
 					}
 				}
 			}

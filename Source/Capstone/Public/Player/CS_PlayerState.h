@@ -8,6 +8,8 @@
 #include "GameFramework/PlayerState.h"
 #include "CS_PlayerState.generated.h"
 
+struct FPlayerStateInfo;
+
 UCLASS()
 class CAPSTONE_API ACS_PlayerState : public APlayerState, public IAbilitySystemInterface
 {
@@ -35,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetBooleansWithStateInfo(FPlayerStateInfo StateInfo, bool ResetToDefaultState);
 
 private:
 	UPROPERTY()

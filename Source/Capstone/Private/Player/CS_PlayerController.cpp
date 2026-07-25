@@ -10,7 +10,7 @@
 #include "Camera/CS_PlayerCameraManager.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
-#include "DataAssets/CS_PlayerCombatState.h"
+#include "DataAssets/Player/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
 #include "Player/CS_PlayerState.h"
 #include "Structs/BufferedInput.h"

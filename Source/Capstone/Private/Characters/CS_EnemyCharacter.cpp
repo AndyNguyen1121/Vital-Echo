@@ -6,6 +6,7 @@
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
 #include "Capstone/DebugMacros.h"
 #include "GameplayTags/CSTags.h"
+#include "StateMachine/CS_EnemyStateMachineManager.h"
 
 
 // Sets default values
@@ -16,12 +17,12 @@ ACS_EnemyCharacter::ACS_EnemyCharacter()
 
 	GameplayTags.AddTag(CSTags::IDs::Enemy);
 	AbilitySystemComponent = CreateDefaultSubobject<UCS_AbilitySystemComponent>("AbilitySystemComponent");
+	EnemyStateMachineManager = CreateDefaultSubobject<UCS_EnemyStateMachineManager>("EnemyStateMachineManager");
 }
 
 void ACS_EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 

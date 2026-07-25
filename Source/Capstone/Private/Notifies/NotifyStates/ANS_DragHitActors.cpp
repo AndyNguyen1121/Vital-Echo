@@ -82,6 +82,5 @@ void UANS_DragHitActors::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 	}
 
 	CachedCharacter = nullptr;
-
-	DEBUG_LOG("Ended");
+	
 }

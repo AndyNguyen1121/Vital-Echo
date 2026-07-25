@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Capstone/DebugMacros.h"
 #include "DataAssets/Base/CS_CombatProfile.h"
 #include "DataAssets/Base/CS_CombatStateBase.h"
 
@@ -24,16 +25,16 @@ UCS_StateMachineManagerBase::UCS_StateMachineManagerBase()
 void UCS_StateMachineManagerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!CombatDefault) return;
+	if (!CombatProfile) return;
 	
-	RetrieveStates(CombatDefault, CombatStateList);
+	RetrieveStates(CombatProfile, CombatStateList);
 
-	if (UCS_CombatProfile* CombatProfile = Cast<UCS_CombatProfile>(CombatDefault))
+	if (CombatProfile)
 	{
 		GiveStartupAbilities(CombatProfile);
 	}
 	
-	CurrentState = CombatDefault;
+	CurrentState = CombatProfile;
 	CurrentStateTransitionSet = CurrentState->TransitionStates;
 }
 

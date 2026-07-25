@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CS_PlayerCombatState.h"
-#include "Base/CS_CombatProfile.h"
+#include "../Base/CS_CombatProfile.h"
 #include "CS_PlayerCombatProfile.generated.h"
 
 /**

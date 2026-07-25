@@ -18,7 +18,5 @@ void UCS_PlayerGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle
 		K2_EndAbility();
 	}
 
-	PlayerCharacter->GetCSPlayerState()->ResetBooleans(bCanMove, bIsPerformingAction, bCanRotate, false);
-
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }

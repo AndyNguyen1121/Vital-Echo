@@ -15,11 +15,17 @@ namespace CSTags
 	namespace Events
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TraceAttack);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(HitReact);
 	}
 
 	namespace IDs
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player);
+	}
+
+	namespace Status
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
 	}
 }

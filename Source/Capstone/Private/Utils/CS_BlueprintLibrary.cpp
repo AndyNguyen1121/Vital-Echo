@@ -124,3 +124,26 @@ void UCS_BlueprintLibrary::FilterGameplayTags(const FGameplayTagContainer& TagsT
 		return RemoveActor; 
 	});
 }
+
+EHitDirection UCS_BlueprintLibrary::GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator)
+{
+	const float Dot = FVector::DotProduct(TargetForward, ToInstigator);
+	if (Dot < -0.5f)
+	{
+		return EHitDirection::Back;
+	}
+
+	if (Dot < 0.5f)
+	{
+		const FVector Cross = FVector::CrossProduct(TargetForward, ToInstigator);
+
+		if (Cross.Z < 0)
+		{
+			return EHitDirection::Left;
+		}
+
+		return EHitDirection::Right;
+	}
+
+	return EHitDirection::Forward;
+}

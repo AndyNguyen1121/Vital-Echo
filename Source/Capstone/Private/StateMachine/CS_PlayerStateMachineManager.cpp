@@ -7,7 +7,7 @@
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/Base/CS_CombatStateBase.h"
-#include "DataAssets/CS_PlayerCombatState.h"
+#include "DataAssets/Player/CS_PlayerCombatState.h"
 #include "DataAssets/Base/CS_CombatProfile.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/CS_PlayerController.h"
@@ -47,7 +47,17 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 
 	CurrentState = NextState;
 	CurrentStateTransitionSet = NextState->TransitionStates;
-	PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
+
+	if (UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(NextState))
+	{
+		PlayerCharacter->GetCSPlayerState()->ResetBooleansWithStateInfo(CombatState->StateInfo, false);
+	}
+
+	if (NextState->GameplayAbility)
+	{
+		PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
+	}
+	
 	PlayerCharacter->ActorsHit.Empty();
 
 	return true;
@@ -55,7 +65,7 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 
 void UCS_PlayerStateMachineManager::ResetToDefaultState()
 {
-	SwitchState(CombatDefault);
+	SwitchState(CombatProfile);
 }
 
 void UCS_PlayerStateMachineManager::CheckForStateTransitions()

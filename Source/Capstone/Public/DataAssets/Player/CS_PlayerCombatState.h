@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Base/CS_CombatStateBase.h"
+#include "../Base/CS_CombatStateBase.h"
 #include "Engine/DataAsset.h"
 #include "Enums/InputTypes.h"
 #include "CS_PlayerCombatState.generated.h"
@@ -11,6 +11,21 @@
 /**
  * 
  */
+USTRUCT(Blueprintable)
+struct FPlayerStateInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	bool bIsPerformingAction = true;
+
+	UPROPERTY(EditAnywhere)
+	bool bCanMove = false;
+
+	UPROPERTY(EditAnywhere)
+	bool bCanRotate = false;
+};
+
 UCLASS()
 class CAPSTONE_API UCS_PlayerCombatState : public UCS_CombatStateBase
 {
@@ -28,5 +43,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Criteria")
 	bool Grounded;
+
+	UPROPERTY(EditAnywhere, Category="SetFlags")
+	FPlayerStateInfo StateInfo;
 	
 };

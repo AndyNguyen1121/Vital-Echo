@@ -7,6 +7,7 @@
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
 #include "CS_EnemyCharacter.generated.h"
 
+class UCS_EnemyStateMachineManager;
 class UCS_AbilitySystemComponent;
 
 UCLASS()
@@ -19,7 +20,14 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; };
+
+	UFUNCTION(BlueprintPure)
+	UCS_EnemyStateMachineManager* GetEnemyStateMachineManager() { return EnemyStateMachineManager; }
+	
 protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCS_AbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UCS_EnemyStateMachineManager> EnemyStateMachineManager;
 };

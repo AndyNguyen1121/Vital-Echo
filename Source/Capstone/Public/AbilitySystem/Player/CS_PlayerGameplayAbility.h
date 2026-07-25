@@ -15,16 +15,6 @@ class CAPSTONE_API UCS_PlayerGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 
-public:
-	UPROPERTY(EditAnywhere)
-	bool bIsPerformingAction{true};
-
-	UPROPERTY(EditAnywhere)
-	bool bCanMove{false};
-
-	UPROPERTY(EditAnywhere)
-	bool bCanRotate{false};
-
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="Ability")
 	TObjectPtr<ACS_PlayerCharacter> PlayerCharacter;
