@@ -18,6 +18,7 @@ ACS_EnemyCharacter::ACS_EnemyCharacter()
 	GameplayTags.AddTag(CSTags::IDs::Enemy);
 	AbilitySystemComponent = CreateDefaultSubobject<UCS_AbilitySystemComponent>("AbilitySystemComponent");
 	EnemyStateMachineManager = CreateDefaultSubobject<UCS_EnemyStateMachineManager>("EnemyStateMachineManager");
+	AttributeSet = CreateDefaultSubobject<UCS_AttributeSet>("AttributeSet");
 }
 
 void ACS_EnemyCharacter::BeginPlay()

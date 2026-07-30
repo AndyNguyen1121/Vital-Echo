@@ -6,7 +6,12 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayTagAssetInterface.h"
 #include "GameFramework/Character.h"
+#include "Structs/DamageAttributes.h"
 #include "CS_BaseCharacter.generated.h"
+
+class UMotionWarpingComponent;
+class UAttributeSet;
+class UGameplayEffect;
 
 UCLASS()
 class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
@@ -16,9 +21,21 @@ class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemI
 public:
 	// Sets default values for this character's properties
 	ACS_BaseCharacter();
+	virtual void BeginPlay() override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override { TagContainer = GameplayTags; }
 
+	virtual UAttributeSet* GetAttributeSet();
+
+	UFUNCTION(BlueprintPure)
+	UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
+
+	UFUNCTION(BlueprintPure)
+	float GetInitialGravityScale() const { return InitialGravityScale; }
+
+	UFUNCTION(BlueprintCallable)
+	void ResetGravityScale();
+	
 public:
 	UPROPERTY(VisibleAnywhere)
 	TSet<AActor*> ActorsHit;
@@ -26,4 +43,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Gameplay Tags")
 	FGameplayTagContainer GameplayTags;
 
+	UPROPERTY(BlueprintReadOnly)
+	FDamageAttributes CurrentDamageAttribute;
+	
+private:
+	void InitializeAttributes();
+	
+private:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> AttributeInitializationEffect;
+
+	float InitialGravityScale;
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	UMotionWarpingComponent* MotionWarpingComponent;
 };

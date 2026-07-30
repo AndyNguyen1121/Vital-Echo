@@ -42,4 +42,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static EHitDirection GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator);
+
+	UFUNCTION(BlueprintCallable)
+	static void SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag Tag, int32 Count = 1);
 };

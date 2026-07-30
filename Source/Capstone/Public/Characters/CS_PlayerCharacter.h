@@ -5,6 +5,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "CS_BaseCharacter.h"
+#include "Structs/DamageAttributes.h"
 #include "CS_PlayerCharacter.generated.h"
 class ACS_PlayerCameraManager;
 class ACS_PlayerController;
@@ -37,6 +38,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerCameraManager* GetCSCameraManager() const;
+
+	UFUNCTION(BlueprintPure)
+	UAttributeSet* GetAttributeSet() override;
 	
 	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
 	float LockOnSearchRadius{500.f};
@@ -49,6 +53,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleLockOn();
+
+	UFUNCTION(BlueprintCallable)
+	void WarpToLockOnTarget(float MinRange, float MaxRange, FVector DistanceOffset);
 
 private:
 	/*UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
@@ -70,4 +77,5 @@ private:
 	TSoftObjectPtr<AActor> LockOnTarget;
 
 	FVector FrozenLocation;
+	
 };

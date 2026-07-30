@@ -15,6 +15,8 @@ class CAPSTONE_API UANS_ActivateAttackWindow : public UAnimNotifyState
 {
 	GENERATED_BODY()
 
+	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
+
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 
 	UFUNCTION()
@@ -63,8 +65,7 @@ public:
 	FRotator RotationOffset;
 
 	UPROPERTY(EditAnywhere)
-	FVector KnockBackForce;
-
-	UPROPERTY(EditAnywhere)
-	bool bDebug;
+	bool bShowDebugInPreview = true;
+	
+	inline static bool bDebug = false;
 };

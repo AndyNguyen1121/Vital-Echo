@@ -14,4 +14,13 @@ UCLASS()
 class CAPSTONE_API UCS_PlayerCombatProfile : public UCS_CombatProfile
 {
 	GENERATED_BODY()
+
+private:
+	void SortByInput();
+
+	void SortByInputRecursive(TSet<UCS_CombatStateBase*>& Visited);
+
+	UFUNCTION(CallInEditor)
+	void RefreshOrderByInputCount();
+	
 };

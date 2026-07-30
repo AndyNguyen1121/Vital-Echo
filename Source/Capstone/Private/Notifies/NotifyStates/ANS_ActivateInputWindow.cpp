@@ -21,7 +21,7 @@ void UANS_ActivateInputWindow::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 
 	if (ACS_PlayerState* PlayerState = PlayerCharacter->GetCSPlayerState())
 	{
-		PlayerState->bAttackWindowOpen = true;
+		PlayerState->bInputWindowOpen = true;
 	}
 }
 
@@ -41,7 +41,7 @@ void UANS_ActivateInputWindow::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnim
 
 	if (ACS_PlayerState* PlayerState = PlayerCharacter->GetCSPlayerState())
 	{
-		PlayerState->bAttackWindowOpen = false;
+		PlayerState->bInputWindowOpen = false;
 	}
 	
 }

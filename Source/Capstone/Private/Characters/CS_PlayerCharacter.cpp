@@ -4,6 +4,8 @@
 #include "Capstone/Public/Characters/CS_PlayerCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "MotionWarpingComponent.h"
+#include "AbilitySystem/CS_AttributeSet.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CS_CameraActor.h"
 #include "Camera/CS_CameraContainer.h"
@@ -96,6 +98,11 @@ ACS_PlayerCameraManager* ACS_PlayerCharacter::GetCSCameraManager() const
 	return Cast<ACS_PlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(this, 0));
 }
 
+UAttributeSet* ACS_PlayerCharacter::GetAttributeSet()
+{
+	return GetCSPlayerState()->GetAttributeSet();
+}
+
 void ACS_PlayerCharacter::ToggleLockOn()
 {
 	ACS_PlayerCameraManager* CachedCamera = GetCSCameraManager();
@@ -110,6 +117,18 @@ void ACS_PlayerCharacter::ToggleLockOn()
 		LockOnTarget = nullptr;
 		CachedCamera->DisableLockOn();
 	}
+}
+
+void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVector DistanceOffset)
+{
+	MotionWarpingComponent->RemoveAllWarpTargets();
+	if (!LockOnTarget.IsValid()) return;
+	float DistanceToEnemySqr = LockOnTarget->GetSquaredDistanceTo(this);
+	if (DistanceToEnemySqr < FMath::Pow(MinRange, 2) || DistanceToEnemySqr > FMath::Pow(MaxRange, 2)) return;
+
+	FVector Offset = (GetActorRightVector() * DistanceOffset.Y) + (GetActorUpVector() * DistanceOffset.Z) + (GetActorForwardVector() * DistanceOffset.X);
+	FVector TargetLocation = LockOnTarget->GetActorLocation() + Offset;
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("Warp"), TargetLocation);
 }
 #pragma endregion 
 

@@ -18,7 +18,8 @@ public class Capstone : ModuleRules
 			"GameplayAbilities", 
 			"GameplayTasks", 
 			"GameplayTags", 
-			"UMG"
+			"UMG",
+			"MotionWarping"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "LevelSequence", "MovieScene" });

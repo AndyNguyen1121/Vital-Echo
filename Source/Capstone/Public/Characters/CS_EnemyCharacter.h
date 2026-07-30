@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "CS_BaseCharacter.h"
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
+#include "AbilitySystem/CS_AttributeSet.h"
 #include "CS_EnemyCharacter.generated.h"
 
+class UCS_AttributeSet;
 class UCS_EnemyStateMachineManager;
 class UCS_AbilitySystemComponent;
 
@@ -23,10 +25,16 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UCS_EnemyStateMachineManager* GetEnemyStateMachineManager() { return EnemyStateMachineManager; }
+
+	UFUNCTION(BlueprintPure)
+	virtual UAttributeSet* GetAttributeSet() override { return AttributeSet; }
 	
 protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCS_AbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCS_AttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_EnemyStateMachineManager> EnemyStateMachineManager;

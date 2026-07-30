@@ -50,19 +50,18 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementValue = Value.Get<FVector2D>();
 	PlayerInputDirection = MovementValue;
+	ClampInputDirection(MovementValue, Deadzone);
 	
 	if (!CachedPlayerState->bCanMove)
 	{
-		ClampedPlayerInputDirection = FVector2D::ZeroVector;
 		MoveAmount = 0;
 		return;
 	}
 	
 	ACharacter* CachedCharacter = GetCharacter();
 	if (!IsValid(CachedCharacter)) return;
-	ClampInputDirection(MovementValue, Deadzone);
+	
 	SetMoveAmount();
-
 	FRotator YawRotation(0, PlayerCameraManager->GetCameraRotation().Yaw, 0);
 	
 	FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -299,7 +298,7 @@ bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsT
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 

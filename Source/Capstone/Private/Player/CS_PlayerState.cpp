@@ -4,6 +4,7 @@
 #include "Capstone/Public/Player/CS_PlayerState.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/CS_AttributeSet.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/Player/CS_PlayerCombatState.h"
@@ -12,6 +13,7 @@
 ACS_PlayerState::ACS_PlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UCS_AbilitySystemComponent>("AbilitySystemComponent");
+	AttributeSet = CreateDefaultSubobject<UCS_AttributeSet>("AttributeSet");
 }
 
 UCS_AbilitySystemComponent* ACS_PlayerState::GetAbilitySystemComponent() const

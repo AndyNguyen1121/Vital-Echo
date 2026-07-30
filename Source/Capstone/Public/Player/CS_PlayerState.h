@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerState.h"
 #include "CS_PlayerState.generated.h"
 
+class UCS_AttributeSet;
 struct FPlayerStateInfo;
 
 UCLASS()
@@ -30,7 +31,7 @@ public:
 	bool bCanRotate{true};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bAttackWindowOpen{false};
+	bool bInputWindowOpen{false};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsLockedOn{false};
@@ -41,7 +42,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetBooleansWithStateInfo(FPlayerStateInfo StateInfo, bool ResetToDefaultState);
 
+	UFUNCTION(BlueprintPure)
+	UCS_AttributeSet* GetAttributeSet() { return AttributeSet; }
+
 private:
 	UPROPERTY()
 	TObjectPtr<UCS_AbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UCS_AttributeSet> AttributeSet;
 };

@@ -14,6 +14,7 @@ namespace CSTags
 	{
 		UE_DEFINE_GAMEPLAY_TAG(TraceAttack, "CSTags.Events.TraceAttack");
 		UE_DEFINE_GAMEPLAY_TAG(HitReact, "CSTags.Events.HitReact");
+		UE_DEFINE_GAMEPLAY_TAG(KnockedUp, "CSTags.Events.KnockedUp");
 	}
 
 	namespace IDs

@@ -12,6 +12,7 @@
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
 #include "Engine/OverlapResult.h"
 #include "GameplayTags/CSTags.h"
+#include "Kismet/GameplayStatics.h"
 
 void UCS_BlueprintLibrary::PlayLevelSequenceWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence,
                                                                 FTransform OriginTransform)
@@ -146,4 +147,12 @@ EHitDirection UCS_BlueprintLibrary::GetHitDirection(const FVector& TargetForward
 	}
 
 	return EHitDirection::Forward;
+}
+
+void UCS_BlueprintLibrary::SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag Tag, int32 Count)
+{
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor);
+	if (!ASC) return;
+
+	ASC->SetLooseGameplayTagCount(Tag, Count);
 }

@@ -3,10 +3,13 @@
 
 #include "Notifies/NotifyStates/ANS_DragHitActors.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_BaseCharacter.h"
 #include "Characters/CS_PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayTags/CSTags.h"
 
 void UANS_DragHitActors::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                     float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -54,14 +57,26 @@ void UANS_DragHitActors::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 
 	for (AActor* Actor : Character->ActorsHit)
 	{
-		if (ACharacter* EnemyCharacter = Cast<ACharacter>(Actor))
+		if (ACS_BaseCharacter* EnemyCharacter = Cast<ACS_BaseCharacter>(Actor))
 		{
 			FVector DesiredLaunchVelocity =
 				(Character->GetActorForwardVector() * EndLaunchVelocity.X) +
 					(Character->GetActorRightVector() * EndLaunchVelocity.Y) +
 						(Character->GetActorUpVector() * EndLaunchVelocity.Z);
+
+			if (!DesiredLaunchVelocity.IsNearlyZero())
+			{
+				if (DesiredLaunchVelocity.Z > 0)
+				{
+					FGameplayEventData Payload;
+					Payload.Instigator = Character;
+					Payload.Target = EnemyCharacter;
 			
-			EnemyCharacter->LaunchCharacter(DesiredLaunchVelocity, true, true);
+					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(EnemyCharacter, FGameplayTag(CSTags::Events::KnockedUp), Payload);
+				}
+				EnemyCharacter->GetCharacterMovement()->Velocity = DesiredLaunchVelocity;
+			}
+			
 			EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 		}
 	}

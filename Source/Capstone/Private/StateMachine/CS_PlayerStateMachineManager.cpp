@@ -45,12 +45,28 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	if (!NextState || !IsValid(PlayerCharacter)) return false;
 	if (!CombatStateList.Contains(NextState)) return false;
 
+	PlayerCharacter->ResetGravityScale();
 	CurrentState = NextState;
 	CurrentStateTransitionSet = NextState->TransitionStates;
 
 	if (UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(NextState))
 	{
+		PlayerCharacter->CurrentDamageAttribute = CombatState->DamageAttributes;
 		PlayerCharacter->GetCSPlayerState()->ResetBooleansWithStateInfo(CombatState->StateInfo, false);
+
+		if (CombatState->StateInfo.GravityScale > -1)
+		{
+			PlayerCharacter->GetCharacterMovement()->StopMovementImmediately();
+			PlayerCharacter->GetCharacterMovement()->GravityScale = CombatState->StateInfo.GravityScale;
+		}
+		else
+		{
+			PlayerCharacter->ResetGravityScale();
+		}
+	}
+	else
+	{
+		PlayerCharacter->CurrentDamageAttribute = FDamageAttributes();
 	}
 
 	if (NextState->GameplayAbility)
@@ -90,19 +106,28 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 	UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State);
 	if (!CombatState) return false;
 	
-	if (PlayerCharacter->GetCSPlayerState()->bIsPerformingAction && !PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen)
+	if (PlayerCharacter->GetCSPlayerState()->bIsPerformingAction && !PlayerCharacter->GetCSPlayerState()->bInputWindowOpen)
+	{
 		return false;
+	}
 
 	if (!PlayerCharacter->GetCSPlayerState()->bIsLockedOn && CombatState->bRequireLockOn)
+	{
 		return false;
-	 
+	}
+
+	if (!(PlayerCharacter->GetCharacterMovement()->IsFalling() || PlayerCharacter->GetCharacterMovement()->IsFlying()) != CombatState->Grounded)
+	{
+		return false;
+	}
+
+	// INPUT SHOULD BE CHECKED LAST TO AVOID CONSUMPTION UPON FAILING
 	if (!PlayerCharacter->GetCSPlayerController()->CheckInputCriteria(CombatState))
+	{
 		return false;
-
-	if (!PlayerCharacter->GetCharacterMovement()->IsFalling() != CombatState->Grounded)
-		return false;
-
-	PlayerCharacter->GetCSPlayerState()->bAttackWindowOpen = false;
+	}
+	
+	PlayerCharacter->GetCSPlayerState()->bInputWindowOpen = false;
 	return true;
 }
 

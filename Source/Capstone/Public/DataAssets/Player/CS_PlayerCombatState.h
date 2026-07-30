@@ -6,6 +6,7 @@
 #include "../Base/CS_CombatStateBase.h"
 #include "Engine/DataAsset.h"
 #include "Enums/InputTypes.h"
+#include "Structs/DamageAttributes.h"
 #include "CS_PlayerCombatState.generated.h"
 
 /**
@@ -24,6 +25,9 @@ struct FPlayerStateInfo
 
 	UPROPERTY(EditAnywhere)
 	bool bCanRotate = false;
+
+	UPROPERTY(EditAnywhere)
+	float GravityScale = -1;
 };
 
 UCLASS()
@@ -46,5 +50,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="SetFlags")
 	FPlayerStateInfo StateInfo;
-	
+
+	UPROPERTY(EditAnywhere)
+	FDamageAttributes DamageAttributes;
+
+public:
+	void SortByInput();
+
+	void SortByInputRecursive(TSet<UCS_CombatStateBase*>& Visited);
 };

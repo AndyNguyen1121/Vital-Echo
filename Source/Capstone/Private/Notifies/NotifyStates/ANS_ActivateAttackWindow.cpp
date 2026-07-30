@@ -13,10 +13,24 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
 
+
+void UANS_ActivateAttackWindow::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+	float TotalDuration, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
+
+	if (!IsValid(MeshComp)) return;
+
+	if (ACS_BaseCharacter* SourceCharacter = Cast<ACS_BaseCharacter>(MeshComp->GetOwner()))
+	{
+		SourceCharacter->ActorsHit.Empty();
+	}
+}
+
 void UANS_ActivateAttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                            float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
-Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
 	if (!IsValid(MeshComp)) return;
 
@@ -53,7 +67,7 @@ Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 	
 #if WITH_EDITOR
 
-if (World && bDebug)
+if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowDebugInPreview)))
 {
 	DrawDebugCapsuleTraceMulti(
 		World,
@@ -75,25 +89,32 @@ if (World && bDebug)
 
 	if (Hits.Num() > 0)
 	{
+		
 		if (ACS_BaseCharacter* SourceCharacter = Cast<ACS_BaseCharacter>(MeshComp->GetOwner()))
 		{
+			FDamageAttributes CharacterDamageAttributes = SourceCharacter->CurrentDamageAttribute;
+			
 			for (const FHitResult& HitResult : Hits)
 			{
 				if (ACS_BaseCharacter* TargetCharacter = Cast<ACS_BaseCharacter>(HitResult.GetActor()))
 				{
+					FGameplayEventData Payload;
+					Payload.Instigator = SourceCharacter;
+					Payload.Target = TargetCharacter;
+					
 					if (!SourceCharacter->ActorsHit.Contains(TargetCharacter))
 					{
 						FVector DesiredLaunchVelocity =
-						(SourceCharacter->GetActorForwardVector() * KnockBackForce.X) +
-							(SourceCharacter->GetActorRightVector() * KnockBackForce.Y) +
-								(SourceCharacter->GetActorUpVector() * KnockBackForce.Z);
+						(SourceCharacter->GetActorForwardVector() * CharacterDamageAttributes.KnockBackForce.X) +
+							(SourceCharacter->GetActorRightVector() * CharacterDamageAttributes.KnockBackForce.Y) +
+								(SourceCharacter->GetActorUpVector() * CharacterDamageAttributes.KnockBackForce.Z);
 
 						if (!DesiredLaunchVelocity.IsNearlyZero())
 						{
 							if (DesiredLaunchVelocity.Z > 0)
 							{
 								TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
-								TargetCharacter->GetAbilitySystemComponent()->SetLooseGameplayTagCount(FGameplayTag(CSTags::Status::KnockedUp), 1);
+								UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::KnockedUp), Payload);
 							}
 							TargetCharacter->GetCharacterMovement()->Velocity = DesiredLaunchVelocity;
 						}
@@ -102,10 +123,6 @@ if (World && bDebug)
 
 
 						// Replace this with generalized damage event
-						FGameplayEventData Payload;
-						Payload.Instigator = SourceCharacter;
-						Payload.Target = TargetCharacter;
-						
 						UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::HitReact), Payload);
 					}
 				}
