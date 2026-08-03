@@ -12,10 +12,11 @@
 #include "Characters/CS_PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
+#include "Utils/CS_BlueprintLibrary.h"
 
 
 void UANS_ActivateAttackWindow::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	float TotalDuration, const FAnimNotifyEventReference& EventReference)
+                                            float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
@@ -109,15 +110,8 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 							(SourceCharacter->GetActorRightVector() * CharacterDamageAttributes.KnockBackForce.Y) +
 								(SourceCharacter->GetActorUpVector() * CharacterDamageAttributes.KnockBackForce.Z);
 
-						if (!DesiredLaunchVelocity.IsNearlyZero())
-						{
-							if (DesiredLaunchVelocity.Z > 0)
-							{
-								TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
-								UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::KnockedUp), Payload);
-							}
-							TargetCharacter->GetCharacterMovement()->Velocity = DesiredLaunchVelocity;
-						}
+
+						UCS_BlueprintLibrary::KnockUpActor(TargetCharacter, SourceCharacter, DesiredLaunchVelocity);
 						
 						SourceCharacter->ActorsHit.Add(TargetCharacter);
 

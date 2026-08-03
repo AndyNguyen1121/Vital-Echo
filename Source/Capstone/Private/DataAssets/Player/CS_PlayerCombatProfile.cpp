@@ -5,10 +5,10 @@
 void UCS_PlayerCombatProfile::SortByInput()
 {
 	TSet<UCS_CombatStateBase*> Visited;
-	SortByInputRecursive(Visited);
+	SortStatesRecursive(Visited);
 }
 
-void UCS_PlayerCombatProfile::SortByInputRecursive(TSet<UCS_CombatStateBase*>& Visited)
+void UCS_PlayerCombatProfile::SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visited)
 {
 	if (Visited.Contains(this))
 	{
@@ -16,7 +16,10 @@ void UCS_PlayerCombatProfile::SortByInputRecursive(TSet<UCS_CombatStateBase*>& V
 	}
 	Visited.Add(this);
 
-	TransitionStates.Sort([](const UCS_CombatStateBase& A, const UCS_CombatStateBase& B)
+	TArray<UCS_CombatStateBase*> CombinedStates(TransitionStates);
+	CombinedStates.Append(AnyStateTransitions);
+
+	CombinedStates.Sort([](const UCS_CombatStateBase& A, const UCS_CombatStateBase& B)
 	{
 		const UCS_PlayerCombatState* StateA = Cast<UCS_PlayerCombatState>(&A);
 		const UCS_PlayerCombatState* StateB = Cast<UCS_PlayerCombatState>(&B);
@@ -27,16 +30,23 @@ void UCS_PlayerCombatProfile::SortByInputRecursive(TSet<UCS_CombatStateBase*>& V
 		return NumInputsA > NumInputsB;
 	});
 
-	for (UCS_CombatStateBase* Child : TransitionStates)
+	SortedTransitionStates = CombinedStates;
+
+	for (UCS_CombatStateBase* Child : CombinedStates)
 	{
 		if (UCS_PlayerCombatState* ChildState = Cast<UCS_PlayerCombatState>(Child))
 		{
-			ChildState->SortByInputRecursive(Visited);
+			ChildState->SortStatesRecursive(Visited, AnyStateTransitions);
 		}
 	}
+
+#if WITH_EDITOR
+	PostEditChange();
+	MarkPackageDirty();
+#endif
 }
 
-void UCS_PlayerCombatProfile::RefreshOrderByInputCount()
+void UCS_PlayerCombatProfile::SortStates()
 {
 	SortByInput();
 }

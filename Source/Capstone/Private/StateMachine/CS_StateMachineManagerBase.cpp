@@ -34,8 +34,7 @@ void UCS_StateMachineManagerBase::BeginPlay()
 		GiveStartupAbilities(CombatProfile);
 	}
 	
-	CurrentState = CombatProfile;
-	CurrentStateTransitionSet = CurrentState->TransitionStates;
+	SwitchState(CombatProfile);
 }
 
 bool UCS_StateMachineManagerBase::SwitchState(UCS_CombatStateBase* NextState)

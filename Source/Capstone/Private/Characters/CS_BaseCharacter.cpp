@@ -22,6 +22,8 @@ void ACS_BaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	InitialGravityScale = GetCharacterMovement()->GravityScale;
+	bInitialGravitySet = true;
+	
 	InitializeAttributes();
 }
 
@@ -30,14 +32,19 @@ UAbilitySystemComponent* ACS_BaseCharacter::GetAbilitySystemComponent() const
 	return nullptr;
 }
 
-UAttributeSet* ACS_BaseCharacter::GetAttributeSet()
-{
-	return nullptr;
-}
 
 void ACS_BaseCharacter::ResetGravityScale()
 {
+	if (!bInitialGravitySet) return;
+	
 	GetCharacterMovement()->GravityScale = InitialGravityScale;
+}
+
+void ACS_BaseCharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	if (!GetAbilitySystemComponent()) return;
+
+	TagContainer = GetAbilitySystemComponent()->GetOwnedGameplayTags();
 }
 
 void ACS_BaseCharacter::InitializeAttributes()

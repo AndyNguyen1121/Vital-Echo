@@ -21,13 +21,12 @@ public:
 	ACS_EnemyCharacter();
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; };
 
 	UFUNCTION(BlueprintPure)
 	UCS_EnemyStateMachineManager* GetEnemyStateMachineManager() { return EnemyStateMachineManager; }
-
-	UFUNCTION(BlueprintPure)
-	virtual UAttributeSet* GetAttributeSet() override { return AttributeSet; }
 	
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -38,4 +37,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_EnemyStateMachineManager> EnemyStateMachineManager;
+
+protected:
+	void UpdateMoveAmount();
 };

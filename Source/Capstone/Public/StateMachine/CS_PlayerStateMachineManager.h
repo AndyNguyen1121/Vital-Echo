@@ -18,11 +18,14 @@ public:
 	UCS_PlayerStateMachineManager();
 	virtual bool SwitchState(UCS_CombatStateBase* NextState) override;
 	void ResetToDefaultState();
+	
 
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList) override;
+
+protected:
 
 	UPROPERTY()
 	TObjectPtr<ACS_PlayerCharacter> PlayerCharacter;

@@ -44,14 +44,14 @@ ACS_PlayerCharacter::ACS_PlayerCharacter()
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.f;
 	
 
-	GameplayTags.AddTag(CSTags::IDs::Player);
+	
 
 }
 
 void ACS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	GetAbilitySystemComponent()->AddLooseGameplayTag(CSTags::IDs::Player);
 	CachedPlayerState = Cast<ACS_PlayerState>(GetPlayerState());
 	CachedPlayerController = Cast<ACS_PlayerController>(GetController());
 }
@@ -96,11 +96,6 @@ void ACS_PlayerCharacter::PossessedBy(AController* NewController)
 ACS_PlayerCameraManager* ACS_PlayerCharacter::GetCSCameraManager() const
 {
 	return Cast<ACS_PlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(this, 0));
-}
-
-UAttributeSet* ACS_PlayerCharacter::GetAttributeSet()
-{
-	return GetCSPlayerState()->GetAttributeSet();
 }
 
 void ACS_PlayerCharacter::ToggleLockOn()

@@ -11,6 +11,8 @@
 #include "MovieSceneSequencePlayer.h"
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
 #include "Engine/OverlapResult.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -156,3 +158,26 @@ void UCS_BlueprintLibrary::SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag
 
 	ASC->SetLooseGameplayTagCount(Tag, Count);
 }
+
+void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity)
+{
+	if (!IsValid(TargetActor) || !IsValid(SourceActor)) return;
+	if (Velocity.IsNearlyZero()) return;
+
+	ACharacter* TargetCharacter = Cast<ACharacter>(TargetActor);
+	if (!IsValid(TargetCharacter)) return;
+
+	FGameplayEventData Payload;
+	Payload.Instigator = SourceActor;
+	Payload.Target = TargetActor;
+
+	if (Velocity.Z > 0)
+	{
+		TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::KnockedUp), Payload);
+	}
+	
+	TargetCharacter->GetCharacterMovement()->Velocity = Velocity;
+}
+
+

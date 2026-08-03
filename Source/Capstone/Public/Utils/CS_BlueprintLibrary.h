@@ -45,4 +45,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag Tag, int32 Count = 1);
+
+	UFUNCTION(BlueprintCallable)
+	static void KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity);
 };

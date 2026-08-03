@@ -4,11 +4,13 @@
 #include "StateMachine/CS_PlayerStateMachineManager.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/Base/CS_CombatStateBase.h"
 #include "DataAssets/Player/CS_PlayerCombatState.h"
 #include "DataAssets/Base/CS_CombatProfile.h"
+#include "DataAssets/Player/CS_PlayerCombatProfile.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/CS_PlayerController.h"
 #include "Player/CS_PlayerState.h"
@@ -26,10 +28,9 @@ UCS_PlayerStateMachineManager::UCS_PlayerStateMachineManager()
 
 void UCS_PlayerStateMachineManager::BeginPlay()
 {
-	Super::BeginPlay();
-	
 	PlayerCharacter = Cast<ACS_PlayerCharacter>(GetOwner());
 	if (!IsValid(PlayerCharacter)) return;
+	Super::BeginPlay();
 }
 
 void UCS_PlayerStateMachineManager::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -47,7 +48,7 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 
 	PlayerCharacter->ResetGravityScale();
 	CurrentState = NextState;
-	CurrentStateTransitionSet = NextState->TransitionStates;
+	
 
 	if (UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(NextState))
 	{
@@ -63,10 +64,20 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 		{
 			PlayerCharacter->ResetGravityScale();
 		}
+
+		CurrentStateTransitionSet = CombatState->SortedTransitionStates;
 	}
 	else
 	{
 		PlayerCharacter->CurrentDamageAttribute = FDamageAttributes();
+
+		if (NextState == CombatProfile)
+		{
+			if (UCS_PlayerCombatProfile* PlayerCombatProfile = Cast<UCS_PlayerCombatProfile>(CombatProfile))
+			{
+				CurrentStateTransitionSet = PlayerCombatProfile->SortedTransitionStates;
+			}
+		}
 	}
 
 	if (NextState->GameplayAbility)
@@ -83,6 +94,22 @@ void UCS_PlayerStateMachineManager::ResetToDefaultState()
 {
 	SwitchState(CombatProfile);
 }
+
+void UCS_PlayerStateMachineManager::RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList)
+{
+	Super::RetrieveStates(State, StateList);
+
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
+	if (UCS_PlayerCombatProfile* PlayerCombatProfile = Cast<UCS_PlayerCombatProfile>(State))
+	{
+		for (UCS_CombatStateBase* AnyState : PlayerCombatProfile->AnyStateTransitions)
+		{
+			StateList.Add(AnyState);
+			ASC->GiveAbility(AnyState->GameplayAbility);
+		}
+	}
+}
+
 
 void UCS_PlayerStateMachineManager::CheckForStateTransitions()
 {

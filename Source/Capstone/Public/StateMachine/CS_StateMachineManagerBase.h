@@ -33,6 +33,8 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList);
+	virtual void GiveStartupAbilities(UCS_CombatProfile* DefaultState);
 
 protected:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Combat States")
@@ -41,7 +43,4 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<UCS_CombatStateBase*> CurrentStateTransitionSet;
 
-private:
-	void RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList);
-	void GiveStartupAbilities(UCS_CombatProfile* DefaultState);
 };

@@ -15,12 +15,19 @@ class CAPSTONE_API UCS_PlayerCombatProfile : public UCS_CombatProfile
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditAnywhere)
+	TArray<UCS_CombatStateBase*> AnyStateTransitions;
+
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<UCS_CombatStateBase*> SortedTransitionStates;
+
 private:
 	void SortByInput();
 
-	void SortByInputRecursive(TSet<UCS_CombatStateBase*>& Visited);
+	void SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visited);
 
 	UFUNCTION(CallInEditor)
-	void RefreshOrderByInputCount();
+	void SortStates();
 	
 };

@@ -28,5 +28,7 @@ namespace CSTags
 	namespace Status
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Stunned);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Recovering);
 	}
 }

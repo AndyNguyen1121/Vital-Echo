@@ -39,9 +39,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerCameraManager* GetCSCameraManager() const;
 
-	UFUNCTION(BlueprintPure)
-	UAttributeSet* GetAttributeSet() override;
-	
 	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
 	float LockOnSearchRadius{500.f};
 
@@ -58,11 +55,6 @@ public:
 	void WarpToLockOnTarget(float MinRange, float MaxRange, FVector DistanceOffset);
 
 private:
-	/*UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
-	TObjectPtr<UCameraComponent> FollowCamera;
-
-	UPROPERTY(BlueprintReadOnly, Instanced, meta=(AllowPrivateAccess), VisibleAnywhere)
-	TObjectPtr<USpringArmComponent> CameraBoom;*/
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_PlayerStateMachineManager> PlayerStateMachineManager;

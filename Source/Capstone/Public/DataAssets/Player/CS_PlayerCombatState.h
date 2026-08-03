@@ -54,8 +54,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	FDamageAttributes DamageAttributes;
 
-public:
-	void SortByInput();
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<UCS_CombatStateBase*> SortedTransitionStates;
 
-	void SortByInputRecursive(TSet<UCS_CombatStateBase*>& Visited);
+public:
+	void SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visited, TArray<UCS_CombatStateBase*> AnyStateTransitions);
 };

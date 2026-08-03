@@ -26,5 +26,7 @@ namespace CSTags
 	namespace Status
 	{
 		UE_DEFINE_GAMEPLAY_TAG(KnockedUp, "CSTags.Status.KnockedUp");
+		UE_DEFINE_GAMEPLAY_TAG(Stunned, "CSTags.Status.Stunned");
+		UE_DEFINE_GAMEPLAY_TAG(Recovering, "CSTags.Status.Recovering");
 	}
 }

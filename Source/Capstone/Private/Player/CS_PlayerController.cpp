@@ -332,14 +332,16 @@ EInputType ACS_PlayerController::GetDirectionalInputInBuffer(EInputType InputTyp
 
 	float DotProduct = FVector::DotProduct(DotA, DotB);
 	
-	if (DotProduct >= 0.f)
+	if (DotProduct >= 0.4f)
 	{
 		return EInputType::EIT_Forward;
 	}
-	else
+	else if (DotProduct <= -0.4f)
 	{
 		return EInputType::EIT_Back;
 	}
+
+	return EInputType::EIT_Neutral;
 }
 
 bool ACS_PlayerController::CheckInputCriteria(const UCS_PlayerCombatState* CombatStateInfo)

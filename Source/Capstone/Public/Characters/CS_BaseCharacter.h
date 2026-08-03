@@ -23,9 +23,6 @@ public:
 	ACS_BaseCharacter();
 	virtual void BeginPlay() override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override { TagContainer = GameplayTags; }
-
-	virtual UAttributeSet* GetAttributeSet();
 
 	UFUNCTION(BlueprintPure)
 	UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
@@ -35,17 +32,19 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ResetGravityScale();
+
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
 	
 public:
 	UPROPERTY(VisibleAnywhere)
 	TSet<AActor*> ActorsHit;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Gameplay Tags")
-	FGameplayTagContainer GameplayTags;
-
 	UPROPERTY(BlueprintReadOnly)
 	FDamageAttributes CurrentDamageAttribute;
-	
+
+	UPROPERTY(BlueprintReadOnly)
+	float MoveAmount;
+
 private:
 	void InitializeAttributes();
 	
@@ -54,6 +53,8 @@ private:
 	TSubclassOf<UGameplayEffect> AttributeInitializationEffect;
 
 	float InitialGravityScale;
+
+	bool bInitialGravitySet;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

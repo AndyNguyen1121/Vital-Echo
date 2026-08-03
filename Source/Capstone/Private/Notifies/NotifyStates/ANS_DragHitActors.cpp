@@ -10,6 +10,7 @@
 #include "Characters/CS_PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
+#include "Utils/CS_BlueprintLibrary.h"
 
 void UANS_DragHitActors::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                     float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -64,25 +65,12 @@ void UANS_DragHitActors::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 					(Character->GetActorRightVector() * EndLaunchVelocity.Y) +
 						(Character->GetActorUpVector() * EndLaunchVelocity.Z);
 
-			if (!DesiredLaunchVelocity.IsNearlyZero())
-			{
-				if (DesiredLaunchVelocity.Z > 0)
-				{
-					FGameplayEventData Payload;
-					Payload.Instigator = Character;
-					Payload.Target = EnemyCharacter;
-			
-					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(EnemyCharacter, FGameplayTag(CSTags::Events::KnockedUp), Payload);
-				}
-				EnemyCharacter->GetCharacterMovement()->Velocity = DesiredLaunchVelocity;
-			}
+			UCS_BlueprintLibrary::KnockUpActor(EnemyCharacter, Character, DesiredLaunchVelocity);
 			
 			EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 		}
 	}
 }
-
-
 
 void UANS_DragHitActors::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 {
