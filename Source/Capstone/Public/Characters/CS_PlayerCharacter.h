@@ -55,6 +55,9 @@ public:
 	void WarpToLockOnTarget(float MinRange, float MaxRange, FVector DistanceOffset);
 
 private:
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+
+private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_PlayerStateMachineManager> PlayerStateMachineManager;

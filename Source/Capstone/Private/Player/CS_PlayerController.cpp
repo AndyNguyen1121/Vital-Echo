@@ -51,7 +51,8 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 	FVector2D MovementValue = Value.Get<FVector2D>();
 	PlayerInputDirection = MovementValue;
 	ClampInputDirection(MovementValue, Deadzone);
-	
+
+	// MoveAmount drives character animation, so it must be reset
 	if (!CachedPlayerState->bCanMove)
 	{
 		MoveAmount = 0;
@@ -211,13 +212,14 @@ void ACS_PlayerController::ConsumeInput(const TArray<EInputType>& InputsToRemove
 	{
 		EInputType InputType = InputBuffer[i].Input;
 
+		// Directional inputs should not be consumed since it is a continuous input.
 		if (InputType == EInputType::EIT_Left ||
 			InputType == EInputType::EIT_Right ||
 			InputType == EInputType::EIT_Up ||
 			InputType == EInputType::EIT_Down ||
 			InputType == EInputType::EIT_Neutral)
 		{
-			continue; // keep movement and neutral
+			continue; 
 		}
 
 		if (InputsToRemove.Contains(InputType))
@@ -231,7 +233,7 @@ void ACS_PlayerController::CleanExpiredInputs()
 {
 	InputBuffer.RemoveAll([] (FBufferedInput& Input)
 	{
-		return Input.FramesElapsedSincePressed > 60 && !Input.bIsBeingHeld;
+		return Input.FramesElapsedSincePressed > 100 && !Input.bIsBeingHeld;
 	});
 }
 
@@ -245,7 +247,7 @@ bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsT
 	// Make a copy of InputsToSearch to remove EIT_Neutral from list as needed
 	TArray<EInputType> CopyOfInputsToSearch(InputsToSearch);
 
-	// SPECIAL CASE: Account for neutral input
+	// SPECIAL CASE: Remove neutral input since that doesn't require player to do anything
 	if (InputsToSearch.Contains(EInputType::EIT_Neutral))
 	{
 		if (!ClampedPlayerInputDirection.IsNearlyZero())
@@ -257,21 +259,31 @@ bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsT
 		CopyOfInputsToSearch.Remove(EInputType::EIT_Neutral);
 	}
 
+	// SPECIAL CASE: Pause is not a physical input. It's evaluated before this function. See CheckInputPauses function.
+	if (InputsToSearch.Contains(EInputType::EIT_Pause))
+	{
+		NumInputsToCheck -= 1;
+		CopyOfInputsToSearch.Remove(EInputType::EIT_Pause);
+	}
+
+	// After removing unnecessary inputs, check if there are any to evaluate. If empty then return.
 	if (InputBuffer.Num() < NumInputsToCheck || InputBuffer.Num() == 0)
 		return false;
 
+	// Check directional input requirements.
 	bool bRequiresDirectionalInput = 
 	CopyOfInputsToSearch.Contains(EInputType::EIT_Left)  ||
 	CopyOfInputsToSearch.Contains(EInputType::EIT_Back)  ||
 	CopyOfInputsToSearch.Contains(EInputType::EIT_Up)    ||
 	CopyOfInputsToSearch.Contains(EInputType::EIT_Down);
 
+	// If directional input is required but the player is not currently inputting a direction, return.
 	if (bRequiresDirectionalInput && ClampedPlayerInputDirection.IsNearlyZero())
 		return false;
-	
+
+	// Check if all input are in the buffer
 	for (int i = 0; i < InputBuffer.Num(); ++i)
 	{
-
 		if (!InputBuffer[i].bIsConsumed && (InputBuffer[i].FramesElapsedSincePressed <= FramesToCheck || InputBuffer[i].bIsBeingHeld))
 		{
 			if (CopyOfInputsToSearch.Contains(InputBuffer[i].Input))
@@ -304,13 +316,14 @@ bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsT
 
 EInputType ACS_PlayerController::GetDirectionalInputInBuffer(EInputType InputType) const
 {
+	// Default to neutral if InputType is not a direction.
 	if (InputType != EInputType::EIT_Up && InputType != EInputType::EIT_Down && InputType != EInputType::EIT_Left && InputType != EInputType::EIT_Right)
 	{
 		return EInputType::EIT_Neutral;
 	}
 
+	// Evaluate input direction.
 	FVector DotA = GetCharacter()->GetActorForwardVector();
-
 	FVector DotB;
 
 	if (InputType == EInputType::EIT_Up)
@@ -344,13 +357,53 @@ EInputType ACS_PlayerController::GetDirectionalInputInBuffer(EInputType InputTyp
 	return EInputType::EIT_Neutral;
 }
 
+bool ACS_PlayerController::CheckInputPauses(const UCS_PlayerCombatState* CombatStateInfo)
+{
+	// Find the input that ISN'T EIT_Pause
+	const EInputType* InputToCheck = CombatStateInfo->RequiredInputs.FindByPredicate(
+	[](EInputType Input)
+	{
+		return Input != EInputType::EIT_Pause;
+	});
+
+	if (!InputToCheck) return false;
+	
+	int FramesSinceLastPressedInput = 100;
+
+	for (FBufferedInput BufferedInput : InputBuffer)
+	{
+		if (BufferedInput.Input != *InputToCheck)
+		{
+			continue;
+		}
+		
+		// Make sure the input is not the input that is being currently pressed
+		if (BufferedInput.FramesElapsedSincePressed < FramesSinceLastPressedInput && BufferedInput.FramesElapsedSincePressed > 1)
+		{
+			FramesSinceLastPressedInput = BufferedInput.FramesElapsedSincePressed;
+		}
+	}
+
+	if (FramesSinceLastPressedInput <= CombatStateInfo->PauseMaxFrames && FramesSinceLastPressedInput >= CombatStateInfo->PauseMinFrames)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
 bool ACS_PlayerController::CheckInputCriteria(const UCS_PlayerCombatState* CombatStateInfo)
 {
 	if (!CombatStateInfo)
 		return false;
-	
+
+	// Get rid of old inputs
 	CleanExpiredInputs();
 
+	// Check for pause input
+	if (CombatStateInfo->RequiredInputs.Contains(EInputType::EIT_Pause) && !CheckInputPauses(CombatStateInfo)) return false;
+
+	// Finally, check if input is valid
 	return CheckInputsInBuffer(CombatStateInfo->RequiredInputs, CombatStateInfo->InputBufferWindow);
 }
 

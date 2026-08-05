@@ -42,6 +42,12 @@ public:
 	UPROPERTY(EditAnywhere, Category="Inputs")
 	int InputBufferWindow;
 
+	UPROPERTY(EditAnywhere, meta= (EditCondition = "bHasPauseInput == true", EditConditionHides), Category="Inputs")
+	int PauseMinFrames;
+
+	UPROPERTY(EditAnywhere, meta= (EditCondition = "bHasPauseInput == true", EditConditionHides), Category="Inputs")
+	int PauseMaxFrames;
+
 	UPROPERTY(EditAnywhere, Category="Inputs")
 	bool bRequireLockOn;
 
@@ -57,6 +63,13 @@ public:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;
 
+	UPROPERTY()
+	bool bHasPauseInput;
+	
+
 public:
 	void SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visited, TArray<UCS_CombatStateBase*> AnyStateTransitions);
+
+private:
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 };

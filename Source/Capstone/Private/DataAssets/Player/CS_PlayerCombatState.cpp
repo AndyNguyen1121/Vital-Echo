@@ -40,3 +40,18 @@ void UCS_PlayerCombatState::SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visi
 	MarkPackageDirty();
 #endif
 }
+
+void UCS_PlayerCombatState::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (RequiredInputs.Contains(EInputType::EIT_Pause))
+	{
+		bHasPauseInput = true;
+	}
+	else
+	{
+
+		bHasPauseInput = false;
+	}
+}

@@ -4,6 +4,8 @@ UENUM(BlueprintType)
 enum class EInputType : uint8
 {
 	EIT_Primary UMETA(DisplayName = "Primary"),
+
+	EIT_Pause UMETA(DisplayName = "Pause"),
 	
 	EIT_Forward UMETA(DisplayName = "Forward"),
 	EIT_Back UMETA(DisplayName = "Back"),

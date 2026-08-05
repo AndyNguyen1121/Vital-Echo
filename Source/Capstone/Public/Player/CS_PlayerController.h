@@ -89,6 +89,7 @@ private:
 	void CleanExpiredInputs();
 	bool CheckInputsInBuffer(const TArray<EInputType>& InputsToSearch, const int FramesToCheck);
 	EInputType GetDirectionalInputInBuffer(EInputType InputType) const;
+	bool CheckInputPauses(const UCS_PlayerCombatState* CombatStateInfo);
 	
 	void TickInputBuffer();
 	

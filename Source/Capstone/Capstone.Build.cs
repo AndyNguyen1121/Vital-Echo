@@ -19,10 +19,11 @@ public class Capstone : ModuleRules
 			"GameplayTasks", 
 			"GameplayTags", 
 			"UMG",
-			"MotionWarping"
+			"MotionWarping",
+			
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "LevelSequence", "MovieScene" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "LevelSequence", "MovieScene", "AnimationBlueprintLibrary", "AnimationModifiers" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

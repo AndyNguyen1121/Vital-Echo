@@ -125,6 +125,21 @@ void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVe
 	FVector TargetLocation = LockOnTarget->GetActorLocation() + Offset;
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("Warp"), TargetLocation);
 }
+
+void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+
+	if (GetCharacterMovement()->MovementMode == MOVE_Falling || GetCharacterMovement()->MovementMode == MOVE_Flying)
+	{
+		GetCapsuleComponent()->SetCollisionProfileName(FName("AirbornePawn"));
+	}
+
+	if (GetCharacterMovement()->MovementMode == MOVE_Walking)
+	{
+		GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
+	}
+}
 #pragma endregion 
 
 

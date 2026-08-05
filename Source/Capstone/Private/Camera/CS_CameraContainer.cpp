@@ -45,13 +45,10 @@ void ACS_CameraContainer::Tick(float DeltaSeconds)
 
 			float HeightDifference = CurrentLockOnTarget->GetActorLocation().Z - Controller->GetPawn()->GetActorLocation().Z;
 			
-			if (DesiredRotation.Yaw < MinLockOnPitch || DesiredRotation.Yaw > MaxLockOnPitch)
-			{
-				DesiredRotation.Pitch = FMath::Clamp(
-						DesiredRotation.Pitch,
-						MinLockOnPitch,
-						MaxLockOnPitch);
-			}
+			DesiredRotation.Pitch = FMath::Clamp(
+					DesiredRotation.Pitch,
+					MinLockOnPitch,
+					MaxLockOnPitch);
 			LockOnCamera->CameraBoom->SocketOffset.Z = (InitialLockOnSocketOffset.Z + (HeightDifference * 0.3f));
 			Controller->SetControlRotation(DesiredRotation);
 		}
