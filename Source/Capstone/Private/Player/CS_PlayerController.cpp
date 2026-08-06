@@ -372,7 +372,8 @@ bool ACS_PlayerController::CheckInputPauses(const UCS_PlayerCombatState* CombatS
 
 	for (FBufferedInput BufferedInput : InputBuffer)
 	{
-		if (BufferedInput.Input != *InputToCheck)
+		// Previous input HAS to be consumed as that indicates that the player activated an ability and is now pausing
+		if (BufferedInput.Input != *InputToCheck || !BufferedInput.bIsConsumed)
 		{
 			continue;
 		}

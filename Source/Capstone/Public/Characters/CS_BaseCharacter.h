@@ -39,7 +39,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TSet<AActor*> ActorsHit;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	FDamageAttributes CurrentDamageAttribute;
 
 	UPROPERTY(BlueprintReadOnly)

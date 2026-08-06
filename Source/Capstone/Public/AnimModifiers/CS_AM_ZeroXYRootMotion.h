@@ -18,7 +18,8 @@ class CAPSTONE_API UCS_AM_ZeroXYRootMotion : public UAnimationModifier
 	virtual void OnRevert_Implementation(UAnimSequence* AnimationSequence) override;
 
 	UPROPERTY()
-	TArray<FVector> OriginalRootPositions;
+	TArray<FTransform> OriginalTransformKeys;
+	TArray<float> OriginalRootTimes;
 
 	UPROPERTY(EditAnywhere)
 	FName BoneName;

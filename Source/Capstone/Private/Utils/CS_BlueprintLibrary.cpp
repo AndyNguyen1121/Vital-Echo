@@ -173,11 +173,12 @@ void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor
 
 	if (Velocity.Z > 0)
 	{
-		TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::KnockedUp), Payload);
 	}
-	
-	TargetCharacter->GetCharacterMovement()->Velocity = Velocity;
+
+	TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+	TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
+	TargetCharacter->GetCharacterMovement()->AddImpulse(Velocity, true);
 }
 
 

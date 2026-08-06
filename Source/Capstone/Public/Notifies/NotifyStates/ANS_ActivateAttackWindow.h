@@ -65,6 +65,12 @@ public:
 	FRotator RotationOffset;
 
 	UPROPERTY(EditAnywhere)
+	bool bOverrideKnockback;
+
+	UPROPERTY(EditAnywhere, meta=(EditCondition = "bOverrideKnockback == true"))
+	FVector NewKnockbackForce;
+
+	UPROPERTY(EditAnywhere)
 	bool bShowDebugInPreview = true;
 	
 	inline static bool bDebug = false;
