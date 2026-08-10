@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "ContextualAnimSceneActorComponent.h"
+#include "ContextualAnimSceneAsset.h"
 #include "CS_BlueprintLibrary.generated.h"
 
 class ULevelSequence;
@@ -48,4 +50,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity);
+
+	UFUNCTION(BlueprintPure)
+	static AActor* GetClosestActorToLocation(const TArray<AActor*> Actors, FVector Location);
+
+	UFUNCTION(BlueprintCallable)
+	static void PlayContextualAnimation(UContextualAnimSceneActorComponent* ContextualAnimSceneActorComponent, AActor* PrimaryActor, AActor* SecondaryActor, UContextualAnimSceneAsset* SceneAsset);
 };

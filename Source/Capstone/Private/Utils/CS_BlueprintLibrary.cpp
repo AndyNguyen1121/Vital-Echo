@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "ContextualAnimUtilities.h"
 #include "DefaultLevelSequenceInstanceData.h"
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
@@ -179,6 +180,48 @@ void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor
 	TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 	TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
 	TargetCharacter->GetCharacterMovement()->AddImpulse(Velocity, true);
+}
+
+AActor* UCS_BlueprintLibrary::GetClosestActorToLocation(const TArray<AActor*> Actors, FVector Location)
+{
+	AActor* ClosestActor = nullptr;
+	float ClosestDistanceSq = FLT_MAX;
+
+	for (AActor* Actor : Actors)
+	{
+		float DistanceSq = FVector::DistSquared(Location, Actor->GetActorLocation());
+
+		if (DistanceSq < ClosestDistanceSq)
+		{
+			ClosestActor = Actor;
+			ClosestDistanceSq = DistanceSq;
+		}
+	}
+
+	return ClosestActor;
+}
+
+void UCS_BlueprintLibrary::PlayContextualAnimation(
+	UContextualAnimSceneActorComponent* ContextualAnimSceneActorComponent, AActor* PrimaryActor, AActor* SecondaryActor,
+	UContextualAnimSceneAsset* SceneAsset)
+{
+	if (!IsValid(ContextualAnimSceneActorComponent) || !IsValid(PrimaryActor) || !IsValid(SecondaryActor) || !IsValid(SceneAsset))
+	{
+		return;
+	}
+
+	FContextualAnimSceneBindingContext Primary =
+	 UContextualAnimUtilities::BP_SceneBindingContext_MakeFromActor(PrimaryActor);
+
+	FContextualAnimSceneBindingContext Secondary =
+		UContextualAnimUtilities::BP_SceneBindingContext_MakeFromActor(SecondaryActor);
+
+	FContextualAnimSceneBindings OutBindings;
+	
+	if (UContextualAnimUtilities::BP_CreateContextualAnimSceneBindingsForTwoActors(SceneAsset, Primary, Secondary, OutBindings))
+	{
+		ContextualAnimSceneActorComponent->StartContextualAnimScene(OutBindings);
+	}
 }
 
 

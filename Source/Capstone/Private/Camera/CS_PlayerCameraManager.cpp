@@ -111,17 +111,7 @@ AActor* ACS_PlayerCameraManager::FindClosestLockOnTarget(float SearchRadius, flo
 	
 	if (ValidActors.Num() == 0) return nullptr;
 	
-	AActor* ClosestActor = ValidActors[0];
-	float ClosestDistance = CachedOwnerPawn->GetDistanceTo(ClosestActor);
-	for (int32 i = 1; i < ValidActors.Num(); ++i)
-	{
-		float DistanceTo = ValidActors[i]->GetDistanceTo(CachedOwnerPawn);
-		if (DistanceTo < ClosestDistance)
-		{
-			ClosestDistance = DistanceTo;
-			ClosestActor = ValidActors[i];
-		}
-	}
+	AActor* ClosestActor = UCS_BlueprintLibrary::GetClosestActorToLocation(ValidActors, CachedOwnerPawn->GetActorLocation());
 
 	if (bShowLockOnDebug)
 	{

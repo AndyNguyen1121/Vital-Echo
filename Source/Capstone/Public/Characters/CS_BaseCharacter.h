@@ -7,6 +7,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "GameFramework/Character.h"
 #include "Structs/DamageAttributes.h"
+#include "ContextualAnimSceneActorComponent.h"
 #include "CS_BaseCharacter.generated.h"
 
 class UMotionWarpingComponent;
@@ -26,6 +27,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
+
+	UFUNCTION(BlueprintPure)
+	UContextualAnimSceneActorComponent* GetContextualAnimationComponent() const { return ContextualAnimSceneComponent; }
 
 	UFUNCTION(BlueprintPure)
 	float GetInitialGravityScale() const { return InitialGravityScale; }
@@ -58,5 +62,8 @@ private:
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	UMotionWarpingComponent* MotionWarpingComponent;
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UContextualAnimSceneActorComponent> ContextualAnimSceneComponent;
 };
