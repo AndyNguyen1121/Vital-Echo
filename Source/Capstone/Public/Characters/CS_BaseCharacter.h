@@ -6,8 +6,9 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayTagAssetInterface.h"
 #include "GameFramework/Character.h"
-#include "Structs/DamageAttributes.h"
+#include "Structs/FDamageAttributes.h"
 #include "ContextualAnimSceneActorComponent.h"
+#include "Structs/FWarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
 class UMotionWarpingComponent;
@@ -44,10 +45,13 @@ public:
 	TSet<AActor*> ActorsHit;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	FDamageAttributes CurrentDamageAttribute;
+	FFDamageAttributes CurrentDamageAttribute;
 
 	UPROPERTY(BlueprintReadOnly)
 	float MoveAmount;
+
+	UPROPERTY(VisibleAnywhere)
+	FWarpLocationInfo WarpLocationInfo;
 
 private:
 	void InitializeAttributes();

@@ -6,7 +6,7 @@
 #include "../Base/CS_CombatStateBase.h"
 #include "Engine/DataAsset.h"
 #include "Enums/InputTypes.h"
-#include "Structs/DamageAttributes.h"
+#include "Structs/FDamageAttributes.h"
 #include "CS_PlayerCombatState.generated.h"
 
 /**
@@ -58,7 +58,7 @@ public:
 	FPlayerStateInfo StateInfo;
 
 	UPROPERTY(EditAnywhere)
-	FDamageAttributes DamageAttributes;
+	FFDamageAttributes DamageAttributes;
 
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;

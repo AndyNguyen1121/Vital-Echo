@@ -69,7 +69,7 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	}
 	else
 	{
-		PlayerCharacter->CurrentDamageAttribute = FDamageAttributes();
+		PlayerCharacter->CurrentDamageAttribute = FFDamageAttributes();
 
 		if (NextState == CombatProfile)
 		{

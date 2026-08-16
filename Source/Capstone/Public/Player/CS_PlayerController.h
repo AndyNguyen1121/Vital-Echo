@@ -14,7 +14,7 @@ class ACS_PlayerCharacter;
 class ACS_CameraContainer;
 class ACS_CameraActor;
 class UCS_PlayerCombatState;
-struct FBufferedInput;
+struct FFBufferedInput;
 class ACS_PlayerState;
 struct FInputActionValue;
 class UInputAction;
@@ -149,7 +149,7 @@ private:
 	TSoftObjectPtr<ACS_PlayerState> CachedPlayerState;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<FBufferedInput> InputBuffer;
+	TArray<FFBufferedInput> InputBuffer;
 
 	UPROPERTY(VisibleAnywhere)
 	float LeftInputValue;

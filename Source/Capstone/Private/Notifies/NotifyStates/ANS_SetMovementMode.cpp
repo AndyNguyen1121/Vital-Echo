@@ -17,13 +17,35 @@ void UANS_SetMovementMode::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSe
 	if (!IsValid(Character)) return;
 
 	CachedCharacter = Character;
+	
+	Character->GetCharacterMovement()->SetMovementMode(StartMode);
 
-	if (UAnimInstance* AnimInstance = MeshComp->GetAnimInstance())
+	UAnimInstance* AnimInstance = MeshComp->GetAnimInstance();
+	if (!AnimInstance) return;
+
+	
+	UAnimMontage* Montage = Cast<UAnimMontage>(Animation);
+	
+	if (Montage && AnimInstance->Montage_IsPlaying(Montage))
 	{
-		AnimInstance->OnMontageBlendingOut.AddDynamic(this, &ThisClass::OnMontageEnded);
+		// Clear any existing end delegate before setting a new one
+		FOnMontageEnded EmptyDelegate;
+		AnimInstance->Montage_SetEndDelegate(EmptyDelegate, Montage);
 	}
 
-	Character->GetCharacterMovement()->SetMovementMode(StartMode);
+	TWeakObjectPtr<ACharacter> WeakCharacter = Character;
+	EMovementMode CapturedEndMode = EndMode;
+	
+	FOnMontageEnded EndDelegate = FOnMontageEnded::CreateWeakLambda(Character, [WeakCharacter, CapturedEndMode] (UAnimMontage* Montage, bool bInterrupted)
+	{
+		if (WeakCharacter.IsValid())
+		{
+			WeakCharacter.Get()->GetCharacterMovement()->SetMovementMode(CapturedEndMode);
+		}
+	});
+	
+	AnimInstance->Montage_SetEndDelegate(EndDelegate);
+
 }
 
 void UANS_SetMovementMode::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -31,12 +53,12 @@ void UANS_SetMovementMode::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequ
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (!CachedCharacter.IsValid()) return;
-	CachedCharacter->GetCharacterMovement()->SetMovementMode(EndMode);
-}
+	if (!IsValid(MeshComp)) return;
 
-void UANS_SetMovementMode::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
-{
-	if (!CachedCharacter.IsValid()) return;
-	CachedCharacter->GetCharacterMovement()->SetMovementMode(EndMode);
+	ACS_BaseCharacter* Character = Cast<ACS_BaseCharacter>(MeshComp->GetOwner());
+	if (!IsValid(Character)) return;
+	
+	Character->GetCharacterMovement()->SetMovementMode(EndMode);
+
+	
 }

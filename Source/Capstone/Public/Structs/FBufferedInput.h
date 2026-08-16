@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "CoreMinimal.h"           
 #include "Enums/InputTypes.h"     
-#include "BufferedInput.generated.h" 
+#include "FBufferedInput.generated.h"
 
 USTRUCT(BlueprintType)
-struct FBufferedInput
+struct FFBufferedInput
 {
 	GENERATED_BODY()
 
@@ -23,7 +23,7 @@ struct FBufferedInput
 	UPROPERTY(EditAnywhere)
 	bool bIsConsumed;
 
-	FBufferedInput()
+	FFBufferedInput()
 	{
 		Input = EInputType::EIT_Neutral;
 		FramesElapsedSincePressed = 0;
@@ -32,7 +32,7 @@ struct FBufferedInput
 		bIsConsumed = false;
 	}
 
-	FBufferedInput(EInputType InputType)
+	FFBufferedInput(EInputType InputType)
 	{
 		Input = InputType;
 		FramesElapsedSincePressed = 0;

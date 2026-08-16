@@ -3,10 +3,12 @@
 
 #include "Characters/CS_EnemyCharacter.h"
 
+#include "RootMotionModifier.h"
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
 #include "Capstone/DebugMacros.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
+#include "MotionWarpingComponent.h"
 #include "StateMachine/CS_EnemyStateMachineManager.h"
 
 
@@ -32,6 +34,13 @@ void ACS_EnemyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	UpdateMoveAmount();
+
+	if (const FMotionWarpingTarget* Target =
+	MotionWarpingComponent->FindWarpTarget(FName("Enemy")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Enemy Warp Target Location: %s"),
+			*Target->GetLocation().ToString());
+	}
 }
 
 void ACS_EnemyCharacter::UpdateMoveAmount()

@@ -71,12 +71,12 @@ void ACS_PlayerCharacter::Tick(float DeltaSeconds)
 		SetActorRotation(DesiredRotation);
 	}
 
-	if (const FMotionWarpingTarget* Target =
+	/*if (const FMotionWarpingTarget* Target =
 	MotionWarpingComponent->FindWarpTarget(FName("Player")))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Warp Target Location: %s"),
 			*Target->GetLocation().ToString());
-	}
+	}*/
 }
 
 UAbilitySystemComponent* ACS_PlayerCharacter::GetAbilitySystemComponent() const

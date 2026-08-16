@@ -93,7 +93,7 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 		
 		if (ACS_BaseCharacter* SourceCharacter = Cast<ACS_BaseCharacter>(MeshComp->GetOwner()))
 		{
-			FDamageAttributes CharacterDamageAttributes = SourceCharacter->CurrentDamageAttribute;
+			FFDamageAttributes CharacterDamageAttributes = SourceCharacter->CurrentDamageAttribute;
 			
 			for (const FHitResult& HitResult : Hits)
 			{

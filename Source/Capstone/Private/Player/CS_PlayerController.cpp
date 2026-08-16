@@ -13,7 +13,7 @@
 #include "DataAssets/Player/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
 #include "Player/CS_PlayerState.h"
-#include "Structs/BufferedInput.h"
+#include "Structs/FBufferedInput.h"
 
 
 void ACS_PlayerController::SetupInputComponent()
@@ -74,7 +74,7 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 
 void ACS_PlayerController::Primary(const FInputActionValue& Value)
 {
-	InputBuffer.Add(FBufferedInput(EInputType::EIT_Primary));
+	InputBuffer.Add(FFBufferedInput(EInputType::EIT_Primary));
 }
 
 void ACS_PlayerController::Look(const FInputActionValue& Value)
@@ -166,7 +166,7 @@ void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputC
 	{
 		*Value = InputValue.Get<float>();
 
-		FBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FBufferedInput& Input)
+		FFBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FFBufferedInput& Input)
 		{
 			if (Input.Input != PositiveType && Input.Input != NegativeType)
 				return false;
@@ -177,7 +177,7 @@ void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputC
 		if (PreviousHeld)
 			PreviousHeld->bIsBeingHeld = false;
 
-		FBufferedInput NewInput;
+		FFBufferedInput NewInput;
 		NewInput.Input = PositiveType;
 		NewInput.bIsBeingHeld = true;
 		InputBuffer.Add(NewInput);
@@ -188,7 +188,7 @@ void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputC
 	{
 		*Value = 0;
 
-		FBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FBufferedInput& Input)
+		FFBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FFBufferedInput& Input)
 		{
 			if (Input.Input != PositiveType && Input.Input != NegativeType)
 				return false;
@@ -231,7 +231,7 @@ void ACS_PlayerController::ConsumeInput(const TArray<EInputType>& InputsToRemove
 
 void ACS_PlayerController::CleanExpiredInputs()
 {
-	InputBuffer.RemoveAll([] (FBufferedInput& Input)
+	InputBuffer.RemoveAll([] (FFBufferedInput& Input)
 	{
 		return Input.FramesElapsedSincePressed > 100 && !Input.bIsBeingHeld;
 	});
@@ -370,7 +370,7 @@ bool ACS_PlayerController::CheckInputPauses(const UCS_PlayerCombatState* CombatS
 	
 	int FramesSinceLastPressedInput = 100;
 
-	for (FBufferedInput BufferedInput : InputBuffer)
+	for (FFBufferedInput BufferedInput : InputBuffer)
 	{
 		// Previous input HAS to be consumed as that indicates that the player activated an ability and is now pausing
 		if (BufferedInput.Input != *InputToCheck || !BufferedInput.bIsConsumed)
@@ -424,7 +424,7 @@ FVector ACS_PlayerController::GetWorldDirectionFromInput()
 
 void ACS_PlayerController::TickInputBuffer()
 {
-	for (FBufferedInput& BufferedInput : InputBuffer)
+	for (FFBufferedInput& BufferedInput : InputBuffer)
 	{
 		BufferedInput.FramesElapsedSincePressed++;
 

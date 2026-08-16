@@ -18,8 +18,6 @@ class CAPSTONE_API UANS_SetMovementMode : public UAnimNotifyState
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
-	UFUNCTION()
-	void OnMontageEnded(UAnimMontage* Montage, bool Interrupted);
 
 public:
 	UPROPERTY(EditAnywhere)
