@@ -9,7 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
 #include "MotionWarpingComponent.h"
-#include "StateMachine/CS_EnemyStateMachineManager.h"
+#include "ActorComponents/StateMachine/CS_EnemyStateMachineManager.h"
 
 
 // Sets default values

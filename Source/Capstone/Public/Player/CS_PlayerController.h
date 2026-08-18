@@ -14,7 +14,7 @@ class ACS_PlayerCharacter;
 class ACS_CameraContainer;
 class ACS_CameraActor;
 class UCS_PlayerCombatState;
-struct FFBufferedInput;
+struct FBufferedInput;
 class ACS_PlayerState;
 struct FInputActionValue;
 class UInputAction;
@@ -80,6 +80,7 @@ private:
 	void Look(const FInputActionValue& Value);
 	void LockOn();
 	void LockOnChange(const FInputActionValue& Value);
+	void JumpInput();
 	
 	void ClampInputDirection(FVector2D InputDirection, float InputDeadzone);
 	void SetMoveAmount();
@@ -129,6 +130,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TObjectPtr<UInputAction> ChangeLockOnAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> Jump;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	float LookSensitivity{0.5f};
@@ -149,7 +153,7 @@ private:
 	TSoftObjectPtr<ACS_PlayerState> CachedPlayerState;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<FFBufferedInput> InputBuffer;
+	TArray<FBufferedInput> InputBuffer;
 
 	UPROPERTY(VisibleAnywhere)
 	float LeftInputValue;

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "FWarpLocationInfo.generated.h"
+#include "WarpLocationInfo.generated.h"
 
 USTRUCT(Blueprintable)
 struct FWarpLocationInfo

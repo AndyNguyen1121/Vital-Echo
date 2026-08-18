@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "StateMachine/CS_PlayerStateMachineManager.h"
+#include "ActorComponents/StateMachine/CS_PlayerStateMachineManager.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
@@ -69,7 +69,7 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	}
 	else
 	{
-		PlayerCharacter->CurrentDamageAttribute = FFDamageAttributes();
+		PlayerCharacter->CurrentDamageAttribute = FDamageAttributes();
 
 		if (NextState == CombatProfile)
 		{

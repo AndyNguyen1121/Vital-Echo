@@ -12,6 +12,41 @@
 #include "GameplayTags/CSTags.h"
 #include "Utils/CS_BlueprintLibrary.h"
 
+void UANS_DragHitActors::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+	float TotalDuration, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
+
+	if (!IsValid(MeshComp)) return;
+
+	ACS_BaseCharacter* Character = Cast<ACS_BaseCharacter>(MeshComp->GetOwner());
+	if (!IsValid(Character)) return;
+
+	CachedCharacter = Character;
+
+	UAnimInstance* AnimInstance = MeshComp->GetAnimInstance();
+	if (!AnimInstance) return;
+	
+	UAnimMontage* Montage = Cast<UAnimMontage>(Animation);
+	TWeakObjectPtr<ACS_BaseCharacter> WeakCharacter = Character;
+
+	BindMontageEnd(WeakCharacter.Get(), AnimInstance, Montage, [this, WeakCharacter](UAnimMontage*, bool)
+	{
+		if (WeakCharacter.IsValid())
+		{
+			for (AActor* Actor : WeakCharacter->ActorsHit)
+			{
+				DEBUG_ERR("BITCH")
+				if (ACharacter* EnemyCharacter = Cast<ACharacter>(Actor))
+				{
+					EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+					
+				}
+			}
+		}
+	});
+} 
+
 void UANS_DragHitActors::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                     float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
@@ -36,13 +71,6 @@ void UANS_DragHitActors::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 			
 			EnemyCharacter->AddActorWorldOffset(ModifiedVelocity * FrameDeltaTime, true);
 		}
-	}
-
-	CachedCharacter = Character;
-
-	if (UAnimInstance* AnimInstance = MeshComp->GetAnimInstance())
-	{
-		AnimInstance->OnMontageBlendingOut.AddDynamic(this, &UANS_DragHitActors::OnMontageEnded);
 	}
 }
 
@@ -70,20 +98,4 @@ void UANS_DragHitActors::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 			EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 		}
 	}
-}
-
-void UANS_DragHitActors::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
-{
-	if (!CachedCharacter.IsValid()) return;
-
-	for (AActor* Actor : CachedCharacter->ActorsHit)
-	{
-		if (ACharacter* EnemyCharacter = Cast<ACharacter>(Actor))
-		{
-			EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
-		}
-	}
-
-	CachedCharacter = nullptr;
-	
 }

@@ -19,7 +19,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/CS_PlayerController.h"
-#include "StateMachine/CS_PlayerStateMachineManager.h"
+#include "ActorComponents/StateMachine/CS_PlayerStateMachineManager.h"
+#include "ActorComponents/TokenManager/CS_TokenManager.h"
 
 
 // Sets default values
@@ -28,6 +29,7 @@ ACS_PlayerCharacter::ACS_PlayerCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	PlayerStateMachineManager = CreateDefaultSubobject<UCS_PlayerStateMachineManager>("StateMachine");
+	
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 	bUseControllerRotationPitch = false;
@@ -132,6 +134,7 @@ void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVe
 	FVector TargetLocation = LockOnTarget->GetActorLocation() + Offset;
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("Warp"), TargetLocation);
 }
+
 
 void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {

@@ -6,7 +6,7 @@
 #include "../Base/CS_CombatStateBase.h"
 #include "Engine/DataAsset.h"
 #include "Enums/InputTypes.h"
-#include "Structs/FDamageAttributes.h"
+#include "Structs/DamageAttributes.h"
 #include "CS_PlayerCombatState.generated.h"
 
 /**
@@ -58,10 +58,12 @@ public:
 	FPlayerStateInfo StateInfo;
 
 	UPROPERTY(EditAnywhere)
-	FFDamageAttributes DamageAttributes;
+	FDamageAttributes DamageAttributes;
 
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;
+
+	TArray<UCS_CombatStateBase*> CachedAnyStateTransitions;
 
 	UPROPERTY()
 	bool bHasPauseInput;
@@ -69,6 +71,7 @@ public:
 
 public:
 	void SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visited, TArray<UCS_CombatStateBase*> AnyStateTransitions);
+	void SortStates();
 
 private:
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;

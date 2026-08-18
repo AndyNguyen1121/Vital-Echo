@@ -6,17 +6,19 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayTagAssetInterface.h"
 #include "GameFramework/Character.h"
-#include "Structs/FDamageAttributes.h"
+#include "Structs/DamageAttributes.h"
 #include "ContextualAnimSceneActorComponent.h"
-#include "Structs/FWarpLocationInfo.h"
+#include "Interfaces/TokenInterface.h"
+#include "Structs/WarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
+class UCS_TokenManager;
 class UMotionWarpingComponent;
 class UAttributeSet;
 class UGameplayEffect;
 
 UCLASS()
-class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
+class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public ITokenInterface
 {
 	GENERATED_BODY()
 
@@ -32,6 +34,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	UContextualAnimSceneActorComponent* GetContextualAnimationComponent() const { return ContextualAnimSceneComponent; }
 
+	virtual UCS_TokenManager* GetTokenManager_Implementation() override  { return TokenManager; }
+
 	UFUNCTION(BlueprintPure)
 	float GetInitialGravityScale() const { return InitialGravityScale; }
 
@@ -45,13 +49,16 @@ public:
 	TSet<AActor*> ActorsHit;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	FFDamageAttributes CurrentDamageAttribute;
+	FDamageAttributes CurrentDamageAttribute;
 
 	UPROPERTY(BlueprintReadOnly)
 	float MoveAmount;
 
 	UPROPERTY(VisibleAnywhere)
 	FWarpLocationInfo WarpLocationInfo;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bIsDead{false};
 
 private:
 	void InitializeAttributes();
@@ -70,4 +77,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UContextualAnimSceneActorComponent> ContextualAnimSceneComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UCS_TokenManager> TokenManager;
 };

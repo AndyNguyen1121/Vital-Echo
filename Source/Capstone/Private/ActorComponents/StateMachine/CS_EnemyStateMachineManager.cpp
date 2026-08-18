@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "StateMachine/CS_EnemyStateMachineManager.h"
+#include "ActorComponents/StateMachine/CS_EnemyStateMachineManager.h"
 
 
 // Sets default values for this component's properties

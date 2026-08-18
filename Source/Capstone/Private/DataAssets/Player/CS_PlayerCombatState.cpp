@@ -10,7 +10,7 @@ void UCS_PlayerCombatState::SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visi
 		return; 
 	}
 	Visited.Add(this);
-
+	CachedAnyStateTransitions = AnyStateTransitions;
 	TArray<UCS_CombatStateBase*> CombinedStates(TransitionStates);
 	CombinedStates.Append(AnyStateTransitions);
 
@@ -41,17 +41,29 @@ void UCS_PlayerCombatState::SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visi
 #endif
 }
 
+void UCS_PlayerCombatState::SortStates()
+{
+	TArray<UCS_CombatStateBase*> CombinedStates(TransitionStates);
+	CombinedStates.Append(CachedAnyStateTransitions);
+
+	CombinedStates.Sort([](const UCS_CombatStateBase& A, const UCS_CombatStateBase& B)
+	{
+		const UCS_PlayerCombatState* StateA = Cast<UCS_PlayerCombatState>(&A);
+		const UCS_PlayerCombatState* StateB = Cast<UCS_PlayerCombatState>(&B);
+
+		const int32 NumInputsA = StateA ? StateA->RequiredInputs.Num() : 0;
+		const int32 NumInputsB = StateB ? StateB->RequiredInputs.Num() : 0;
+
+		return NumInputsA > NumInputsB;
+	});
+
+	SortedTransitionStates = CombinedStates;
+}
+
 void UCS_PlayerCombatState::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	if (RequiredInputs.Contains(EInputType::EIT_Pause))
-	{
-		bHasPauseInput = true;
-	}
-	else
-	{
-
-		bHasPauseInput = false;
-	}
+	
+	bHasPauseInput = RequiredInputs.Contains(EInputType::EIT_Pause);
+	SortStates();
 }

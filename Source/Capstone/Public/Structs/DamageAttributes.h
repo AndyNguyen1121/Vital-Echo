@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
-#include "FDamageAttributes.generated.h"
+#include "DamageAttributes.generated.h"
 
 USTRUCT(Blueprintable)
-struct FFDamageAttributes
+struct FDamageAttributes
 {
 	GENERATED_BODY()
 

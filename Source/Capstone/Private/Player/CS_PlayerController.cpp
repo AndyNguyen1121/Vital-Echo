@@ -13,7 +13,7 @@
 #include "DataAssets/Player/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
 #include "Player/CS_PlayerState.h"
-#include "Structs/FBufferedInput.h"
+#include "Structs/BufferedInput.h"
 
 
 void ACS_PlayerController::SetupInputComponent()
@@ -44,6 +44,7 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
 	EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOn);
 	EnhancedInputComponent->BindAction(ChangeLockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOnChange);
+	EnhancedInputComponent->BindAction(Jump, ETriggerEvent::Started, this, &ACS_PlayerController::JumpInput);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -74,7 +75,7 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 
 void ACS_PlayerController::Primary(const FInputActionValue& Value)
 {
-	InputBuffer.Add(FFBufferedInput(EInputType::EIT_Primary));
+	InputBuffer.Add(FBufferedInput(EInputType::EIT_Primary));
 }
 
 void ACS_PlayerController::Look(const FInputActionValue& Value)
@@ -101,6 +102,11 @@ void ACS_PlayerController::LockOnChange(const FInputActionValue& Value)
 	{
 		GetCSPlayerCameraManager()->SwitchLockOnTargets(Value.Get<FVector2D>(), GetCSPlayerCharacter());
 	}
+}
+
+void ACS_PlayerController::JumpInput()
+{
+	InputBuffer.Add(FBufferedInput(EInputType::EIT_Jump));
 }
 
 void ACS_PlayerController::ResetAllMovementInputs()
@@ -166,7 +172,7 @@ void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputC
 	{
 		*Value = InputValue.Get<float>();
 
-		FFBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FFBufferedInput& Input)
+		FBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FBufferedInput& Input)
 		{
 			if (Input.Input != PositiveType && Input.Input != NegativeType)
 				return false;
@@ -177,7 +183,7 @@ void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputC
 		if (PreviousHeld)
 			PreviousHeld->bIsBeingHeld = false;
 
-		FFBufferedInput NewInput;
+		FBufferedInput NewInput;
 		NewInput.Input = PositiveType;
 		NewInput.bIsBeingHeld = true;
 		InputBuffer.Add(NewInput);
@@ -188,7 +194,7 @@ void ACS_PlayerController::BindAxisInput(UEnhancedInputComponent* EnhancedInputC
 	{
 		*Value = 0;
 
-		FFBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FFBufferedInput& Input)
+		FBufferedInput* PreviousHeld = InputBuffer.FindByPredicate([PositiveType, NegativeType](const FBufferedInput& Input)
 		{
 			if (Input.Input != PositiveType && Input.Input != NegativeType)
 				return false;
@@ -231,7 +237,7 @@ void ACS_PlayerController::ConsumeInput(const TArray<EInputType>& InputsToRemove
 
 void ACS_PlayerController::CleanExpiredInputs()
 {
-	InputBuffer.RemoveAll([] (FFBufferedInput& Input)
+	InputBuffer.RemoveAll([] (FBufferedInput& Input)
 	{
 		return Input.FramesElapsedSincePressed > 100 && !Input.bIsBeingHeld;
 	});
@@ -370,7 +376,7 @@ bool ACS_PlayerController::CheckInputPauses(const UCS_PlayerCombatState* CombatS
 	
 	int FramesSinceLastPressedInput = 100;
 
-	for (FFBufferedInput BufferedInput : InputBuffer)
+	for (FBufferedInput BufferedInput : InputBuffer)
 	{
 		// Previous input HAS to be consumed as that indicates that the player activated an ability and is now pausing
 		if (BufferedInput.Input != *InputToCheck || !BufferedInput.bIsConsumed)
@@ -424,7 +430,7 @@ FVector ACS_PlayerController::GetWorldDirectionFromInput()
 
 void ACS_PlayerController::TickInputBuffer()
 {
-	for (FFBufferedInput& BufferedInput : InputBuffer)
+	for (FBufferedInput& BufferedInput : InputBuffer)
 	{
 		BufferedInput.FramesElapsedSincePressed++;
 

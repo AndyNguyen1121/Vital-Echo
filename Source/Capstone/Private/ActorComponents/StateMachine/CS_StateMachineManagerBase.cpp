@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "StateMachine/CS_StateMachineManagerBase.h"
+#include "ActorComponents/StateMachine/CS_StateMachineManagerBase.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"

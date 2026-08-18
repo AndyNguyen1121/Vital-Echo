@@ -5,8 +5,9 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "CS_BaseCharacter.h"
-#include "Structs/FDamageAttributes.h"
+#include "Structs/DamageAttributes.h"
 #include "CS_PlayerCharacter.generated.h"
+class UCS_TokenManager;
 class ACS_PlayerCameraManager;
 class ACS_PlayerController;
 class ACS_PlayerState;
