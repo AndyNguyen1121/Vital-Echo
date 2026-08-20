@@ -27,6 +27,13 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UCS_EnemyStateMachineManager* GetEnemyStateMachineManager() { return EnemyStateMachineManager; }
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="CustomProperties")
+	float MinRetreatDistance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="CustomProperties")
+	float MaxRetreatDistance;
 	
 protected:
 	UPROPERTY(VisibleAnywhere)
