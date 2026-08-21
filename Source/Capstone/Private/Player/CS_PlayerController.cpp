@@ -309,10 +309,9 @@ bool ACS_PlayerController::CheckInputsInBuffer(const TArray<EInputType>& InputsT
 			}
 		}
 		
-		// SUCCESS: consume inputs if check is successful
+		// SUCCESS
 		if (CopyOfInputsToSearch.Num() == 0)
 		{
-			ConsumeInput(InputsToSearch);
 			return true;
 		}
 	}
@@ -391,6 +390,7 @@ bool ACS_PlayerController::CheckInputPauses(const UCS_PlayerCombatState* CombatS
 		}
 	}
 
+
 	if (FramesSinceLastPressedInput <= CombatStateInfo->PauseMaxFrames && FramesSinceLastPressedInput >= CombatStateInfo->PauseMinFrames)
 	{
 		return true;
@@ -406,7 +406,7 @@ bool ACS_PlayerController::CheckInputCriteria(const UCS_PlayerCombatState* Comba
 
 	// Get rid of old inputs
 	CleanExpiredInputs();
-
+	
 	// Check for pause input
 	if (CombatStateInfo->RequiredInputs.Contains(EInputType::EIT_Pause) && !CheckInputPauses(CombatStateInfo)) return false;
 

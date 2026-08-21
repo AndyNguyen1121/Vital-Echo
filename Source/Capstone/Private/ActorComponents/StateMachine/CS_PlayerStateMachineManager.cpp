@@ -46,6 +46,15 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	if (!NextState || !IsValid(PlayerCharacter)) return false;
 	if (!CombatStateList.Contains(NextState)) return false;
 
+	if (NextState->GameplayAbility)
+	{
+		bool bCanActivate = PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
+		if (!bCanActivate)
+		{
+			return false;
+		}
+	}
+
 	PlayerCharacter->ResetGravityScale();
 	CurrentState = NextState;
 	
@@ -81,14 +90,8 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 			}
 		}
 	}
-
-	if (NextState->GameplayAbility)
-	{
-		PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
-	}
 	
 	PlayerCharacter->ActorsHit.Empty();
-
 	return true;
 }
 
@@ -116,15 +119,23 @@ void UCS_PlayerStateMachineManager::RetrieveStates(UCS_CombatStateBase* State, T
 void UCS_PlayerStateMachineManager::CheckForStateTransitions()
 {
 	if (CurrentStateTransitionSet.Num() == 0) return;
-	
-	for (const auto& State : CurrentStateTransitionSet)
+
+	// Store pointer to array because CurrentStateTransitionSet will get changed if SwitchState is true
+	TArray<UCS_CombatStateBase*> TransitionsToCheck = CurrentStateTransitionSet;
+
+	for (UCS_CombatStateBase* State : TransitionsToCheck)   
 	{
-		if (CheckIfCanTransitionState(State))
+		if (!CheckIfCanTransitionState(State) || !SwitchState(State)) continue;
+
+		// On successful state switch
+		PlayerCharacter->GetCSPlayerState()->bInputWindowOpen = false;
+
+		if (UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State))
 		{
-			SwitchState(State);
-			return;
+			PlayerCharacter->GetCSPlayerController()->ConsumeInput(CombatState->RequiredInputs);
 		}
-		
+
+		return;
 	}
 }
 
@@ -156,7 +167,6 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 		return false;
 	}
 	
-	PlayerCharacter->GetCSPlayerState()->bInputWindowOpen = false;
 	return true;
 }
 

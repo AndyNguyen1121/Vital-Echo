@@ -62,8 +62,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerCameraManager* GetCSPlayerCameraManager() const;
 
-public:
-	
+	void ConsumeInput(const TArray<EInputType>& InputsToRemove);
 
 protected:
 	void FixedUpdate();
@@ -86,7 +85,6 @@ private:
 	void SetMoveAmount();
 
 	void BindAxisInput(UEnhancedInputComponent* EnhancedInputComponent, UInputAction* InputAction, float* Value, EInputType PositiveType, EInputType NegativeType);
-	void ConsumeInput(const TArray<EInputType>& InputsToRemove);
 	void CleanExpiredInputs();
 	bool CheckInputsInBuffer(const TArray<EInputType>& InputsToSearch, const int FramesToCheck);
 	EInputType GetDirectionalInputInBuffer(EInputType InputType) const;
