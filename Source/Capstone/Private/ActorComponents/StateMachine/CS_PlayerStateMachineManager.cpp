@@ -53,6 +53,7 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	if (UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(NextState))
 	{
 		PlayerCharacter->CurrentDamageAttribute = CombatState->DamageAttributes;
+		PlayerCharacter->CurrentDamageVisuals = CombatState->DamageVisuals;
 		PlayerCharacter->GetCSPlayerState()->ResetBooleansWithStateInfo(CombatState->StateInfo, false);
 
 		if (CombatState->StateInfo.GravityScale > -1)
@@ -70,6 +71,7 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	else
 	{
 		PlayerCharacter->CurrentDamageAttribute = FDamageAttributes();
+		PlayerCharacter->CurrentDamageVisuals = FDamageVisuals();
 
 		if (NextState == CombatProfile)
 		{

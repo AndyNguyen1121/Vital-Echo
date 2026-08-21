@@ -5,6 +5,7 @@
 
 #include "MotionWarpingComponent.h"
 #include "AbilitySystem/CS_AttributeSet.h"
+#include "ActorComponents/CombatSystem/CS_HitStopComponent.h"
 #include "ActorComponents/TokenManager/CS_TokenManager.h"
 #include "Capstone/Public/Player/CS_PlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -18,6 +19,7 @@ ACS_BaseCharacter::ACS_BaseCharacter()
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>("MotionWarpingComponent");
 	ContextualAnimSceneComponent = CreateDefaultSubobject<UContextualAnimSceneActorComponent>("ContextualAnimSceneComponent");
 	TokenManager = CreateDefaultSubobject<UCS_TokenManager>("TokenManager");
+	HitStopComponent = CreateDefaultSubobject<UCS_HitStopComponent>("HitStopComponent");
 	ContextualAnimSceneComponent->SetupAttachment(GetRootComponent());
 }
 
@@ -49,6 +51,20 @@ void ACS_BaseCharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer
 	if (!GetAbilitySystemComponent()) return;
 
 	TagContainer = GetAbilitySystemComponent()->GetOwnedGameplayTags();
+}
+
+FVector2D ACS_BaseCharacter::GetStrafeDirection()
+{
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	if (MovementComponent->Velocity.IsNearlyZero()) return FVector2D::ZeroVector;
+
+	FVector CurrentVelocity = MovementComponent->Velocity;
+	CurrentVelocity.Z = 0;
+
+	FVector LocalVelocity = GetActorTransform().InverseTransformVectorNoScale(CurrentVelocity);
+	LocalVelocity.Normalize();
+
+	return FVector2D(LocalVelocity.X, LocalVelocity.Y);
 }
 
 void ACS_BaseCharacter::InitializeAttributes()

@@ -8,17 +8,19 @@
 #include "GameFramework/Character.h"
 #include "Structs/DamageAttributes.h"
 #include "ContextualAnimSceneActorComponent.h"
+#include "Interfaces/HitStopComponentInterface.h"
 #include "Interfaces/TokenInterface.h"
 #include "Structs/WarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
+class UCS_HitStopComponent;
 class UCS_TokenManager;
 class UMotionWarpingComponent;
 class UAttributeSet;
 class UGameplayEffect;
 
 UCLASS()
-class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public ITokenInterface
+class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public ITokenInterface, public IHitStopComponentInterface
 {
 	GENERATED_BODY()
 
@@ -34,6 +36,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	UContextualAnimSceneActorComponent* GetContextualAnimationComponent() const { return ContextualAnimSceneComponent; }
 
+	virtual UCS_HitStopComponent* GetHitStopComponent_Implementation() override { return HitStopComponent; };
+
 	virtual UCS_TokenManager* GetTokenManager_Implementation() override  { return TokenManager; }
 
 	UFUNCTION(BlueprintPure)
@@ -43,13 +47,18 @@ public:
 	void ResetGravityScale();
 
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
-	
+
+	UFUNCTION(BlueprintPure)
+	FVector2D GetStrafeDirection();
 public:
 	UPROPERTY(VisibleAnywhere)
 	TSet<AActor*> ActorsHit;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	FDamageAttributes CurrentDamageAttribute;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	FDamageVisuals CurrentDamageVisuals;
 
 	UPROPERTY(BlueprintReadOnly)
 	float MoveAmount;
@@ -80,4 +89,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_TokenManager> TokenManager;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UCS_HitStopComponent> HitStopComponent;
 };

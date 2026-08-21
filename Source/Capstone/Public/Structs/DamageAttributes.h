@@ -10,3 +10,22 @@ struct FDamageAttributes
 	UPROPERTY(EditAnywhere)
 	FVector KnockBackForce = FVector::ZeroVector;
 };
+
+
+USTRUCT(Blueprintable)
+struct FDamageVisuals
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category="HitStun")
+	float HitStunDuration = 0.05f;
+
+	UPROPERTY(EditAnywhere, Category="HitStun")
+	float HitStunTimeDilation = 0.25f;
+
+	UPROPERTY(EditAnywhere, Category="CameraShake")
+	TSubclassOf<UCameraShakeBase> CameraShakeClass;
+
+	UPROPERTY(EditAnywhere, Category="CameraShake")
+	float CameraShakeScale = 1.f;
+};

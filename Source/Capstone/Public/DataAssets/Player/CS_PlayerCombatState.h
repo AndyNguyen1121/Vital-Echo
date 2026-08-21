@@ -60,6 +60,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	FDamageAttributes DamageAttributes;
 
+	UPROPERTY(EditAnywhere)
+	FDamageVisuals DamageVisuals;
+
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;
 

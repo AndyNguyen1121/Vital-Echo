@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ContextualAnimSceneActorComponent.h"
 #include "ContextualAnimSceneAsset.h"
+#include "Structs/DamageAttributes.h"
 #include "CS_BlueprintLibrary.generated.h"
 
 class ULevelSequence;
@@ -56,4 +57,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void PlayContextualAnimation(UContextualAnimSceneActorComponent* ContextualAnimSceneActorComponent, AActor* PrimaryActor, AActor* SecondaryActor, UContextualAnimSceneAsset* SceneAsset);
+	
+	UFUNCTION(BlueprintCallable)
+	static void ApplyHitStun(AActor* TargetActor, float Duration, float TimeDilation);
+
+	UFUNCTION(BlueprintCallable)
+	static void ApplyDamageAttributes(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageAttributes DamageAttributes);
+
+	UFUNCTION(BlueprintCallable)
+	static void ApplyDamageVisuals(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageVisuals DamageVisuals);
 };

@@ -12,6 +12,7 @@
 #include "Characters/CS_PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
+#include "Kismet/GameplayStatics.h"
 #include "Utils/CS_BlueprintLibrary.h"
 
 
@@ -94,17 +95,15 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 		if (ACS_BaseCharacter* SourceCharacter = Cast<ACS_BaseCharacter>(MeshComp->GetOwner()))
 		{
 			FDamageAttributes CharacterDamageAttributes = SourceCharacter->CurrentDamageAttribute;
+			FDamageVisuals CharacterDamageVisuals = SourceCharacter->CurrentDamageVisuals;
 			
 			for (const FHitResult& HitResult : Hits)
 			{
 				if (ACS_BaseCharacter* TargetCharacter = Cast<ACS_BaseCharacter>(HitResult.GetActor()))
 				{
-					FGameplayEventData Payload;
-					Payload.Instigator = SourceCharacter;
-					Payload.Target = TargetCharacter;
-					
 					if (!SourceCharacter->ActorsHit.Contains(TargetCharacter))
 					{
+						SourceCharacter->ActorsHit.Add(TargetCharacter);
 						FVector DesiredLaunchVelocity;
 
 						if (!bOverrideKnockback)
@@ -122,14 +121,9 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 									(SourceCharacter->GetActorUpVector() * NewKnockbackForce.Z);
 						}
 
-
-						UCS_BlueprintLibrary::KnockUpActor(TargetCharacter, SourceCharacter, DesiredLaunchVelocity);
-						
-						SourceCharacter->ActorsHit.Add(TargetCharacter);
-
-
-						// Replace this with generalized damage event
-						UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::HitReact), Payload);
+						CharacterDamageAttributes.KnockBackForce = DesiredLaunchVelocity;
+						UCS_BlueprintLibrary::ApplyDamageAttributes(TargetCharacter, SourceCharacter, CharacterDamageAttributes);
+						UCS_BlueprintLibrary::ApplyDamageVisuals(TargetCharacter, SourceCharacter, CharacterDamageVisuals);
 					}
 				}
 			}

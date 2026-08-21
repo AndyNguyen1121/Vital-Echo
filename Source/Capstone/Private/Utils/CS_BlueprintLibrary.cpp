@@ -11,10 +11,12 @@
 #include "LevelSequencePlayer.h"
 #include "MovieSceneSequencePlayer.h"
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
+#include "ActorComponents/CombatSystem/CS_HitStopComponent.h"
 #include "Engine/OverlapResult.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
+#include "Interfaces/HitStopComponentInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCS_BlueprintLibrary::PlayLevelSequenceWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence,
@@ -223,5 +225,38 @@ void UCS_BlueprintLibrary::PlayContextualAnimation(
 		ContextualAnimSceneActorComponent->StartContextualAnimScene(OutBindings);
 	}
 }
+
+void UCS_BlueprintLibrary::ApplyHitStun(AActor* TargetActor, float Duration, float TimeDilation)
+{
+	if (!TargetActor->Implements<UHitStopComponentInterface>()) return;
+
+	UCS_HitStopComponent* HitStopComponent = IHitStopComponentInterface::Execute_GetHitStopComponent(TargetActor);
+
+	HitStopComponent->BeginHitStop(Duration, TimeDilation);
+}
+
+void UCS_BlueprintLibrary::ApplyDamageAttributes(ACharacter* TargetCharacter, ACharacter* SourceCharacter,
+	FDamageAttributes DamageAttributes)
+{
+	FGameplayEventData Payload;
+	Payload.Instigator = SourceCharacter;
+	Payload.Target = TargetCharacter;
+	
+	KnockUpActor(TargetCharacter, SourceCharacter, DamageAttributes.KnockBackForce);
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::HitReact), Payload);
+}
+
+void UCS_BlueprintLibrary::ApplyDamageVisuals(ACharacter* TargetCharacter, ACharacter* SourceCharacter,
+	FDamageVisuals DamageVisuals)
+{
+	ApplyHitStun(TargetCharacter, DamageVisuals.HitStunDuration, DamageVisuals.HitStunTimeDilation);
+	ApplyHitStun(SourceCharacter, DamageVisuals.HitStunDuration, DamageVisuals.HitStunTimeDilation);
+
+	if (!UGameplayStatics::GetPlayerController(TargetCharacter, 0)) return;
+
+	UGameplayStatics::GetPlayerController(TargetCharacter, 0)->ClientStartCameraShake(DamageVisuals.CameraShakeClass, DamageVisuals.CameraShakeScale);
+}
+
+
 
 
