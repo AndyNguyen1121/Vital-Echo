@@ -19,12 +19,19 @@ class CAPSTONE_API UCS_AttributeSet : public UAttributeSet
 	GENERATED_BODY()
 
 public:
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
+public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Health;
 	
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData MaxHealth;
 
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData Damage;
+
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
+	ATTRIBUTE_ACCESSORS(ThisClass, Damage);
 };

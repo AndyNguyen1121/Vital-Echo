@@ -244,6 +244,18 @@ void UCS_BlueprintLibrary::ApplyDamageAttributes(ACharacter* TargetCharacter, AC
 	
 	KnockUpActor(TargetCharacter, SourceCharacter, DamageAttributes.KnockBackForce);
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::HitReact), Payload);
+
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetCharacter);
+	if (ASC && DamageAttributes.DamageEffect)
+	{
+		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+		ContextHandle.AddInstigator(SourceCharacter, SourceCharacter);
+		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(DamageAttributes.DamageEffect, 1.f, ContextHandle);
+
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Spec, CSTags::Effects::Damage, DamageAttributes.Damage);
+		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+	}
+	
 }
 
 void UCS_BlueprintLibrary::ApplyDamageVisuals(ACharacter* TargetCharacter, ACharacter* SourceCharacter,

@@ -36,6 +36,8 @@ class CAPSTONE_API UCS_PlayerCombatState : public UCS_CombatStateBase
 	GENERATED_BODY()
 
 public:
+	UCS_PlayerCombatState();
+	
 	UPROPERTY(EditAnywhere, Category="Inputs")
 	TArray<EInputType> RequiredInputs;
 
@@ -56,12 +58,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="SetFlags")
 	FPlayerStateInfo StateInfo;
-
-	UPROPERTY(EditAnywhere)
-	FDamageAttributes DamageAttributes;
-
-	UPROPERTY(EditAnywhere)
-	FDamageVisuals DamageVisuals;
 
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;

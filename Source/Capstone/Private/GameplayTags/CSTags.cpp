@@ -29,4 +29,9 @@ namespace CSTags
 		UE_DEFINE_GAMEPLAY_TAG(Stunned, "CSTags.Status.Stunned");
 		UE_DEFINE_GAMEPLAY_TAG(Recovering, "CSTags.Status.Recovering");
 	}
+
+	namespace Effects
+	{
+		UE_DEFINE_GAMEPLAY_TAG(Damage, "CSTags.Effects.Damage");
+	}
 }

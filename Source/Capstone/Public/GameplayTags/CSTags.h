@@ -31,4 +31,9 @@ namespace CSTags
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Stunned);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Recovering);
 	}
+
+	namespace Effects
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage);
+	}
 }

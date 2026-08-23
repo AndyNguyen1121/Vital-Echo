@@ -2,6 +2,8 @@
 #include "CoreMinimal.h"
 #include "DamageAttributes.generated.h"
 
+class UGameplayEffect;
+
 USTRUCT(Blueprintable)
 struct FDamageAttributes
 {
@@ -9,6 +11,12 @@ struct FDamageAttributes
 
 	UPROPERTY(EditAnywhere)
 	FVector KnockBackForce = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, Category="Damage")
+	float Damage;
+	
+	UPROPERTY(EditAnywhere, Category="Damage")
+	TSubclassOf<UGameplayEffect> DamageEffect;
 };
 
 

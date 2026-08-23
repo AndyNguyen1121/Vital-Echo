@@ -3,6 +3,18 @@
 
 #include "DataAssets/Player/CS_PlayerCombatState.h"
 
+#include "GameplayEffect.h"
+
+UCS_PlayerCombatState::UCS_PlayerCombatState()
+{
+	ConstructorHelpers::FClassFinder<UCameraShakeBase> DefaultCameraShakeFinder(TEXT("/Game/Capstone/GameplayVisuals/CameraShakes/BP_CameraShake_Attack.BP_CameraShake_Attack_C"));
+
+	if (DefaultCameraShakeFinder.Succeeded())
+	{
+		DamageVisuals.CameraShakeClass = DefaultCameraShakeFinder.Class;
+	}
+}
+
 void UCS_PlayerCombatState::SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visited, TArray<UCS_CombatStateBase*> AnyStateTransitions)
 {
 	if (Visited.Contains(this))
