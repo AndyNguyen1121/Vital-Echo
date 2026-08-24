@@ -97,6 +97,10 @@ void ACS_PlayerCameraManager::SwitchLockOnTargets(const FVector2D ControllerInpu
 
 	if (IsValid(ClosestTarget))
 	{
+		if (ACS_PlayerCharacter* Player = Cast<ACS_PlayerCharacter>(PlayerController->GetPawn()))
+		{
+			Player->SetLockOnTarget(ClosestTarget);
+		}
 		GetCameraContainer()->SetLockOnTarget(ClosestTarget);
 	}
 

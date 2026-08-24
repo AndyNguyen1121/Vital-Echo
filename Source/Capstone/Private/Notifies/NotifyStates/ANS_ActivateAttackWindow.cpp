@@ -95,7 +95,7 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 		if (ACS_BaseCharacter* SourceCharacter = Cast<ACS_BaseCharacter>(MeshComp->GetOwner()))
 		{
 			FDamageAttributes CharacterDamageAttributes = SourceCharacter->CurrentDamageAttribute;
-			FDamageVisuals CharacterDamageVisuals = SourceCharacter->CurrentDamageVisuals;
+			FDamageFeedback CharacterDamageVisuals = SourceCharacter->CurrentDamageVisuals;
 			
 			for (const FHitResult& HitResult : Hits)
 			{
@@ -123,7 +123,7 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 
 						CharacterDamageAttributes.KnockBackForce = DesiredLaunchVelocity;
 						UCS_BlueprintLibrary::ApplyDamageAttributes(TargetCharacter, SourceCharacter, CharacterDamageAttributes);
-						UCS_BlueprintLibrary::ApplyDamageVisuals(TargetCharacter, SourceCharacter, CharacterDamageVisuals);
+						UCS_BlueprintLibrary::ApplyDamageFeedback(TargetCharacter, SourceCharacter, CharacterDamageVisuals);
 					}
 				}
 			}

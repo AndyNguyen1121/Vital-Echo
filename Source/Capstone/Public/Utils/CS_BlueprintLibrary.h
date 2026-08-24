@@ -65,5 +65,5 @@ public:
 	static void ApplyDamageAttributes(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageAttributes DamageAttributes);
 
 	UFUNCTION(BlueprintCallable)
-	static void ApplyDamageVisuals(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageVisuals DamageVisuals);
+	static void ApplyDamageFeedback(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageFeedback DamageFeedback);
 };

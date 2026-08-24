@@ -258,15 +258,17 @@ void UCS_BlueprintLibrary::ApplyDamageAttributes(ACharacter* TargetCharacter, AC
 	
 }
 
-void UCS_BlueprintLibrary::ApplyDamageVisuals(ACharacter* TargetCharacter, ACharacter* SourceCharacter,
-	FDamageVisuals DamageVisuals)
+void UCS_BlueprintLibrary::ApplyDamageFeedback(ACharacter* TargetCharacter, ACharacter* SourceCharacter,
+	FDamageFeedback DamageFeedback)
 {
-	ApplyHitStun(TargetCharacter, DamageVisuals.HitStunDuration, DamageVisuals.HitStunTimeDilation);
-	ApplyHitStun(SourceCharacter, DamageVisuals.HitStunDuration, DamageVisuals.HitStunTimeDilation);
+	ApplyHitStun(TargetCharacter, DamageFeedback.HitStunDuration, DamageFeedback.HitStunTimeDilation);
+	ApplyHitStun(SourceCharacter, DamageFeedback.HitStunDuration, DamageFeedback.HitStunTimeDilation);
 
 	if (!UGameplayStatics::GetPlayerController(TargetCharacter, 0)) return;
 
-	UGameplayStatics::GetPlayerController(TargetCharacter, 0)->ClientStartCameraShake(DamageVisuals.CameraShakeClass, DamageVisuals.CameraShakeScale);
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(TargetCharacter, 0);
+	PlayerController->ClientStartCameraShake(DamageFeedback.CameraShakeClass, DamageFeedback.CameraShakeScale);
+	PlayerController->ClientPlayForceFeedback(DamageFeedback.VibrationEffect);
 }
 
 

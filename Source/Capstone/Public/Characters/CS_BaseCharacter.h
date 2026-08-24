@@ -58,7 +58,7 @@ public:
 	FDamageAttributes CurrentDamageAttribute;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	FDamageVisuals CurrentDamageVisuals;
+	FDamageFeedback CurrentDamageVisuals;
 
 	UPROPERTY(BlueprintReadOnly)
 	float MoveAmount;

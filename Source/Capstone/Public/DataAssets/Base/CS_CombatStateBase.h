@@ -31,5 +31,5 @@ public:
 	FDamageAttributes DamageAttributes;
 
 	UPROPERTY(EditAnywhere)
-	FDamageVisuals DamageVisuals;
+	FDamageFeedback DamageFeedback;
 };

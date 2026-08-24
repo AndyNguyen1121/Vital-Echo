@@ -21,7 +21,7 @@ struct FDamageAttributes
 
 
 USTRUCT(Blueprintable)
-struct FDamageVisuals
+struct FDamageFeedback
 {
 	GENERATED_BODY()
 
@@ -36,4 +36,7 @@ struct FDamageVisuals
 
 	UPROPERTY(EditAnywhere, Category="CameraShake")
 	float CameraShakeScale = 1.f;
+
+	UPROPERTY(EditAnywhere, Category="Vibrations")
+	UForceFeedbackEffect* VibrationEffect;
 };

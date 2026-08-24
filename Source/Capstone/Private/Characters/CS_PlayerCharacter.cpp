@@ -135,6 +135,11 @@ void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVe
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("Warp"), TargetLocation);
 }
 
+void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target)
+{
+	LockOnTarget = Target;
+}
+
 
 void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {

@@ -55,6 +55,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void WarpToLockOnTarget(float MinRange, float MaxRange, FVector DistanceOffset);
 
+	UFUNCTION(BlueprintCallable)
+	void SetLockOnTarget(AActor* Target);
+
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
 

@@ -7,11 +7,18 @@
 
 UCS_PlayerCombatState::UCS_PlayerCombatState()
 {
-	ConstructorHelpers::FClassFinder<UCameraShakeBase> DefaultCameraShakeFinder(TEXT("/Game/Capstone/GameplayVisuals/CameraShakes/BP_CameraShake_Attack.BP_CameraShake_Attack_C"));
+	ConstructorHelpers::FClassFinder<UCameraShakeBase> DefaultCameraShakeFinder(TEXT("/Game/Capstone/GameplayFeel/CameraShakes/BP_CameraShake_Attack.BP_CameraShake_Attack_C"));
 
 	if (DefaultCameraShakeFinder.Succeeded())
 	{
-		DamageVisuals.CameraShakeClass = DefaultCameraShakeFinder.Class;
+		DamageFeedback.CameraShakeClass = DefaultCameraShakeFinder.Class;
+	}
+
+	ConstructorHelpers::FObjectFinder<UForceFeedbackEffect> DefaultVibrationFinder(TEXT("/Game/Capstone/GameplayFeel/ControllerVibrations/FFE_Medium.FFE_Medium"));
+
+	if (DefaultVibrationFinder.Succeeded())
+	{
+		DamageFeedback.VibrationEffect = DefaultVibrationFinder.Object;
 	}
 }
 
@@ -78,4 +85,6 @@ void UCS_PlayerCombatState::PostEditChangeProperty(struct FPropertyChangedEvent&
 	
 	bHasPauseInput = RequiredInputs.Contains(EInputType::EIT_Pause);
 	SortStates();
+
+	//if (GameplayAbility->GetName() == )
 }
