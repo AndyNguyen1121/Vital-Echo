@@ -9,7 +9,7 @@
 #include "CS_PlayerState.generated.h"
 
 class UCS_AttributeSet;
-struct FPlayerStateInfo;
+struct FCharacterStateInfo;
 
 UCLASS()
 class CAPSTONE_API ACS_PlayerState : public APlayerState, public IAbilitySystemInterface
@@ -21,14 +21,14 @@ public:
 	virtual UCS_AbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bCanMove{true};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsPerformingAction{false};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bCanRotate{true};
+	bool bCanRotate{true};*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bInputWindowOpen{false};
@@ -36,11 +36,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsLockedOn{false};
 
-	UFUNCTION(BlueprintCallable)
+	/*UFUNCTION(BlueprintCallable)
 	void ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState);
 
 	UFUNCTION(BlueprintCallable)
-	void ResetBooleansWithStateInfo(FPlayerStateInfo StateInfo, bool ResetToDefaultState);
+	void ResetBooleansWithStateInfo(FCharacterStateInfo StateInfo, bool ResetToDefaultState);*/
 
 	UFUNCTION(BlueprintPure)
 	UCS_AttributeSet* GetAttributeSet() { return AttributeSet; }

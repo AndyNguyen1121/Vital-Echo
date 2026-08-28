@@ -4,6 +4,7 @@
 #include "AbilitySystem/CS_AttributeSet.h"
 
 #include "GameplayEffectExtension.h"
+#include "Capstone/DebugMacros.h"
 
 void UCS_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
@@ -11,7 +12,16 @@ void UCS_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMod
 
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
-		SetHealth(GetHealth() - GetDamage());
+		SetHealth(FMath::Clamp(GetHealth() - GetDamage(), 0, GetMaxHealth()));
 		SetDamage(0);
+	}
+}
+
+void UCS_AttributeSet::PostAttributesInitialized()
+{
+	if (!bAttributesInitialized)
+	{
+		bAttributesInitialized = true;
+		OnAttributesInitialized.Broadcast();
 	}
 }

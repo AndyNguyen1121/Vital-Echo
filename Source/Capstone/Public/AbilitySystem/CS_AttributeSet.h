@@ -13,6 +13,8 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)\
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAttributeInitialized);
+
 UCLASS()
 class CAPSTONE_API UCS_AttributeSet : public UAttributeSet
 {
@@ -20,6 +22,8 @@ class CAPSTONE_API UCS_AttributeSet : public UAttributeSet
 
 public:
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+	void PostAttributesInitialized();
+	
 
 public:
 	UPROPERTY(BlueprintReadOnly)
@@ -34,4 +38,10 @@ public:
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, Damage);
+
+	UPROPERTY(VisibleAnywhere)
+	bool bAttributesInitialized;
+
+	UPROPERTY()
+	FAttributeInitialized OnAttributesInitialized;
 };

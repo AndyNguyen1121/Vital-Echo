@@ -22,18 +22,35 @@ namespace CSTags
 	namespace IDs
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy);
+		
+		namespace EnemyType
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Basic);
+		}
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player);
 	}
 
 	namespace Status
 	{
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Stunned);
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Recovering);
+		namespace GameplayStates
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictMove);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictRotate);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsPerformingAction);
+		}
+
+		namespace Debuffs
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Stunned);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Recovering);
+		}
 	}
 
 	namespace Effects
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage);
 	}
+
+	
 }

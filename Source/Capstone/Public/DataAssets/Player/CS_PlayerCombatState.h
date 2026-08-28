@@ -6,29 +6,13 @@
 #include "../Base/CS_CombatStateBase.h"
 #include "Engine/DataAsset.h"
 #include "Enums/InputTypes.h"
+#include "Structs/CharacterStateInfo.h"
 #include "Structs/DamageAttributes.h"
 #include "CS_PlayerCombatState.generated.h"
 
 /**
  * 
  */
-USTRUCT(Blueprintable)
-struct FPlayerStateInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	bool bIsPerformingAction = true;
-
-	UPROPERTY(EditAnywhere)
-	bool bCanMove = false;
-
-	UPROPERTY(EditAnywhere)
-	bool bCanRotate = false;
-
-	UPROPERTY(EditAnywhere)
-	float GravityScale = -1;
-};
 
 UCLASS()
 class CAPSTONE_API UCS_PlayerCombatState : public UCS_CombatStateBase
@@ -57,7 +41,7 @@ public:
 	bool Grounded;
 
 	UPROPERTY(EditAnywhere, Category="SetFlags")
-	FPlayerStateInfo StateInfo;
+	FCharacterStateInfo StateInfo;
 
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;

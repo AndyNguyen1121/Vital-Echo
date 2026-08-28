@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "DamageAttributes.generated.h"
 
 class UGameplayEffect;
@@ -17,6 +18,9 @@ struct FDamageAttributes
 	
 	UPROPERTY(EditAnywhere, Category="Damage")
 	TSubclassOf<UGameplayEffect> DamageEffect;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTagContainer IDsToIgnore;
 };
 
 

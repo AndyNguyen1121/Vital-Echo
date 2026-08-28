@@ -28,6 +28,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	UCS_EnemyStateMachineManager* GetEnemyStateMachineManager() { return EnemyStateMachineManager; }
 
+	virtual UCS_AttributeSet* GetAttributeSet() override { return AttributeSet; };
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="CustomProperties")
 	float MinRetreatDistance;

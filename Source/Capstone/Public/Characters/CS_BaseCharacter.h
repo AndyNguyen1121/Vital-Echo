@@ -13,11 +13,14 @@
 #include "Structs/WarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
+class UCS_AttributeSet;
 class UCS_HitStopComponent;
 class UCS_TokenManager;
 class UMotionWarpingComponent;
 class UAttributeSet;
 class UGameplayEffect;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FASCInitialized, UAbilitySystemComponent*, ASC, UAttributeSet*, AS);
 
 UCLASS()
 class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public ITokenInterface, public IHitStopComponentInterface
@@ -50,6 +53,13 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FVector2D GetStrafeDirection();
+
+	UFUNCTION(BlueprintPure)
+	virtual UCS_AttributeSet* GetAttributeSet() { return nullptr; };
+
+	UFUNCTION(BlueprintCallable)
+	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState);
+	
 public:
 	UPROPERTY(VisibleAnywhere)
 	TSet<AActor*> ActorsHit;
@@ -68,6 +78,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsDead{false};
+
+	UPROPERTY(BlueprintAssignable)
+	FASCInitialized OnASCInitialized;
 
 private:
 	void InitializeAttributes();

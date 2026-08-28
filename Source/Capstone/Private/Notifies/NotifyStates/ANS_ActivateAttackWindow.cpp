@@ -101,6 +101,8 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 			{
 				if (ACS_BaseCharacter* TargetCharacter = Cast<ACS_BaseCharacter>(HitResult.GetActor()))
 				{
+					if (TargetCharacter->HasAnyMatchingGameplayTags(CharacterDamageAttributes.IDsToIgnore)) continue;
+					
 					if (!SourceCharacter->ActorsHit.Contains(TargetCharacter))
 					{
 						SourceCharacter->ActorsHit.Add(TargetCharacter);

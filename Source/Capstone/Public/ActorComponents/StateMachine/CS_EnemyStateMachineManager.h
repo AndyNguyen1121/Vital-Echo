@@ -7,21 +7,20 @@
 #include "CS_EnemyStateMachineManager.generated.h"
 
 
+class ACS_EnemyCharacter;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CAPSTONE_API UCS_EnemyStateMachineManager : public UCS_StateMachineManagerBase
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
-	UCS_EnemyStateMachineManager();
-
-protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	virtual bool SwitchState(UCS_CombatStateBase* NextState) override;
+
 public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY()
+	TObjectPtr<ACS_EnemyCharacter> EnemyCharacter;
 };

@@ -45,24 +45,19 @@ ACS_PlayerCharacter::ACS_PlayerCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.f;
 	
-
-	
-
 }
 
 void ACS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	GetAbilitySystemComponent()->AddLooseGameplayTag(CSTags::IDs::Player);
-	CachedPlayerState = Cast<ACS_PlayerState>(GetPlayerState());
-	CachedPlayerController = Cast<ACS_PlayerController>(GetController());
 }
 
 void ACS_PlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (LockOnTarget.IsValid() && GetCSPlayerState()->bCanRotate)
+	if (LockOnTarget.IsValid() && !HasMatchingGameplayTag(CSTags::Status::GameplayStates::RestrictRotate))
 	{
 		FVector DirToLockOnEnemy = CachedPlayerController->GetCameraContainer()->GetLockOnActor()->GetActorLocation() - GetActorLocation();
 		DirToLockOnEnemy.Z = 0;
@@ -99,6 +94,9 @@ void ACS_PlayerCharacter::PossessedBy(AController* NewController)
 	if (!GetAbilitySystemComponent()) return;
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
+
+	CachedPlayerState = Cast<ACS_PlayerState>(GetPlayerState());
+	CachedPlayerController = Cast<ACS_PlayerController>(NewController);
 }
 
 #pragma region Lock On
@@ -138,6 +136,24 @@ void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVe
 void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target)
 {
 	LockOnTarget = Target;
+}
+
+UCS_AttributeSet* ACS_PlayerCharacter::GetAttributeSet()
+{
+	if (!GetCSPlayerState()) return nullptr;
+	
+	return GetCSPlayerState()->GetAttributeSet();
+}
+
+void ACS_PlayerCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate,
+	bool ResetToDefaultState)
+{
+	Super::SetGameplayState(CanMove, IsPerformingAction, CanRotate, ResetToDefaultState);
+
+	if (ResetToDefaultState && PlayerStateMachineManager)
+	{
+		PlayerStateMachineManager->ResetToDefaultState();
+	}
 }
 
 

@@ -26,7 +26,6 @@ protected:
 	virtual void RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList) override;
 
 protected:
-
 	UPROPERTY()
 	TObjectPtr<ACS_PlayerCharacter> PlayerCharacter;
 

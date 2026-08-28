@@ -66,4 +66,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void ApplyDamageFeedback(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageFeedback DamageFeedback);
+
+	UFUNCTION(BlueprintCallable)
+	static void SetLooseGameplayTagAsBool(AActor* Actor, FGameplayTag GameplayTag, bool Active);
 };

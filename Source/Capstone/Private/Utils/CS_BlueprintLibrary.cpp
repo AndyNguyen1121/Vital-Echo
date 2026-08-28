@@ -271,6 +271,20 @@ void UCS_BlueprintLibrary::ApplyDamageFeedback(ACharacter* TargetCharacter, ACha
 	PlayerController->ClientPlayForceFeedback(DamageFeedback.VibrationEffect);
 }
 
+void UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(AActor* Actor, FGameplayTag GameplayTag, bool Active)
+{
+	if (!IsValid(Actor)) return;
+
+	if (Active)
+	{
+		SetLooseGameplayTagsCount(Actor, GameplayTag, 1);
+	}
+	else 
+	{
+		UAbilitySystemBlueprintLibrary::RemoveLooseGameplayTags(Actor, FGameplayTagContainer(GameplayTag));
+	}
+}
+
 
 
 

@@ -21,6 +21,7 @@ UCS_AbilitySystemComponent* ACS_PlayerState::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+/*
 void ACS_PlayerState::ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState)
 {
 	bCanMove = CanMove;
@@ -36,7 +37,7 @@ void ACS_PlayerState::ResetBooleans(bool CanMove, bool IsPerformingAction, bool 
 	}
 }
 
-void ACS_PlayerState::ResetBooleansWithStateInfo(FPlayerStateInfo StateInfo, bool ResetToDefaultState)
+void ACS_PlayerState::ResetBooleansWithStateInfo(FCharacterStateInfo StateInfo, bool ResetToDefaultState)
 {
 	bCanMove = StateInfo.bCanMove;
 	bIsPerformingAction =  StateInfo.bIsPerformingAction;
@@ -50,3 +51,4 @@ void ACS_PlayerState::ResetBooleansWithStateInfo(FPlayerStateInfo StateInfo, boo
 		PlayerCharacter->GetStateMachineManager()->ResetToDefaultState();
 	}
 }
+*/

@@ -12,6 +12,7 @@
 #include "DataAssets/Base/CS_CombatProfile.h"
 #include "DataAssets/Player/CS_PlayerCombatProfile.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayTags/CSTags.h"
 #include "Player/CS_PlayerController.h"
 #include "Player/CS_PlayerState.h"
 
@@ -63,7 +64,7 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	{
 		PlayerCharacter->CurrentDamageAttribute = CombatState->DamageAttributes;
 		PlayerCharacter->CurrentDamageVisuals = CombatState->DamageFeedback;
-		PlayerCharacter->GetCSPlayerState()->ResetBooleansWithStateInfo(CombatState->StateInfo, false);
+		PlayerCharacter->SetGameplayState(CombatState->StateInfo.bCanMove, CombatState->StateInfo.bIsPerformingAction, CombatState->StateInfo.bCanRotate, false);
 
 		if (CombatState->StateInfo.GravityScale > -1)
 		{
@@ -146,7 +147,7 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 	UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State);
 	if (!CombatState) return false;
 	
-	if (PlayerCharacter->GetCSPlayerState()->bIsPerformingAction && !PlayerCharacter->GetCSPlayerState()->bInputWindowOpen)
+	if (PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction) && !PlayerCharacter->GetCSPlayerState()->bInputWindowOpen)
 	{
 		return false;
 	}

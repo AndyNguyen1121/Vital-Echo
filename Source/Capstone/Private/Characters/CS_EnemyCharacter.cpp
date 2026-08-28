@@ -10,6 +10,7 @@
 #include "GameplayTags/CSTags.h"
 #include "MotionWarpingComponent.h"
 #include "ActorComponents/StateMachine/CS_EnemyStateMachineManager.h"
+#include "Utils/CS_BlueprintLibrary.h"
 
 
 // Sets default values
@@ -42,6 +43,7 @@ void ACS_EnemyCharacter::Tick(float DeltaSeconds)
 			*Target->GetLocation().ToString());
 	}
 }
+
 
 void ACS_EnemyCharacter::UpdateMoveAmount()
 {

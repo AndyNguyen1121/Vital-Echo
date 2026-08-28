@@ -58,6 +58,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetLockOnTarget(AActor* Target);
 
+	virtual UCS_AttributeSet* GetAttributeSet() override;
+
+	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState) override;
+	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
 

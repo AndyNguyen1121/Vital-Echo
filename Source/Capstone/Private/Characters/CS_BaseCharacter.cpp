@@ -9,6 +9,8 @@
 #include "ActorComponents/TokenManager/CS_TokenManager.h"
 #include "Capstone/Public/Player/CS_PlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayTags/CSTags.h"
+#include "Utils/CS_BlueprintLibrary.h"
 
 
 // Sets default values
@@ -74,5 +76,15 @@ void ACS_BaseCharacter::InitializeAttributes()
 	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
 	FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(AttributeInitializationEffect, 1.f, ContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
+	
+	if (GetAttributeSet())
+		GetAttributeSet()->PostAttributesInitialized();
 }
 
+void ACS_BaseCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState)
+{
+	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::RestrictMove, !CanMove);
+	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::IsPerformingAction, IsPerformingAction);
+	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::RestrictRotate, !CanRotate);
+}

@@ -12,6 +12,7 @@
 #include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/Player/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
+#include "GameplayTags/CSTags.h"
 #include "Player/CS_PlayerState.h"
 #include "Structs/BufferedInput.h"
 
@@ -52,16 +53,19 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 	FVector2D MovementValue = Value.Get<FVector2D>();
 	PlayerInputDirection = MovementValue;
 	ClampInputDirection(MovementValue, Deadzone);
+	
+	ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(GetCharacter());
+	if (!IsValid(PlayerCharacter)) return;
 
 	// MoveAmount drives character animation, so it must be reset
-	if (!CachedPlayerState->bCanMove)
+	if (PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::RestrictMove) ||
+		PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::Debuffs::Stunned) ||
+		PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::Debuffs::KnockedUp) ||
+		PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::Debuffs::Recovering))
 	{
 		MoveAmount = 0;
 		return;
 	}
-	
-	ACharacter* CachedCharacter = GetCharacter();
-	if (!IsValid(CachedCharacter)) return;
 	
 	SetMoveAmount();
 	FRotator YawRotation(0, PlayerCameraManager->GetCameraRotation().Yaw, 0);
