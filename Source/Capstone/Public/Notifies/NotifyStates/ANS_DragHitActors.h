@@ -27,10 +27,9 @@ public:
 	FVector EndLaunchVelocity;
 
 	UPROPERTY(EditAnywhere)
+	bool bUseSourceActorRotation{false};
+
+	UPROPERTY(EditAnywhere)
 	FVector MovementMultiplier = FVector::OneVector;
-
-private:
-
-	UPROPERTY()
-	TWeakObjectPtr<ACS_BaseCharacter> CachedCharacter;
+	
 };

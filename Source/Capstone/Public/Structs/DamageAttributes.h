@@ -5,26 +5,26 @@
 
 class UGameplayEffect;
 
-USTRUCT(Blueprintable)
+USTRUCT(Blueprintable, BlueprintType)
 struct FDamageAttributes
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector KnockBackForce = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, Category="Damage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	float Damage;
 	
-	UPROPERTY(EditAnywhere, Category="Damage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTagContainer IDsToIgnore;
 };
 
 
-USTRUCT(Blueprintable)
+USTRUCT(Blueprintable, BlueprintType)
 struct FDamageFeedback
 {
 	GENERATED_BODY()

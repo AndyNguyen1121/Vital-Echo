@@ -162,7 +162,7 @@ void UCS_BlueprintLibrary::SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag
 	ASC->SetLooseGameplayTagCount(Tag, Count);
 }
 
-void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity)
+void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity, bool UseSourceRotation)
 {
 	if (!IsValid(TargetActor) || !IsValid(SourceActor)) return;
 	if (Velocity.IsNearlyZero()) return;
@@ -174,6 +174,25 @@ void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor
 	Payload.Instigator = SourceActor;
 	Payload.Target = TargetActor;
 
+	FVector DirectionToInstigator = SourceActor->GetActorLocation() - TargetActor->GetActorLocation();
+	DirectionToInstigator.Z = 0;
+	DirectionToInstigator.Normalize();
+	
+	FVector DesiredVelocity;
+
+	if (UseSourceRotation)
+	{
+		DesiredVelocity = SourceActor->GetActorForwardVector() * Velocity.X;
+		DesiredVelocity += SourceActor->GetActorRightVector() * Velocity.Y;
+		DesiredVelocity += SourceActor->GetActorUpVector() * Velocity.Z;
+	}
+	else
+	{
+		DesiredVelocity = DirectionToInstigator * Velocity.X;
+		DesiredVelocity += (FVector::CrossProduct(FVector::UpVector, DirectionToInstigator) * Velocity.Y);
+		DesiredVelocity.Z = Velocity.Z;
+	}
+	
 	if (Velocity.Z > 0)
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::KnockedUp), Payload);
@@ -181,7 +200,7 @@ void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor
 
 	TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 	TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
-	TargetCharacter->GetCharacterMovement()->AddImpulse(Velocity, true);
+	TargetCharacter->GetCharacterMovement()->AddImpulse(DesiredVelocity, true);
 }
 
 AActor* UCS_BlueprintLibrary::GetClosestActorToLocation(const TArray<AActor*> Actors, FVector Location)
@@ -235,21 +254,16 @@ void UCS_BlueprintLibrary::ApplyHitStun(AActor* TargetActor, float Duration, flo
 	HitStopComponent->BeginHitStop(Duration, TimeDilation);
 }
 
-void UCS_BlueprintLibrary::ApplyDamageAttributes(ACharacter* TargetCharacter, ACharacter* SourceCharacter,
-	FDamageAttributes DamageAttributes)
+void UCS_BlueprintLibrary::ApplyDamageAttributes(AActor* TargetActor, AActor* SourceActor,
+                                                 FDamageAttributes DamageAttributes, bool UseSourceActorRotationForKnockback)
 {
-	FGameplayEventData Payload;
-	Payload.Instigator = SourceCharacter;
-	Payload.Target = TargetCharacter;
-	
-	KnockUpActor(TargetCharacter, SourceCharacter, DamageAttributes.KnockBackForce);
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetCharacter, FGameplayTag(CSTags::Events::HitReact), Payload);
+	KnockUpActor(TargetActor, SourceActor, DamageAttributes.KnockBackForce, UseSourceActorRotationForKnockback);
 
-	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetCharacter);
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if (ASC && DamageAttributes.DamageEffect)
 	{
 		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
-		ContextHandle.AddInstigator(SourceCharacter, SourceCharacter);
+		ContextHandle.AddInstigator(SourceActor, SourceActor);
 		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(DamageAttributes.DamageEffect, 1.f, ContextHandle);
 
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Spec, CSTags::Effects::Damage, DamageAttributes.Damage);

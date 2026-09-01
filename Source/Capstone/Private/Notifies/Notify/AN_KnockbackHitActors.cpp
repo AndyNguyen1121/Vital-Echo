@@ -30,12 +30,7 @@ void UAN_KnockbackHitActors::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 			Payload.Instigator = PlayerCharacter;
 			Payload.Target = TargetActor;
 
-			FVector DesiredLaunchVelocity =
-				(PlayerCharacter->GetActorForwardVector() * KnockbackForce.X) +
-					(PlayerCharacter->GetActorRightVector() * KnockbackForce.Y) +
-						(PlayerCharacter->GetActorUpVector() * KnockbackForce.Z);
-
-			UCS_BlueprintLibrary::KnockUpActor(TargetActor, PlayerCharacter, DesiredLaunchVelocity);
+			UCS_BlueprintLibrary::KnockUpActor(TargetActor, PlayerCharacter, KnockbackForce, bUseSourceActorRotation);
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::HitReact), Payload);
 		}
 	}

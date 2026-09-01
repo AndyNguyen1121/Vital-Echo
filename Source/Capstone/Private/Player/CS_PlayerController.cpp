@@ -3,6 +3,7 @@
 
 #include "Capstone/Public/Player/CS_PlayerController.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CS_CameraActor.h"
@@ -46,6 +47,8 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOn);
 	EnhancedInputComponent->BindAction(ChangeLockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOnChange);
 	EnhancedInputComponent->BindAction(Jump, ETriggerEvent::Started, this, &ACS_PlayerController::JumpInput);
+	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Triggered, this, &ACS_PlayerController::OnBlock);
+	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Completed, this, &ACS_PlayerController::OnBlockEnd);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -106,6 +109,25 @@ void ACS_PlayerController::LockOnChange(const FInputActionValue& Value)
 	{
 		GetCSPlayerCameraManager()->SwitchLockOnTargets(Value.Get<FVector2D>(), GetCSPlayerCharacter());
 	}
+}
+
+void ACS_PlayerController::OnBlock()
+{
+	if (!GetCSPlayerState()) return;
+
+	InputBuffer.Add(FBufferedInput(EInputType::EIT_Block));
+	GetCSPlayerState()->bIsBlocking = true;
+}
+
+void ACS_PlayerController::OnBlockEnd()
+{
+	if (!GetCSPlayerState()) return;
+
+	GetCSPlayerState()->bIsBlocking = false;
+
+	FGameplayEventData Payload;
+	Payload.Instigator = GetCharacter();
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetCharacter(), CSTags::Events::Player::EndBlock, Payload);
 }
 
 void ACS_PlayerController::JumpInput()

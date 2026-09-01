@@ -70,6 +70,9 @@ public:
 	UPROPERTY(EditAnywhere, meta=(EditCondition = "bOverrideKnockback == true"))
 	FVector NewKnockbackForce;
 
+	UPROPERTY(EditAnywhere, meta=(EditCondition = "bOverrideKnockback == true"))
+	bool bUseSourceActorRotation{false};
+
 	UPROPERTY(EditAnywhere)
 	bool bShowDebugInPreview = true;
 	

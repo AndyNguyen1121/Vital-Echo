@@ -14,9 +14,16 @@ namespace CSTags
 
 	namespace Events
 	{
+		namespace Player
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(EndBlock);
+		}
+		
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TraceAttack);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(HitReact);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryActivate);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryReceive);
 	}
 
 	namespace IDs
@@ -34,6 +41,11 @@ namespace CSTags
 	{
 		namespace GameplayStates
 		{
+			namespace PlayerStates
+			{
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryWindowActive);
+			}
+			
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictMove);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictRotate);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsPerformingAction);

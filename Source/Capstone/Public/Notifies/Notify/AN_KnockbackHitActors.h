@@ -19,4 +19,7 @@ class CAPSTONE_API UAN_KnockbackHitActors : public UAnimNotify
 public:
 	UPROPERTY(EditAnywhere)
 	FVector KnockbackForce;
+
+	UPROPERTY(EditAnywhere)
+	bool bUseSourceActorRotation{false};
 };

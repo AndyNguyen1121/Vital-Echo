@@ -21,9 +21,7 @@ void UANS_DragHitActors::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 
 	ACS_BaseCharacter* Character = Cast<ACS_BaseCharacter>(MeshComp->GetOwner());
 	if (!IsValid(Character)) return;
-
-	CachedCharacter = Character;
-
+	
 	UAnimInstance* AnimInstance = MeshComp->GetAnimInstance();
 	if (!AnimInstance) return;
 	
@@ -36,7 +34,6 @@ void UANS_DragHitActors::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 		{
 			for (AActor* Actor : WeakCharacter->ActorsHit)
 			{
-				DEBUG_ERR("BITCH")
 				if (ACharacter* EnemyCharacter = Cast<ACharacter>(Actor))
 				{
 					EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
@@ -88,13 +85,7 @@ void UANS_DragHitActors::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 	{
 		if (ACS_BaseCharacter* EnemyCharacter = Cast<ACS_BaseCharacter>(Actor))
 		{
-			FVector DesiredLaunchVelocity =
-				(Character->GetActorForwardVector() * EndLaunchVelocity.X) +
-					(Character->GetActorRightVector() * EndLaunchVelocity.Y) +
-						(Character->GetActorUpVector() * EndLaunchVelocity.Z);
-
-			UCS_BlueprintLibrary::KnockUpActor(EnemyCharacter, Character, DesiredLaunchVelocity);
-			
+			UCS_BlueprintLibrary::KnockUpActor(EnemyCharacter, Character, EndLaunchVelocity, bUseSourceActorRotation);
 			EnemyCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 		}
 	}

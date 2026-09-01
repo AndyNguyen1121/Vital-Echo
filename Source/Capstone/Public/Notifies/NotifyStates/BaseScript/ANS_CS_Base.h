@@ -15,5 +15,5 @@ class CAPSTONE_API UANS_CS_Base : public UAnimNotifyState
 	GENERATED_BODY()
 
 protected:
-	void BindMontageEnd(UObject* InUserObject, UAnimInstance* AnimInstance, UAnimMontage* Montage, TFunction<void(UAnimMontage*, bool)> Callback);
+	virtual void BindMontageEnd(UObject* InUserObject, UAnimInstance* AnimInstance, UAnimMontage* Montage, TFunction<void(UAnimMontage*, bool)> Callback);
 };

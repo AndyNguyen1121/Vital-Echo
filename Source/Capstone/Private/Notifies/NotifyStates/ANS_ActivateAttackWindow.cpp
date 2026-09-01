@@ -106,25 +106,10 @@ if (World && (bDebug || (World->WorldType == EWorldType::EditorPreview && bShowD
 					if (!SourceCharacter->ActorsHit.Contains(TargetCharacter))
 					{
 						SourceCharacter->ActorsHit.Add(TargetCharacter);
-						FVector DesiredLaunchVelocity;
-
-						if (!bOverrideKnockback)
-						{
-							DesiredLaunchVelocity =
-							(SourceCharacter->GetActorForwardVector() * CharacterDamageAttributes.KnockBackForce.X) +
-								(SourceCharacter->GetActorRightVector() * CharacterDamageAttributes.KnockBackForce.Y) +
-									(SourceCharacter->GetActorUpVector() * CharacterDamageAttributes.KnockBackForce.Z);
-						}
-						else
-						{
-							DesiredLaunchVelocity =
-							(SourceCharacter->GetActorForwardVector() * NewKnockbackForce.X) +
-								(SourceCharacter->GetActorRightVector() * NewKnockbackForce.Y) +
-									(SourceCharacter->GetActorUpVector() * NewKnockbackForce.Z);
-						}
+						FVector DesiredLaunchVelocity = bOverrideKnockback ? NewKnockbackForce : CharacterDamageAttributes.KnockBackForce;
 
 						CharacterDamageAttributes.KnockBackForce = DesiredLaunchVelocity;
-						UCS_BlueprintLibrary::ApplyDamageAttributes(TargetCharacter, SourceCharacter, CharacterDamageAttributes);
+						UCS_BlueprintLibrary::ApplyDamageAttributes(TargetCharacter, SourceCharacter, CharacterDamageAttributes, bUseSourceActorRotation);
 						UCS_BlueprintLibrary::ApplyDamageFeedback(TargetCharacter, SourceCharacter, CharacterDamageVisuals);
 					}
 				}

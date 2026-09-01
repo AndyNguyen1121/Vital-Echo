@@ -50,7 +50,7 @@ public:
 	static void SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag Tag, int32 Count = 1);
 
 	UFUNCTION(BlueprintCallable)
-	static void KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity);
+	static void KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity, bool UseSourceRotation);
 
 	UFUNCTION(BlueprintPure)
 	static AActor* GetClosestActorToLocation(const TArray<AActor*> Actors, FVector Location);
@@ -62,7 +62,7 @@ public:
 	static void ApplyHitStun(AActor* TargetActor, float Duration, float TimeDilation);
 
 	UFUNCTION(BlueprintCallable)
-	static void ApplyDamageAttributes(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageAttributes DamageAttributes);
+	static void ApplyDamageAttributes(AActor* TargetActor, AActor* SourceActor, FDamageAttributes DamageAttributes, bool UseSourceActorRotationForKnockback = false);
 
 	UFUNCTION(BlueprintCallable)
 	static void ApplyDamageFeedback(ACharacter* TargetCharacter, ACharacter* SourceCharacter, FDamageFeedback DamageFeedback);

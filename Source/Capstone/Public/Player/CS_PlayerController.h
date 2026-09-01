@@ -79,6 +79,9 @@ private:
 	void Look(const FInputActionValue& Value);
 	void LockOn();
 	void LockOnChange(const FInputActionValue& Value);
+	void OnBlock();
+	void OnBlockEnd();
+	
 	void JumpInput();
 	
 	void ClampInputDirection(FVector2D InputDirection, float InputDeadzone);
@@ -131,6 +134,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TObjectPtr<UInputAction> Jump;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> BlockAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	float LookSensitivity{0.5f};
