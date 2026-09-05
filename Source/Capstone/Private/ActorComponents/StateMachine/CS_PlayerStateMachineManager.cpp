@@ -15,6 +15,8 @@
 #include "GameplayTags/CSTags.h"
 #include "Player/CS_PlayerController.h"
 #include "Player/CS_PlayerState.h"
+#include "Utils/CS_BlueprintLibrary.h"
+#include "Weapons/CS_WeaponBase.h"
 
 
 // Sets default values for this component's properties
@@ -31,6 +33,8 @@ void UCS_PlayerStateMachineManager::BeginPlay()
 {
 	PlayerCharacter = Cast<ACS_PlayerCharacter>(GetOwner());
 	if (!IsValid(PlayerCharacter)) return;
+	PlayerCharacter->OnWeaponEquipped.AddDynamic(this, &ThisClass::UCS_PlayerStateMachineManager::ChangePlayerWeaponCombatProfile);
+	
 	Super::BeginPlay();
 }
 
@@ -117,6 +121,32 @@ void UCS_PlayerStateMachineManager::RetrieveStates(UCS_CombatStateBase* State, T
 }
 
 
+void UCS_PlayerStateMachineManager::SwitchCombatProfile(UCS_CombatProfile* NewCombatProfile,
+	TSet<UCS_CombatStateBase*>& StateList)
+{
+	RemoveStartupAbilities();
+	CombatStateList.Empty();
+	CurrentStateTransitionSet.Empty();
+
+	if (!NewCombatProfile) return;
+	
+	CombatProfile = DuplicateObject<UCS_CombatProfile>(NewCombatProfile, this,  FName(*(NewCombatProfile->GetName() + TEXT("_Copy"))));
+	
+	if (UCS_PlayerCombatProfile* PlayerCombatProfile = Cast<UCS_PlayerCombatProfile>(CombatProfile))
+	{
+		PlayerCombatProfile->SortStates();
+	}
+	
+	RetrieveStates(CombatProfile, CombatStateList);
+
+	if (CombatProfile)
+	{
+		GiveStartupAbilities(CombatProfile);
+	}
+	
+	SwitchState(CombatProfile);
+}
+
 void UCS_PlayerStateMachineManager::CheckForStateTransitions()
 {
 	if (CurrentStateTransitionSet.Num() == 0) return;
@@ -129,7 +159,7 @@ void UCS_PlayerStateMachineManager::CheckForStateTransitions()
 		if (!CheckIfCanTransitionState(State) || !SwitchState(State)) continue;
 
 		// On successful state switch
-		PlayerCharacter->GetCSPlayerState()->bInputWindowOpen = false;
+		UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(PlayerCharacter, CSTags::Status::GameplayStates::PlayerStates::InputWindowActive, false);
 
 		if (UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State))
 		{
@@ -147,7 +177,7 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 	UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State);
 	if (!CombatState) return false;
 	
-	if (PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction) && !PlayerCharacter->GetCSPlayerState()->bInputWindowOpen)
+	if (PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction) && !PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::InputWindowActive))
 	{
 		return false;
 	}
@@ -169,5 +199,10 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 	}
 	
 	return true;
+}
+
+void UCS_PlayerStateMachineManager::ChangePlayerWeaponCombatProfile(ACS_WeaponBase* NewWeapon)
+{
+	SwitchCombatProfile(NewWeapon->CombatProfile, CombatStateList);
 }
 

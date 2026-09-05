@@ -19,15 +19,17 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<UCS_CombatStateBase*> AnyStateTransitions;
 
-	UPROPERTY(VisibleInstanceOnly)
+	UPROPERTY()
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;
+
+	void SortStates();
 
 private:
 	void SortByInput();
 
 	void SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visited);
 
-	UFUNCTION(CallInEditor)
-	void SortStates();
+	//UFUNCTION(CallInEditor)
+	
 	
 };

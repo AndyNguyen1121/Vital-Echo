@@ -8,8 +8,8 @@
 UCS_TagChangeTask* UCS_TagChangeTask::ListenForTagChange(UAbilitySystemComponent* AbilitySystemComponent,
                                                          FGameplayTag Tag)
 {
-	UCS_TagChangeTask* WaitForTagChangeTask = NewObject<UCS_TagChangeTask>();
-	AbilitySystemComponent->RegisterGameplayTagEvent(Tag, EGameplayTagEventType::NewOrRemoved).AddUObject(WaitForTagChangeTask, &UCS_TagChangeTask::AttributeChanged);
+	UCS_TagChangeTask* WaitForTagChangeTask = NewObject<UCS_TagChangeTask>(AbilitySystemComponent);
+	AbilitySystemComponent->RegisterGameplayTagEvent(Tag, EGameplayTagEventType::AnyCountChange).AddUObject(WaitForTagChangeTask, &UCS_TagChangeTask::AttributeChanged);
 	WaitForTagChangeTask->ASC = AbilitySystemComponent;
 	WaitForTagChangeTask->TagToListenFor = Tag;
 	
@@ -25,7 +25,7 @@ void UCS_TagChangeTask::EndTask()
 {
 	if (ASC.IsValid())
 	{
-		ASC->RegisterGameplayTagEvent(TagToListenFor, EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+		ASC->RegisterGameplayTagEvent(TagToListenFor, EGameplayTagEventType::AnyCountChange).RemoveAll(this);
 	}
 
 	SetReadyToDestroy();

@@ -13,6 +13,7 @@
 #include "Structs/WarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
+class ACS_WeaponBase;
 class UCS_AttributeSet;
 class UCS_HitStopComponent;
 class UCS_TokenManager;
@@ -21,6 +22,8 @@ class UAttributeSet;
 class UGameplayEffect;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FASCInitialized, UAbilitySystemComponent*, ASC, UAttributeSet*, AS);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponEquipped, ACS_WeaponBase*, NewWeapon);
+
 
 UCLASS()
 class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public ITokenInterface, public IHitStopComponentInterface
@@ -44,6 +47,9 @@ public:
 	virtual UCS_TokenManager* GetTokenManager_Implementation() override  { return TokenManager; }
 
 	UFUNCTION(BlueprintPure)
+	virtual ACS_WeaponBase* GetCurrentEquippedWeapon() { return CurrentEquippedWeapon.Get(); }
+
+	UFUNCTION(BlueprintPure)
 	float GetInitialGravityScale() const { return InitialGravityScale; }
 
 	UFUNCTION(BlueprintCallable)
@@ -59,6 +65,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void EquipWeapon(ACS_WeaponBase* NewWeapon);
+	
 	
 public:
 	UPROPERTY(VisibleAnywhere)
@@ -81,6 +91,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FASCInitialized OnASCInitialized;
+
+	UPROPERTY(BlueprintAssignable)
+	FWeaponEquipped OnWeaponEquipped;
 
 private:
 	void InitializeAttributes();
@@ -105,4 +118,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_HitStopComponent> HitStopComponent;
+	
+	UPROPERTY()
+	TWeakObjectPtr<ACS_WeaponBase> CurrentEquippedWeapon;
 };

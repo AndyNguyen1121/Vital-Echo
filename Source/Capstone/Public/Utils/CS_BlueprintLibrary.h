@@ -47,7 +47,7 @@ public:
 	static EHitDirection GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator);
 
 	UFUNCTION(BlueprintCallable)
-	static void SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag Tag, int32 Count = 1);
+	static void SetLooseGameplayTagsCount(AActor* Actor, FGameplayTagContainer Tags, int32 Count = 1);
 
 	UFUNCTION(BlueprintCallable)
 	static void KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity, bool UseSourceRotation);

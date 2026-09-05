@@ -43,6 +43,7 @@ namespace CSTags
 			namespace PlayerStates
 			{
 				UE_DEFINE_GAMEPLAY_TAG(ParryWindowActive, "CSTags.Status.GameplayStates.PlayerStates.ParryWindowActive");
+				UE_DEFINE_GAMEPLAY_TAG(InputWindowActive, "CSTags.Status.GameplayStates.PlayerStates.InputWindowActive");
 			}
 			
 			UE_DEFINE_GAMEPLAY_TAG(RestrictMove, "CSTags.Status.GameplayStates.RestrictMove");

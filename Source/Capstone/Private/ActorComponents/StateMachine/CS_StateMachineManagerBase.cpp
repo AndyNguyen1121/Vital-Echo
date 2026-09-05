@@ -25,16 +25,7 @@ UCS_StateMachineManagerBase::UCS_StateMachineManagerBase()
 void UCS_StateMachineManagerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!CombatProfile) return;
-	
-	RetrieveStates(CombatProfile, CombatStateList);
-
-	if (CombatProfile)
-	{
-		GiveStartupAbilities(CombatProfile);
-	}
-	
-	SwitchState(CombatProfile);
+	SwitchCombatProfile(CombatProfile, CombatStateList);
 }
 
 bool UCS_StateMachineManagerBase::SwitchState(UCS_CombatStateBase* NextState)
@@ -78,6 +69,34 @@ void UCS_StateMachineManagerBase::GiveStartupAbilities(UCS_CombatProfile* Defaul
 		
 		ASC->GiveAbility(Ability);
 	}
+}
+
+void UCS_StateMachineManagerBase::RemoveStartupAbilities()
+{
+	if (!IsValid(GetOwner())) return;
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
+	if (!ASC) return;
+
+	ASC->ClearAllAbilities();
+}
+
+void UCS_StateMachineManagerBase::SwitchCombatProfile(UCS_CombatProfile* NewCombatProfile, TSet<UCS_CombatStateBase*>& StateList)
+{
+	RemoveStartupAbilities();
+	CombatStateList.Empty();
+	CurrentStateTransitionSet.Empty();
+
+	if (!NewCombatProfile) return;
+	
+	CombatProfile = NewCombatProfile;
+	RetrieveStates(NewCombatProfile, CombatStateList);
+
+	if (NewCombatProfile)
+	{
+		GiveStartupAbilities(NewCombatProfile);
+	}
+	
+	SwitchState(NewCombatProfile);
 }
 
 

@@ -43,7 +43,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="SetFlags")
 	FCharacterStateInfo StateInfo;
 
-	UPROPERTY(VisibleInstanceOnly)
+	UPROPERTY()
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;
 
 	TArray<UCS_CombatStateBase*> CachedAnyStateTransitions;

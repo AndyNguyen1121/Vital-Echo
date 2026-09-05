@@ -154,12 +154,15 @@ EHitDirection UCS_BlueprintLibrary::GetHitDirection(const FVector& TargetForward
 	return EHitDirection::Forward;
 }
 
-void UCS_BlueprintLibrary::SetLooseGameplayTagsCount(AActor* Actor, FGameplayTag Tag, int32 Count)
+void UCS_BlueprintLibrary::SetLooseGameplayTagsCount(AActor* Actor, FGameplayTagContainer Tags, int32 Count)
 {
 	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor);
 	if (!ASC) return;
-
-	ASC->SetLooseGameplayTagCount(Tag, Count);
+	
+	for (const FGameplayTag& Tag : Tags)
+	{
+		ASC->SetLooseGameplayTagCount(Tag, Count);
+	}
 }
 
 void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor, FVector Velocity, bool UseSourceRotation)
@@ -291,7 +294,7 @@ void UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(AActor* Actor, FGameplayTag
 
 	if (Active)
 	{
-		SetLooseGameplayTagsCount(Actor, GameplayTag, 1);
+		SetLooseGameplayTagsCount(Actor, FGameplayTagContainer(GameplayTag), 1);
 	}
 	else 
 	{

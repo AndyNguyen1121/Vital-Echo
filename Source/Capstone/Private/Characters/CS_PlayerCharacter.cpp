@@ -21,6 +21,8 @@
 #include "Player/CS_PlayerController.h"
 #include "ActorComponents/StateMachine/CS_PlayerStateMachineManager.h"
 #include "ActorComponents/TokenManager/CS_TokenManager.h"
+#include "Tasks/CS_TagChangeTask.h"
+#include "Weapons/CS_WeaponBase.h"
 
 
 // Sets default values
@@ -51,6 +53,29 @@ void ACS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	GetAbilitySystemComponent()->AddLooseGameplayTag(CSTags::IDs::Player);
+
+	// Listen for IsPerformingAction
+	PerformingActionTask = UCS_TagChangeTask::ListenForTagChange(
+		GetAbilitySystemComponent(),
+		CSTags::Status::GameplayStates::IsPerformingAction
+	);
+
+	PerformingActionTask->OnTagChanged.AddDynamic(
+		this,
+		&ThisClass::ACS_PlayerCharacter::CheckIfActionStopped
+	);
+
+	InputWindowTask = UCS_TagChangeTask::ListenForTagChange(
+		GetAbilitySystemComponent(),
+		CSTags::Status::GameplayStates::PlayerStates::InputWindowActive
+	);
+
+	InputWindowTask->OnTagChanged.AddDynamic(
+		this,
+		&ThisClass::ACS_PlayerCharacter::CheckIfActionStopped
+	);
+
+	OnActionStopped.AddDynamic(this, &ThisClass::CheckWeaponSwitchRequest);
 }
 
 void ACS_PlayerCharacter::Tick(float DeltaSeconds)
@@ -156,7 +181,6 @@ void ACS_PlayerCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction
 	}
 }
 
-
 void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
@@ -171,6 +195,43 @@ void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, 
 		GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
 	}
 }
+
+void ACS_PlayerCharacter::CheckIfActionStopped(FGameplayTag Tag, int32 NewCount)
+{
+	if ((Tag == CSTags::Status::GameplayStates::IsPerformingAction && NewCount == 0)
+		|| (Tag == CSTags::Status::GameplayStates::PlayerStates::InputWindowActive && NewCount == 1))
+	{
+		OnActionStopped.Broadcast();
+	}
+}
+
+void ACS_PlayerCharacter::SendWeaponSwitchRequest(ACS_WeaponBase* Weapon)
+{
+	RequestedWeapon = Weapon;
+	CheckWeaponSwitchRequest();
+}
+
+
+void ACS_PlayerCharacter::CheckWeaponSwitchRequest()
+{
+	if (HasMatchingGameplayTag(CSTags::Status::Debuffs::Stunned))
+	{
+		return;
+	}
+	
+	if (HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction) &&
+		!HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::InputWindowActive))
+	{
+		return;
+	}
+	
+	if (RequestedWeapon.IsValid())
+	{
+		EquipWeapon(RequestedWeapon.Get());
+		RequestedWeapon = nullptr;
+	}
+}
+
 #pragma endregion 
 
 

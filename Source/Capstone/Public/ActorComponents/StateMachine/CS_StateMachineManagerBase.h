@@ -35,6 +35,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList);
 	virtual void GiveStartupAbilities(UCS_CombatProfile* DefaultState);
+	void RemoveStartupAbilities();
+	virtual void SwitchCombatProfile(UCS_CombatProfile* NewCombatProfile, TSet<UCS_CombatStateBase*>& StateList);
 
 protected:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Combat States")

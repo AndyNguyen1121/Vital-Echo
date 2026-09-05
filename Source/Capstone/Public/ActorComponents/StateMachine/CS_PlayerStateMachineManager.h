@@ -7,6 +7,7 @@
 #include "CS_PlayerStateMachineManager.generated.h"
 
 
+class ACS_WeaponBase;
 class ACS_PlayerCharacter;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -29,7 +30,12 @@ protected:
 	UPROPERTY()
 	TObjectPtr<ACS_PlayerCharacter> PlayerCharacter;
 
+	virtual void SwitchCombatProfile(UCS_CombatProfile* NewCombatProfile, TSet<UCS_CombatStateBase*>& StateList) override;
+
 private:
 	void CheckForStateTransitions();
 	bool CheckIfCanTransitionState(UCS_CombatStateBase* State);
+
+	UFUNCTION()
+	void ChangePlayerWeaponCombatProfile(ACS_WeaponBase* NewWeapon);
 };

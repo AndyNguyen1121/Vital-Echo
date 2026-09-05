@@ -11,6 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
 #include "Utils/CS_BlueprintLibrary.h"
+#include "Weapons/CS_WeaponBase.h"
 
 
 // Sets default values
@@ -87,4 +88,15 @@ void ACS_BaseCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, 
 	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::RestrictMove, !CanMove);
 	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::IsPerformingAction, IsPerformingAction);
 	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::RestrictRotate, !CanRotate);
+}
+
+void ACS_BaseCharacter::EquipWeapon(ACS_WeaponBase* NewWeapon)
+{
+	if (CurrentEquippedWeapon.IsValid())
+	{
+		CurrentEquippedWeapon->Unequip(this);
+	}
+	NewWeapon->Equip(this);
+	CurrentEquippedWeapon = NewWeapon;
+	OnWeaponEquipped.Broadcast(NewWeapon);
 }

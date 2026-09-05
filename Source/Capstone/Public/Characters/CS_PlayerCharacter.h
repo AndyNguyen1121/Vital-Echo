@@ -7,6 +7,7 @@
 #include "CS_BaseCharacter.h"
 #include "Structs/DamageAttributes.h"
 #include "CS_PlayerCharacter.generated.h"
+class UCS_TagChangeTask;
 class UCS_TokenManager;
 class ACS_PlayerCameraManager;
 class ACS_PlayerController;
@@ -14,6 +15,8 @@ class ACS_PlayerState;
 class UCS_PlayerStateMachineManager;
 class USpringArmComponent;
 class UCameraComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActionStopped);
 
 UCLASS()
 class CAPSTONE_API ACS_PlayerCharacter : public ACS_BaseCharacter
@@ -40,12 +43,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerCameraManager* GetCSCameraManager() const;
 
-	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
-	float LockOnSearchRadius{500.f};
-
-	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
-	float LockOnMaxAngle{45};
-
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void RotatePlayerToTargetRotation(FRotator TargetRotation, float Duration);
 
@@ -61,9 +58,28 @@ public:
 	virtual UCS_AttributeSet* GetAttributeSet() override;
 
 	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState) override;
+
+	UFUNCTION(BlueprintCallable)
+	void SendWeaponSwitchRequest(ACS_WeaponBase* Weapon);
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
+	float LockOnSearchRadius{500.f};
+
+	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
+	float LockOnMaxAngle{45};
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStopped OnActionStopped;
 	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+
+	UFUNCTION()
+	void CheckIfActionStopped(FGameplayTag Tag, int32 NewCount);
+
+	UFUNCTION()
+	void CheckWeaponSwitchRequest();
 
 private:
 
@@ -80,5 +96,14 @@ private:
 	TSoftObjectPtr<AActor> LockOnTarget;
 
 	FVector FrozenLocation;
+
+	UPROPERTY(VisibleAnywhere)
+	TWeakObjectPtr<ACS_WeaponBase> RequestedWeapon;
+
+	UPROPERTY()
+	TObjectPtr<UCS_TagChangeTask> PerformingActionTask;
+
+	UPROPERTY()
+	TObjectPtr<UCS_TagChangeTask> InputWindowTask;
 	
 };

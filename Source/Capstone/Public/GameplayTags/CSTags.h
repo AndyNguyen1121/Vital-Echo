@@ -44,6 +44,7 @@ namespace CSTags
 			namespace PlayerStates
 			{
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryWindowActive);
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputWindowActive);
 			}
 			
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictMove);
