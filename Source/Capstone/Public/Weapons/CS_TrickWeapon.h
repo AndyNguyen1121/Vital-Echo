@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CS_WeaponBase.h"
+#include "Enums/WeaponTypes.h"
 #include "CS_TrickWeapon.generated.h"
 
 UENUM(BlueprintType)
@@ -22,13 +23,14 @@ class CAPSTONE_API ACS_TrickWeapon : public ACS_WeaponBase
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void PlayWeaponTransformAnimation(EWeaponTransformType TransformType = EWeaponTransformType::EWTS_None);
+	void PlayWeaponTransformAnimation(EWeaponTransformType TransformType = EWeaponTransformType::EWTS_None, AActor* ParentActor = nullptr);
 	
 	UFUNCTION(BlueprintPure)
 	UAnimMontage* GetPrimaryWeaponAnimation() { return PrimaryWeaponAnimation; }
 
 	UFUNCTION(BlueprintPure)
 	UAnimMontage* GetSecondaryWeaponAnimation() { return SecondaryWeaponAnimation; }
+
 	
 private:
 	UPROPERTY(EditDefaultsOnly)
@@ -36,4 +38,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAnimMontage> SecondaryWeaponAnimation;
+
+	UPROPERTY(EditDefaultsOnly)
+	EWeaponType SecondaryWeaponType;
+	
 };

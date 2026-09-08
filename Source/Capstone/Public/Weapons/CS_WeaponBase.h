@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums/WeaponTypes.h"
 #include "GameFramework/Actor.h"
 #include "CS_WeaponBase.generated.h"
 
@@ -18,10 +19,10 @@ public:
 	ACS_WeaponBase();
 
 	UFUNCTION(BlueprintCallable)
-	void Equip(AActor* ParentActor);
+	virtual void Equip(AActor* ParentActor);
 
 	UFUNCTION(BlueprintCallable)
-	void Unequip(AActor* ParentActor);
+	virtual void Unequip(AActor* ParentActor);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_Equip(AActor* ParentActor);
@@ -41,4 +42,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USceneComponent> SceneComponent;
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	EWeaponType PrimaryWeaponType;
 };

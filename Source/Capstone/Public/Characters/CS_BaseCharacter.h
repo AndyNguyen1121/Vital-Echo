@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Structs/DamageAttributes.h"
 #include "ContextualAnimSceneActorComponent.h"
+#include "Enums/WeaponTypes.h"
 #include "Interfaces/HitStopComponentInterface.h"
 #include "Interfaces/TokenInterface.h"
 #include "Structs/WarpLocationInfo.h"
@@ -23,6 +24,7 @@ class UGameplayEffect;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FASCInitialized, UAbilitySystemComponent*, ASC, UAttributeSet*, AS);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponEquipped, ACS_WeaponBase*, NewWeapon);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponTypeChanged, EWeaponType, NewWeaponType);
 
 
 UCLASS()
@@ -68,6 +70,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void EquipWeapon(ACS_WeaponBase* NewWeapon);
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeWeaponType(EWeaponType NewWeaponType);
 	
 	
 public:
@@ -95,6 +100,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FWeaponEquipped OnWeaponEquipped;
 
+	UPROPERTY(BlueprintAssignable)
+	FWeaponTypeChanged OnWeaponTypeChanged;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	EWeaponType CurrentEquippedWeaponType;
+
 private:
 	void InitializeAttributes();
 	
@@ -119,6 +130,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_HitStopComponent> HitStopComponent;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TWeakObjectPtr<ACS_WeaponBase> CurrentEquippedWeapon;
 };

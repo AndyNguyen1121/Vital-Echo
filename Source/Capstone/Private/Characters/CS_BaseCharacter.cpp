@@ -100,3 +100,13 @@ void ACS_BaseCharacter::EquipWeapon(ACS_WeaponBase* NewWeapon)
 	CurrentEquippedWeapon = NewWeapon;
 	OnWeaponEquipped.Broadcast(NewWeapon);
 }
+
+void ACS_BaseCharacter::ChangeWeaponType(EWeaponType NewWeaponType)
+{
+	if (NewWeaponType != CurrentEquippedWeaponType)
+	{
+		OnWeaponTypeChanged.Broadcast(NewWeaponType);
+	}
+
+	CurrentEquippedWeaponType = NewWeaponType;
+}
