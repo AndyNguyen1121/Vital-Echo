@@ -35,7 +35,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static TArray<AActor*> SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset = FVector::ZeroVector,
-	                                         FGameplayTagContainer TagsToFilter = FGameplayTagContainer(), bool DrawDebug = false, FLinearColor DebugColor =
+	                                         FGameplayTagContainer TagsToSearch = FGameplayTagContainer(), bool DrawDebug = false, FLinearColor DebugColor =
 		                                         FLinearColor::Red);
 
 	static void DrawSphereOverlapDebug(UObject* ContextObject, const TArray<AActor*>& Actors, const FVector& HitBoxLocation, const float HitBoxRadius, FLinearColor

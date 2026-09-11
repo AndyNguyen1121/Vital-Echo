@@ -7,6 +7,10 @@
 #include "CS_BaseCharacter.h"
 #include "Structs/DamageAttributes.h"
 #include "CS_PlayerCharacter.generated.h"
+class UWidgetComponent;
+class UWidget;
+class UCS_WidgetComponent;
+class UCS_SoftLockOnComponent;
 class UCS_TagChangeTask;
 class UCS_TokenManager;
 class ACS_PlayerCameraManager;
@@ -33,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UCS_PlayerStateMachineManager* GetStateMachineManager() {return PlayerStateMachineManager;}
+
+	UFUNCTION(BlueprintPure)
+	UCS_SoftLockOnComponent* GetSoftLockOnComponent() const {return SoftLockOnComponent;}
 
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerState* GetCSPlayerState() const {return CachedPlayerState;}
@@ -71,6 +78,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnActionStopped OnActionStopped;
+
+	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
+	TObjectPtr<UWidgetComponent> LockOnReticle;
 	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
@@ -85,6 +95,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCS_PlayerStateMachineManager> PlayerStateMachineManager;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UCS_SoftLockOnComponent> SoftLockOnComponent;
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	ACS_PlayerState* CachedPlayerState;

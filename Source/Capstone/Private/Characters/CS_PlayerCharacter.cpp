@@ -4,8 +4,10 @@
 #include "Capstone/Public/Characters/CS_PlayerCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AnalyticsProviderETEventCache.h"
 #include "MotionWarpingComponent.h"
 #include "AbilitySystem/CS_AttributeSet.h"
+#include "ActorComponents/CombatSystem/CS_SoftLockOnComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CS_CameraActor.h"
 #include "Camera/CS_CameraContainer.h"
@@ -21,6 +23,8 @@
 #include "Player/CS_PlayerController.h"
 #include "ActorComponents/StateMachine/CS_PlayerStateMachineManager.h"
 #include "ActorComponents/TokenManager/CS_TokenManager.h"
+#include "Components/Widget.h"
+#include "Components/WidgetComponent.h"
 #include "Tasks/CS_TagChangeTask.h"
 #include "Weapons/CS_WeaponBase.h"
 
@@ -31,7 +35,10 @@ ACS_PlayerCharacter::ACS_PlayerCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	PlayerStateMachineManager = CreateDefaultSubobject<UCS_PlayerStateMachineManager>("StateMachine");
-	
+	SoftLockOnComponent = CreateDefaultSubobject<UCS_SoftLockOnComponent>("SoftLockOnComponent");
+	LockOnReticle = CreateDefaultSubobject<UWidgetComponent>("LockOnWidget");
+	LockOnReticle->SetupAttachment(GetCapsuleComponent());
+	LockOnReticle->SetVisibility(false);
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 	bUseControllerRotationPitch = false;

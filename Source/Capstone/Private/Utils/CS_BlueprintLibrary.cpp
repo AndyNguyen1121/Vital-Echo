@@ -42,7 +42,7 @@ void UCS_BlueprintLibrary::PlayLevelSequenceWithOriginTransform(AActor* ContextA
 }
 
 TArray<AActor*> UCS_BlueprintLibrary::SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset,
-                                                        FGameplayTagContainer TagsToFilter, bool DrawDebug, FLinearColor DebugColor)
+                                                        FGameplayTagContainer TagsToSearch, bool DrawDebug, FLinearColor DebugColor)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(AvatarActor, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return TArray<AActor*>();
@@ -71,7 +71,7 @@ TArray<AActor*> UCS_BlueprintLibrary::SphereOverlapTest(AActor* AvatarActor, flo
 		}
 	}
 
-	FilterGameplayTags(TagsToFilter, ActorsHit);
+	FilterGameplayTags(TagsToSearch, ActorsHit);
 
 	if (DrawDebug)
 	{

@@ -44,8 +44,8 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ACS_PlayerController::ResetAllMovementInputs);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
-	EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOn);
-	EnhancedInputComponent->BindAction(ChangeLockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOnChange);
+		/*EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOn);
+	EnhancedInputComponent->BindAction(ChangeLockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOnChange);*/
 	EnhancedInputComponent->BindAction(Jump, ETriggerEvent::Started, this, &ACS_PlayerController::JumpInput);
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Triggered, this, &ACS_PlayerController::OnBlock);
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Completed, this, &ACS_PlayerController::OnBlockEnd);
@@ -54,7 +54,7 @@ void ACS_PlayerController::SetupInputComponent()
 void ACS_PlayerController::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementValue = Value.Get<FVector2D>();
-	PlayerInputDirection = MovementValue;
+	ChangeInputDirection(MovementValue);
 	ClampInputDirection(MovementValue, Deadzone);
 	
 	ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(GetCharacter());
@@ -135,10 +135,16 @@ void ACS_PlayerController::JumpInput()
 	InputBuffer.Add(FBufferedInput(EInputType::EIT_Jump));
 }
 
+void ACS_PlayerController::ChangeInputDirection(FVector2D InputDirection)
+{
+	PlayerInputDirection = InputDirection;
+	OnInputDirectionChanged.Broadcast(InputDirection);
+}
+
 void ACS_PlayerController::ResetAllMovementInputs()
 {
 	ClampedPlayerInputDirection = FVector2D::ZeroVector;
-	PlayerInputDirection = FVector2D::ZeroVector;
+	ChangeInputDirection(FVector2D::ZeroVector);
 	MoveAmount = 0;
 }
 

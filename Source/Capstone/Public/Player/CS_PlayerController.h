@@ -22,10 +22,17 @@ class UInputMappingContext;
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInputDirectionChanged, FVector2D, Direction);
+
 UCLASS()
 class CAPSTONE_API ACS_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnInputDirectionChanged OnInputDirectionChanged;
 
 public:
 	virtual void BeginPlay() override;
@@ -83,7 +90,8 @@ private:
 	void OnBlockEnd();
 	
 	void JumpInput();
-	
+
+	void ChangeInputDirection(FVector2D InputDirection);
 	void ClampInputDirection(FVector2D InputDirection, float InputDeadzone);
 	void SetMoveAmount();
 
