@@ -89,7 +89,7 @@ void ACS_PlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (LockOnTarget.IsValid() && !HasMatchingGameplayTag(CSTags::Status::GameplayStates::RestrictRotate))
+	/*if (LockOnTarget.IsValid() && !HasMatchingGameplayTag(CSTags::Status::GameplayStates::RestrictRotate))
 	{
 		FVector DirToLockOnEnemy = CachedPlayerController->GetCameraContainer()->GetLockOnActor()->GetActorLocation() - GetActorLocation();
 		DirToLockOnEnemy.Z = 0;
@@ -98,7 +98,7 @@ void ACS_PlayerCharacter::Tick(float DeltaSeconds)
 		FRotator DesiredRotation = UKismetMathLibrary::RInterpTo_Constant(GetActorRotation(), DirToLockOnEnemy.Rotation(), DeltaSeconds, 500.f);
 
 		SetActorRotation(DesiredRotation);
-	}
+	}*/
 
 	/*if (const FMotionWarpingTarget* Target =
 	MotionWarpingComponent->FindWarpTarget(FName("Player")))
@@ -157,12 +157,20 @@ void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVe
 {
 	MotionWarpingComponent->RemoveAllWarpTargets();
 	if (!LockOnTarget.IsValid()) return;
+	
 	float DistanceToEnemySqr = LockOnTarget->GetSquaredDistanceTo(this);
 	if (DistanceToEnemySqr < FMath::Pow(MinRange, 2) || DistanceToEnemySqr > FMath::Pow(MaxRange, 2)) return;
 
-	FVector Offset = (GetActorRightVector() * DistanceOffset.Y) + (GetActorUpVector() * DistanceOffset.Z) + (GetActorForwardVector() * DistanceOffset.X);
+	FVector DirFromLockOnTarget = LockOnTarget->GetActorLocation() - GetActorLocation();
+	DirFromLockOnTarget.Z = 0;
+	DirFromLockOnTarget.Normalize();
+	
+	FVector Offset = (-DirFromLockOnTarget.RightVector * DistanceOffset.Y) + (GetActorUpVector() * DistanceOffset.Z) + (DirFromLockOnTarget * DistanceOffset.X);
 	FVector TargetLocation = LockOnTarget->GetActorLocation() + Offset;
-	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("Warp"), TargetLocation);
+
+	FRotator TargetRotation = DirFromLockOnTarget.Rotation();
+	FTransform WarpTransform(TargetRotation, TargetLocation);
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromTransform(FName("Warp"), WarpTransform);
 }
 
 void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target)

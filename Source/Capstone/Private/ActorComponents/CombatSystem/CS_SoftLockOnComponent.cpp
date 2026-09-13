@@ -30,10 +30,22 @@ void UCS_SoftLockOnComponent::BeginPlay()
 
 void UCS_SoftLockOnComponent::TrySetLockOnTarget(FVector2D InputDirection)
 {
-	if (AActor* Actor = FindLockOnTarget(InputDirection))
+	ACharacter* TargetCharacter = nullptr;
+	if (!InputDirection.IsNearlyZero())
 	{
-		CachedPlayerCharacter->LockOnReticle->AttachToComponent(Actor->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
+		 TargetCharacter = Cast<ACharacter>(FindLockOnTarget(InputDirection));
+	}
+
+	if (IsValid(TargetCharacter))
+	{
+		CachedPlayerCharacter->SetLockOnTarget(TargetCharacter);
+		CachedPlayerCharacter->LockOnReticle->AttachToComponent(TargetCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), FName("LockOnTarget"));
 		CachedPlayerCharacter->LockOnReticle->SetVisibility(true);
+	}
+	else
+	{
+		CachedPlayerCharacter->SetLockOnTarget(nullptr);
+		CachedPlayerCharacter->LockOnReticle->SetVisibility(false);
 	}
 }
 
@@ -45,6 +57,7 @@ AActor* UCS_SoftLockOnComponent::FindLockOnTarget(FVector2D InputDirection)
 	CameraForwardDir.Normalize();
 
 	FVector InputDirectionRelativeToCamera = (CameraForwardDir * InputDirection.Y) + (CameraRightDir * InputDirection.X);
+	InputDirectionRelativeToCamera.Normalize();
 	
 	FVector StartLocation =
 		CachedPlayerCharacter->GetActorLocation() +
@@ -53,8 +66,7 @@ AActor* UCS_SoftLockOnComponent::FindLockOnTarget(FVector2D InputDirection)
 
 	FVector EndLocation = StartLocation + (InputDirectionRelativeToCamera * TraceDistance);
 	
-	//////////////////////// Set Up Collisions ///////////////////////////////
-
+	// Set up collision detection
 	TArray<FHitResult> Hits;
 	FCollisionShape Shape = FCollisionShape::MakeSphere(TraceRadius);
 	
@@ -64,8 +76,8 @@ AActor* UCS_SoftLockOnComponent::FindLockOnTarget(FVector2D InputDirection)
 	FCollisionResponseParams ResponseParams;
 	ResponseParams.CollisionResponse.SetAllChannels(ECR_Ignore);
 	ResponseParams.CollisionResponse.SetResponse(ECC_Pawn, ECR_Block);
-	///////////////////////////////////////////////////////////////////////////
-	
+
+	// Execute trace
 	const bool bHit = GetWorld()->SweepMultiByChannel(Hits, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility, Shape, QueryParams, ResponseParams);
 
 #if WITH_EDITOR
@@ -87,7 +99,22 @@ AActor* UCS_SoftLockOnComponent::FindLockOnTarget(FVector2D InputDirection)
 
 #endif
 
-	return Hits.Num() > 0 ? Hits[0].GetActor() : nullptr;
+	if (Hits.IsEmpty()) return nullptr;
+	
+	AActor* ClosestActor = Hits[0].GetActor();
+	float ClosestDistance = FLT_MAX;
+
+	for (FHitResult HitResult : Hits)
+	{
+		float Distance = ClosestActor->GetDistanceTo(HitResult.GetActor());
+		if (ClosestActor->GetDistanceTo(HitResult.GetActor()) < ClosestDistance)
+		{
+			ClosestActor = HitResult.GetActor();
+			ClosestDistance = Distance;
+		}
+	}
+
+	return ClosestActor;
 }
 
 

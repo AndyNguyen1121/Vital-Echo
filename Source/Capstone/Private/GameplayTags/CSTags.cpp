@@ -10,6 +10,11 @@ namespace CSTags
 
 	}
 
+	namespace Input
+	{
+		UE_DEFINE_GAMEPLAY_TAG(PauseInputWindowActive, "CSTags.Input.PauseInputWindowActive");
+	}
+
 	namespace Events
 	{
 		namespace Player

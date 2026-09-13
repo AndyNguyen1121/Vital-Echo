@@ -12,6 +12,11 @@ namespace CSTags
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(ActivateOnGiven);
 	}
 
+	namespace Input
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(PauseInputWindowActive);
+	}
+
 	namespace Events
 	{
 		namespace Player

@@ -105,7 +105,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	ACS_PlayerController* CachedPlayerController;
 
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess), VisibleAnywhere)
 	TSoftObjectPtr<AActor> LockOnTarget;
 
 	FVector FrozenLocation;

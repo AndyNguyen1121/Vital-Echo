@@ -396,6 +396,10 @@ EInputType ACS_PlayerController::GetDirectionalInputInBuffer(EInputType InputTyp
 
 bool ACS_PlayerController::CheckInputPauses(const UCS_PlayerCombatState* CombatStateInfo)
 {
+	if (!IsValid(GetCSPlayerCharacter())) return false;
+
+	if (!GetCSPlayerCharacter()->HasMatchingGameplayTag(CSTags::Input::PauseInputWindowActive)) return false;
+	
 	// Find the input that ISN'T EIT_Pause
 	const EInputType* InputToCheck = CombatStateInfo->RequiredInputs.FindByPredicate(
 	[](EInputType Input)
@@ -405,29 +409,20 @@ bool ACS_PlayerController::CheckInputPauses(const UCS_PlayerCombatState* CombatS
 
 	if (!InputToCheck) return false;
 	
-	int FramesSinceLastPressedInput = 100;
 
 	for (FBufferedInput BufferedInput : InputBuffer)
 	{
-		// Previous input HAS to be consumed as that indicates that the player activated an ability and is now pausing
-		if (BufferedInput.Input != *InputToCheck || !BufferedInput.bIsConsumed)
+		if (BufferedInput.Input != *InputToCheck || BufferedInput.bIsConsumed)
 		{
 			continue;
 		}
-		
-		// Make sure the input is not the input that is being currently pressed
-		if (BufferedInput.FramesElapsedSincePressed < FramesSinceLastPressedInput && BufferedInput.FramesElapsedSincePressed > 1)
+
+		if (BufferedInput.FramesElapsedSincePressed <= CombatStateInfo->InputBufferWindow)
 		{
-			FramesSinceLastPressedInput = BufferedInput.FramesElapsedSincePressed;
+			return true;
 		}
 	}
 
-
-	if (FramesSinceLastPressedInput <= CombatStateInfo->PauseMaxFrames && FramesSinceLastPressedInput >= CombatStateInfo->PauseMinFrames)
-	{
-		return true;
-	}
-	
 	return false;
 }
 
