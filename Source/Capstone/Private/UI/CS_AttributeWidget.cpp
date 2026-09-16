@@ -13,10 +13,17 @@ void UCS_AttributeWidget::OnAttributeChange(UCS_AttributeSet* AttributeSet, floa
 	BP_OnAttributeChange(AttributeValue, MaxAttributeValue, OldValue);
 }
 
+void UCS_AttributeWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
 void UCS_AttributeWidget::BindWidget(UAbilitySystemComponent* ASC, UCS_AttributeSet* AttributeSet)
 {
 	ASC->GetGameplayAttributeValueChangeDelegate(Attribute).AddLambda([this, ASC, AttributeSet](const FOnAttributeChangeData& AttributeChangeData)
 	{
 		OnAttributeChange(AttributeSet, AttributeChangeData.OldValue);
 	});
+
+	OnAttributeChange(AttributeSet, 0);
 }

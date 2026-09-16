@@ -198,7 +198,7 @@ void UCS_BlueprintLibrary::KnockUpActor(AActor* TargetActor, AActor* SourceActor
 	
 	if (Velocity.Z > 0)
 	{
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::KnockedUp), Payload);
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::Gameplay::KnockedUp), Payload);
 	}
 
 	TargetCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
@@ -269,7 +269,7 @@ void UCS_BlueprintLibrary::ApplyDamageAttributes(AActor* TargetActor, AActor* So
 		ContextHandle.AddInstigator(SourceActor, SourceActor);
 		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(DamageAttributes.DamageEffect, 1.f, ContextHandle);
 
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Spec, CSTags::Effects::Damage, DamageAttributes.Damage);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Spec, CSTags::Effects::SetByCaller::Damage, DamageAttributes.Damage);
 		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
 	}
 	

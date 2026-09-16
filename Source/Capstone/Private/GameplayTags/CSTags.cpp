@@ -21,12 +21,16 @@ namespace CSTags
 		{
 			UE_DEFINE_GAMEPLAY_TAG(EndBlock, "CSTags.Events.Player.EndBlock");
 		}
-		
-		UE_DEFINE_GAMEPLAY_TAG(TraceAttack, "CSTags.Events.TraceAttack");
-		UE_DEFINE_GAMEPLAY_TAG(HitReact, "CSTags.Events.HitReact");
-		UE_DEFINE_GAMEPLAY_TAG(KnockedUp, "CSTags.Events.KnockedUp");
-		UE_DEFINE_GAMEPLAY_TAG(ParryActivate, "CSTags.Events.ParryActivate");
-		UE_DEFINE_GAMEPLAY_TAG(ParryReceive, "CSTags.Events.ParryReceive");
+
+		namespace Gameplay
+		{
+			UE_DEFINE_GAMEPLAY_TAG(TraceAttack, "CSTags.Events.Gameplay.TraceAttack");
+			UE_DEFINE_GAMEPLAY_TAG(HitReact, "CSTags.Events.Gameplay.HitReact");
+			UE_DEFINE_GAMEPLAY_TAG(KnockedUp, "CSTags.Events.Gameplay.KnockedUp");
+			UE_DEFINE_GAMEPLAY_TAG(ParryActivate, "CSTags.Events.Gameplay.ParryActivate");
+			UE_DEFINE_GAMEPLAY_TAG(ParryReceive, "CSTags.Events.Gameplay.ParryReceive");
+			UE_DEFINE_GAMEPLAY_TAG(PostureDepletionSuppressed, "CSTags.Events.Gameplay.PostureDepletionSuppressed");
+		}
 	}
 
 	namespace IDs
@@ -49,11 +53,13 @@ namespace CSTags
 			{
 				UE_DEFINE_GAMEPLAY_TAG(ParryWindowActive, "CSTags.Status.GameplayStates.PlayerStates.ParryWindowActive");
 				UE_DEFINE_GAMEPLAY_TAG(InputWindowActive, "CSTags.Status.GameplayStates.PlayerStates.InputWindowActive");
+				
 			}
 			
 			UE_DEFINE_GAMEPLAY_TAG(RestrictMove, "CSTags.Status.GameplayStates.RestrictMove");
 			UE_DEFINE_GAMEPLAY_TAG(RestrictRotate, "CSTags.Status.GameplayStates.RestrictRotate");
 			UE_DEFINE_GAMEPLAY_TAG(IsPerformingAction, "CSTags.Status.GameplayStates.IsPerformingAction");
+			UE_DEFINE_GAMEPLAY_TAG(PostureRegenSupressed, "CSTags.Status.GameplayStates.PostureRegenSuppressed");
 		}
 		
 		namespace Debuffs
@@ -66,6 +72,10 @@ namespace CSTags
 
 	namespace Effects
 	{
-		UE_DEFINE_GAMEPLAY_TAG(Damage, "CSTags.Effects.Damage");
+		namespace SetByCaller
+		{
+			UE_DEFINE_GAMEPLAY_TAG(Damage, "CSTags.Effects.SetByCaller.Damage");
+			UE_DEFINE_GAMEPLAY_TAG(PostureSuppressDuration, "CSTags.Effects.SetByCaller.PostureSuppressDuration");
+		}
 	}
 }

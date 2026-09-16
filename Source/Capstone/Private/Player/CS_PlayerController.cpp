@@ -49,6 +49,7 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(Jump, ETriggerEvent::Started, this, &ACS_PlayerController::JumpInput);
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Triggered, this, &ACS_PlayerController::OnBlock);
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Completed, this, &ACS_PlayerController::OnBlockEnd);
+	EnhancedInputComponent->BindAction(TransformAction, ETriggerEvent::Started, this, &ThisClass::OnTransformationInput);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -128,6 +129,11 @@ void ACS_PlayerController::OnBlockEnd()
 	FGameplayEventData Payload;
 	Payload.Instigator = GetCharacter();
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetCharacter(), CSTags::Events::Player::EndBlock, Payload);
+}
+
+void ACS_PlayerController::OnTransformationInput()
+{
+	InputBuffer.Add(FBufferedInput(EInputType::EIT_Transform));
 }
 
 void ACS_PlayerController::JumpInput()

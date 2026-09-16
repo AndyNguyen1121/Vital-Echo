@@ -23,12 +23,16 @@ namespace CSTags
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(EndBlock);
 		}
-		
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(TraceAttack);
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(HitReact);
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryActivate);
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryReceive);
+
+		namespace Gameplay
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(TraceAttack);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(HitReact);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryActivate);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryReceive);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureDepletionSuppressed);
+		}
 	}
 
 	namespace IDs
@@ -55,6 +59,7 @@ namespace CSTags
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictMove);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictRotate);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsPerformingAction);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureRegenSupressed);
 		}
 
 		namespace Debuffs
@@ -67,7 +72,12 @@ namespace CSTags
 
 	namespace Effects
 	{
-		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage);
+		namespace SetByCaller
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureSuppressDuration);
+		}
+		
 	}
 
 	

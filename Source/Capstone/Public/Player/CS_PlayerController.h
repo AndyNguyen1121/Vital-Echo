@@ -88,7 +88,7 @@ private:
 	void LockOnChange(const FInputActionValue& Value);
 	void OnBlock();
 	void OnBlockEnd();
-	
+	void OnTransformationInput();
 	void JumpInput();
 
 	void ChangeInputDirection(FVector2D InputDirection);
@@ -145,6 +145,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TObjectPtr<UInputAction> BlockAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> TransformAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	float LookSensitivity{0.5f};

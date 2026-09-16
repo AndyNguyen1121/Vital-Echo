@@ -9,7 +9,7 @@
 void UCS_ViewportAttributeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 
 	if (PlayerController)

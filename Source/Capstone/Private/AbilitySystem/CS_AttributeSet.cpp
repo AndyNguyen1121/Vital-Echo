@@ -23,7 +23,7 @@ void UCS_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMod
 			Payload.Instigator = Context.GetInstigator();
 			Payload.Target = GetOwningAbilitySystemComponent()->GetAvatarActor();
 			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), FGameplayTag(CSTags::Events::HitReact), Payload);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), FGameplayTag(CSTags::Events::Gameplay::HitReact), Payload);
 			
 			SetHealth(FMath::Clamp(GetHealth() - GetDamage(), 0, GetMaxHealth()));
 			SetDamage(0);
@@ -32,8 +32,14 @@ void UCS_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMod
 		{
 			Payload.Instigator = GetOwningAbilitySystemComponent()->GetAvatarActor();;
 			Payload.Target = Context.GetInstigator();
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Context.GetInstigator(), CSTags::Events::ParryReceive, Payload);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Context.GetInstigator(), CSTags::Events::Gameplay::ParryReceive, Payload);
 		}
+	}
+
+	if (Data.EvaluatedData.Attribute == GetPostureDamageAttribute())
+	{
+		AddPostureSafe(GetPostureDamage());
+		SetPostureDamage(0.f);
 	}
 }
 
@@ -44,4 +50,9 @@ void UCS_AttributeSet::PostAttributesInitialized()
 		bAttributesInitialized = true;
 		OnAttributesInitialized.Broadcast();
 	}
+}
+
+void UCS_AttributeSet::AddPostureSafe(float value)
+{
+	SetPosture(FMath::Clamp(GetPosture() + value, 0, GetPostureThreshold()));
 }

@@ -31,7 +31,7 @@ void UAN_KnockbackHitActors::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 			Payload.Target = TargetActor;
 
 			UCS_BlueprintLibrary::KnockUpActor(TargetActor, PlayerCharacter, KnockbackForce, bUseSourceActorRotation);
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::HitReact), Payload);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag(CSTags::Events::Gameplay::HitReact), Payload);
 		}
 	}
 }

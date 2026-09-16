@@ -19,6 +19,8 @@ class CAPSTONE_API UCS_AttributeWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	virtual void NativeConstruct() override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Crash|Attributes")
 	FGameplayAttribute Attribute;
 

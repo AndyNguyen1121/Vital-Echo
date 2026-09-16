@@ -36,6 +36,12 @@ void ACS_BaseCharacter::BeginPlay()
 	InitializeAttributes();
 }
 
+void ACS_BaseCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	HandlePostureDepletion(DeltaSeconds);
+}
+
 UAbilitySystemComponent* ACS_BaseCharacter::GetAbilitySystemComponent() const
 {
 	return nullptr;
@@ -81,6 +87,15 @@ void ACS_BaseCharacter::InitializeAttributes()
 	
 	if (GetAttributeSet())
 		GetAttributeSet()->PostAttributesInitialized();
+}
+
+void ACS_BaseCharacter::HandlePostureDepletion(float DeltaSeconds)
+{
+	if (!GetAttributeSet() || GetAttributeSet()->GetPosture() == 0 || HasMatchingGameplayTag(CSTags::Status::GameplayStates::PostureRegenSupressed))
+		return;
+
+	UCS_AttributeSet* CachedAttributeSet = GetAttributeSet();
+	CachedAttributeSet->AddPostureSafe(-CachedAttributeSet->GetPostureRecoverRate() * DeltaSeconds);
 }
 
 void ACS_BaseCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState)

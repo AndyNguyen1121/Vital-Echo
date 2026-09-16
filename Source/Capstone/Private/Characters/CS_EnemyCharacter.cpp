@@ -35,13 +35,6 @@ void ACS_EnemyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	UpdateMoveAmount();
-
-	if (const FMotionWarpingTarget* Target =
-	MotionWarpingComponent->FindWarpTarget(FName("Enemy")))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Enemy Warp Target Location: %s"),
-			*Target->GetLocation().ToString());
-	}
 }
 
 

@@ -36,6 +36,7 @@ public:
 	// Sets default values for this character's properties
 	ACS_BaseCharacter();
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintPure)
@@ -132,4 +133,7 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TWeakObjectPtr<ACS_WeaponBase> CurrentEquippedWeapon;
+
+protected:
+	void HandlePostureDepletion(float DeltaSeconds);
 };

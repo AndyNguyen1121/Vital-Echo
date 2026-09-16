@@ -23,7 +23,7 @@ class CAPSTONE_API ACS_TrickWeapon : public ACS_WeaponBase
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void PlayWeaponTransformAnimation(EWeaponTransformType TransformType = EWeaponTransformType::EWTS_None, AActor* ParentActor = nullptr);
+	void PlayWeaponTransformAnimation(EWeaponTransformType TransformType, AActor* ParentActor);
 	
 	UFUNCTION(BlueprintPure)
 	UAnimMontage* GetPrimaryWeaponAnimation() { return PrimaryWeaponAnimation; }
