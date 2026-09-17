@@ -165,12 +165,20 @@ void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVe
 	DirFromLockOnTarget.Z = 0;
 	DirFromLockOnTarget.Normalize();
 	
-	FVector Offset = (-DirFromLockOnTarget.RightVector * DistanceOffset.Y) + (GetActorUpVector() * DistanceOffset.Z) + (DirFromLockOnTarget * DistanceOffset.X);
-	FVector TargetLocation = LockOnTarget->GetActorLocation() + Offset;
-
-	FRotator TargetRotation = DirFromLockOnTarget.Rotation();
-	FTransform WarpTransform(TargetRotation, TargetLocation);
-	MotionWarpingComponent->AddOrUpdateWarpTargetFromTransform(FName("Warp"), WarpTransform);
+	FVector RightVectorFromDirFromLockOnTarget = FVector::CrossProduct(-DirFromLockOnTarget, FVector::UpVector);
+	FVector Offset = (RightVectorFromDirFromLockOnTarget * DistanceOffset.Y) + (GetActorUpVector() * DistanceOffset.Z) + (DirFromLockOnTarget * DistanceOffset.X);
+	FRotator RotationOffset = DirFromLockOnTarget.Rotation() - LockOnTarget->GetRootComponent()->GetComponentRotation();
+	RotationOffset.Pitch = 0;
+	RotationOffset.Roll = 0;
+	
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromComponent
+		(FName("Warp"),
+			LockOnTarget->GetRootComponent(),
+			NAME_None,
+			true,
+			EWarpTargetLocationOffsetDirection::WorldSpace,
+			Offset,
+			RotationOffset);
 }
 
 void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target)

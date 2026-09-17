@@ -8,6 +8,7 @@
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/CS_PlayerController.h"
 #include "Utils/CS_BlueprintLibrary.h"
 
@@ -42,11 +43,11 @@ void UCS_SoftLockOnComponent::TrySetLockOnTarget(FVector2D InputDirection)
 		CachedPlayerCharacter->LockOnReticle->AttachToComponent(TargetCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), FName("LockOnTarget"));
 		CachedPlayerCharacter->LockOnReticle->SetVisibility(true);
 	}
-	else
+	/*else
 	{
 		CachedPlayerCharacter->SetLockOnTarget(nullptr);
 		CachedPlayerCharacter->LockOnReticle->SetVisibility(false);
-	}
+	}*/
 }
 
 AActor* UCS_SoftLockOnComponent::FindLockOnTarget(FVector2D InputDirection)
@@ -101,20 +102,45 @@ AActor* UCS_SoftLockOnComponent::FindLockOnTarget(FVector2D InputDirection)
 
 	if (Hits.IsEmpty()) return nullptr;
 	
-	AActor* ClosestActor = Hits[0].GetActor();
-	float ClosestDistance = FLT_MAX;
+	return PickBestTarget(Hits, CachedPlayerCharacter->GetLockOnTarget());
+}
 
-	for (FHitResult HitResult : Hits)
+float UCS_SoftLockOnComponent::ScoreTarget(AActor* Candidate, FVector2D ScreenCenter, FVector PlayerLoc)
+{
+	FVector2D ScreenPos;
+	CachedPlayerController->ProjectWorldLocationToScreen(Candidate->GetActorLocation(), ScreenPos);
+
+	const float ScreenDist = FVector2D::Distance(ScreenPos, ScreenCenter);
+	const float WorldDist  = FVector::Dist(Candidate->GetActorLocation(), PlayerLoc);
+	
+	return ScreenDist * 1.0f + WorldDist * 0.15f;
+}
+
+AActor* UCS_SoftLockOnComponent::PickBestTarget(const TArray<FHitResult>& Candidates, AActor* CurrentTarget)
+{
+	AActor* Best = nullptr;
+	float BestScore = TNumericLimits<float>::Max();
+
+	int32 ViewportX = 0, ViewportY = 0;
+	CachedPlayerController->GetViewportSize(ViewportX, ViewportY);
+	FVector2D ScreenCenter(ViewportX * 0.5f, ViewportY * 0.5f);
+
+	for (FHitResult Candidate : Candidates)
 	{
-		float Distance = ClosestActor->GetDistanceTo(HitResult.GetActor());
-		if (ClosestActor->GetDistanceTo(HitResult.GetActor()) < ClosestDistance)
+		float Score = ScoreTarget(Candidate.GetActor(), ScreenCenter, CachedPlayerCharacter->GetActorLocation());
+
+		if (Candidate.GetActor() == CurrentTarget)
 		{
-			ClosestActor = HitResult.GetActor();
-			ClosestDistance = Distance;
+			Score *= 0.7f; // current target gets a 30% discount - hysteresis band
+		}
+
+		if (Score < BestScore)
+		{
+			BestScore = Score;
+			Best = Candidate.GetActor();
 		}
 	}
-
-	return ClosestActor;
+	return Best;
 }
 
 

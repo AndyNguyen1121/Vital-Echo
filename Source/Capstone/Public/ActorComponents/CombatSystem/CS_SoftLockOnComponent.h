@@ -43,4 +43,8 @@ private:
 private:
 	UFUNCTION()
 	AActor* FindLockOnTarget(FVector2D InputDirection);
+
+	float ScoreTarget(AActor* Candidate, FVector2D ScreenCenter, FVector PlayerLoc);
+
+	AActor* PickBestTarget(const TArray<FHitResult>& Candidates, AActor* CurrentTarget);
 };

@@ -62,6 +62,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetLockOnTarget(AActor* Target);
 
+	UFUNCTION(BlueprintCallable)
+	AActor* GetLockOnTarget() { return LockOnTarget.Get(); }
+
 	virtual UCS_AttributeSet* GetAttributeSet() override;
 
 	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState) override;
