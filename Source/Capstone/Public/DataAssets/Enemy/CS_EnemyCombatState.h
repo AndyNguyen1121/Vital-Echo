@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class CAPSTONE_API UCS_EnemyCombatState : public UCS_CombatStateBase
 {
 	GENERATED_BODY()
@@ -20,4 +20,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category="SetFlags")
 	FCharacterStateInfo StateInfo;
+
+	UPROPERTY(EditAnywhere, Category="Parameters")
+	FVector2D MinMaxDistance;
 };

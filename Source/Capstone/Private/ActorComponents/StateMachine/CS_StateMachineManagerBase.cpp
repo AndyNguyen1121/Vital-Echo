@@ -50,6 +50,7 @@ void UCS_StateMachineManagerBase::RetrieveStates(UCS_CombatStateBase* State, TSe
 	
 	for (UCS_CombatStateBase* DataAsset : State->TransitionStates)
 	{
+		if (!DataAsset) continue;
 		RetrieveStates(DataAsset, StateList);
 		
 		if (!DataAsset->GameplayAbility) continue;

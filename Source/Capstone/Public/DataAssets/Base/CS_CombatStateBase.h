@@ -11,7 +11,7 @@ class UGameplayAbility;
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class CAPSTONE_API UCS_CombatStateBase : public UDataAsset
 {
 	GENERATED_BODY()

@@ -131,7 +131,7 @@ AActor* UCS_SoftLockOnComponent::PickBestTarget(const TArray<FHitResult>& Candid
 
 		if (Candidate.GetActor() == CurrentTarget)
 		{
-			Score *= 0.7f; // current target gets a 30% discount - hysteresis band
+			Score *= 0.7f;
 		}
 
 		if (Score < BestScore)

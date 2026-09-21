@@ -20,7 +20,7 @@ public class Capstone : ModuleRules
 			"GameplayTags", 
 			"UMG",
 			"MotionWarping",
-			
+			"AIModule"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "LevelSequence", "MovieScene", "AnimationBlueprintLibrary", "AnimationModifiers", "ContextualAnimation", "UnrealEd", "EngineAssetDefinitions" });
