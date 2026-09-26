@@ -31,7 +31,7 @@ class CAPSTONE_API UCS_BlueprintLibrary : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable)
-	static void PlayLevelSequenceWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence, FTransform OriginTransform);
+	static void PlayFinisherWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence, FTransform OriginTransform, AActor* SecondaryActor = nullptr);
 
 	UFUNCTION(BlueprintCallable)
 	static TArray<AActor*> SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset = FVector::ZeroVector,
@@ -69,4 +69,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void SetLooseGameplayTagAsBool(AActor* Actor, FGameplayTag GameplayTag, bool Active);
+
+private:
+	static void OnSequenceStarted(AActor* PrimaryActor, AActor* SecondaryActor);
 };

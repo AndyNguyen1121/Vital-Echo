@@ -28,7 +28,8 @@ public:
 	/** 
 	 * Adds posture while safely clamping value.
 	 */ 
-	void AddPostureSafe(float value);
+	void AddPostureSafe(float Value);
+	void AddPostureWithPayload(float Value, AActor* Instigator);
 	
 public:
 	UPROPERTY(BlueprintReadOnly)

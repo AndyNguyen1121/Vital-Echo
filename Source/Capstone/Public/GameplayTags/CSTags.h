@@ -31,7 +31,7 @@ namespace CSTags
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryActivate);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryReceive);
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureDepletionSuppressed);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureBroken);
 		}
 	}
 
@@ -59,6 +59,7 @@ namespace CSTags
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictMove);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictRotate);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsPerformingAction);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsInScriptedAnimation);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureRegenSupressed);
 		}
 

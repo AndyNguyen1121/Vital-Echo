@@ -38,7 +38,7 @@ void UCS_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMod
 
 	if (Data.EvaluatedData.Attribute == GetPostureDamageAttribute())
 	{
-		AddPostureSafe(GetPostureDamage());
+		AddPostureWithPayload(GetPostureDamage(), Context.GetInstigator());
 		SetPostureDamage(0.f);
 	}
 }
@@ -52,7 +52,25 @@ void UCS_AttributeSet::PostAttributesInitialized()
 	}
 }
 
-void UCS_AttributeSet::AddPostureSafe(float value)
+void UCS_AttributeSet::AddPostureSafe(float Value)
 {
-	SetPosture(FMath::Clamp(GetPosture() + value, 0, GetPostureThreshold()));
+	SetPosture(FMath::Clamp(GetPosture() + Value, 0, GetPostureThreshold()));
+
+	if (Value > 0 && GetPosture() == GetPostureThreshold())
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), CSTags::Events::Gameplay::PostureBroken, FGameplayEventData());
+	}
+}
+
+void UCS_AttributeSet::AddPostureWithPayload(float Value, AActor* Instigator)
+{
+	AddPostureSafe(Value);
+	FGameplayEventData Payload;
+	Payload.Instigator = Instigator;
+	Payload.Target = GetOwningAbilitySystemComponent()->GetAvatarActor();
+
+	if (Value > 0 && GetPosture() == GetPostureThreshold())
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), CSTags::Events::Gameplay::PostureBroken, Payload);
+	}
 }

@@ -12,15 +12,17 @@
 #include "MovieSceneSequencePlayer.h"
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
 #include "ActorComponents/CombatSystem/CS_HitStopComponent.h"
+#include "Characters/CS_BaseCharacter.h"
 #include "Engine/OverlapResult.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
 #include "Interfaces/HitStopComponentInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/CS_SequenceStopCallback.h"
 
-void UCS_BlueprintLibrary::PlayLevelSequenceWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence,
-                                                                FTransform OriginTransform)
+void UCS_BlueprintLibrary::PlayFinisherWithOriginTransform(AActor* ContextActor, ULevelSequence* LevelSequence,
+                                                           FTransform OriginTransform, AActor* SecondaryActor)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(ContextActor, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return;
@@ -38,6 +40,11 @@ void UCS_BlueprintLibrary::PlayLevelSequenceWithOriginTransform(AActor* ContextA
 		InstanceData->TransformOrigin = OriginTransform;
 	}
 
+	UCS_SequenceStopCallback* Callback = NewObject<UCS_SequenceStopCallback>(SequenceActor);
+	Callback->Initialize(ContextActor, SecondaryActor);
+
+	OnSequenceStarted(ContextActor, SecondaryActor);
+	SequencePlayer->OnStop.AddDynamic(Callback, &UCS_SequenceStopCallback::OnSequenceStopped);
 	SequencePlayer->Play();
 }
 
@@ -300,6 +307,12 @@ void UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(AActor* Actor, FGameplayTag
 	{
 		UAbilitySystemBlueprintLibrary::RemoveLooseGameplayTags(Actor, FGameplayTagContainer(GameplayTag));
 	}
+}
+
+void UCS_BlueprintLibrary::OnSequenceStarted(AActor* PrimaryActor, AActor* SecondaryActor)
+{
+	SetLooseGameplayTagAsBool(PrimaryActor, CSTags::Status::GameplayStates::IsInScriptedAnimation, true);
+	SetLooseGameplayTagAsBool(SecondaryActor, CSTags::Status::GameplayStates::IsInScriptedAnimation, true);
 }
 
 

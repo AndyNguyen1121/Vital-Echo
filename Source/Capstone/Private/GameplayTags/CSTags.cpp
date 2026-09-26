@@ -29,7 +29,7 @@ namespace CSTags
 			UE_DEFINE_GAMEPLAY_TAG(KnockedUp, "CSTags.Events.Gameplay.KnockedUp");
 			UE_DEFINE_GAMEPLAY_TAG(ParryActivate, "CSTags.Events.Gameplay.ParryActivate");
 			UE_DEFINE_GAMEPLAY_TAG(ParryReceive, "CSTags.Events.Gameplay.ParryReceive");
-			UE_DEFINE_GAMEPLAY_TAG(PostureDepletionSuppressed, "CSTags.Events.Gameplay.PostureDepletionSuppressed");
+			UE_DEFINE_GAMEPLAY_TAG(PostureBroken, "CSTags.Events.Gameplay.PostureBroken");
 		}
 	}
 
@@ -59,6 +59,7 @@ namespace CSTags
 			UE_DEFINE_GAMEPLAY_TAG(RestrictMove, "CSTags.Status.GameplayStates.RestrictMove");
 			UE_DEFINE_GAMEPLAY_TAG(RestrictRotate, "CSTags.Status.GameplayStates.RestrictRotate");
 			UE_DEFINE_GAMEPLAY_TAG(IsPerformingAction, "CSTags.Status.GameplayStates.IsPerformingAction");
+			UE_DEFINE_GAMEPLAY_TAG(IsInScriptedAnimation, "CSTags.Status.GameplayStates.IsInScriptedAnimation");
 			UE_DEFINE_GAMEPLAY_TAG(PostureRegenSupressed, "CSTags.Status.GameplayStates.PostureRegenSuppressed");
 		}
 		
