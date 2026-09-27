@@ -117,6 +117,12 @@ void UCS_PlayerStateMachineManager::RetrieveStates(UCS_CombatStateBase* State, T
 			StateList.Add(AnyState);
 			ASC->GiveAbility(AnyState->GameplayAbility);
 		}
+
+		for (UCS_CombatStateBase* AdditionalStates : PlayerCombatProfile->AdditionalStates)
+		{
+			StateList.Add(AdditionalStates);
+			ASC->GiveAbility(AdditionalStates->GameplayAbility);
+		}
 	}
 }
 
@@ -177,7 +183,9 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 	UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State);
 	if (!CombatState) return false;
 	
-	if (PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction) && !PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::InputWindowActive))
+	if (!CombatState->BypassIsPerformingAction &&
+		PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction)
+		&& !PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::InputWindowActive))
 	{
 		return false;
 	}

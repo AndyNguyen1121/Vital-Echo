@@ -19,6 +19,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<UCS_CombatStateBase*> AnyStateTransitions;
 
+	UPROPERTY(EditAnywhere)
+	TArray<UCS_CombatStateBase*> AdditionalStates;
+
 	UPROPERTY()
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;
 

@@ -30,9 +30,10 @@ void UCS_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMod
 		}
 		else
 		{
-			Payload.Instigator = GetOwningAbilitySystemComponent()->GetAvatarActor();;
+			Payload.Instigator = GetOwningAbilitySystemComponent()->GetAvatarActor();
 			Payload.Target = Context.GetInstigator();
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Context.GetInstigator(), CSTags::Events::Gameplay::ParryReceive, Payload);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), CSTags::Events::Gameplay::ParryActivate, Payload);
 		}
 	}
 

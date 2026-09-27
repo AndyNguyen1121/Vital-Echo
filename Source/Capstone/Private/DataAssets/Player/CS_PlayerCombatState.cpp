@@ -46,6 +46,11 @@ void UCS_PlayerCombatState::SortStatesRecursive(TSet<UCS_CombatStateBase*>& Visi
 
 	SortedTransitionStates = CombinedStates;
 
+	if (!CanTransitionToSelf)
+	{
+		CombinedStates.Remove(this);
+	}
+
 	for (UCS_CombatStateBase* Child : TransitionStates)
 	{
 		if (UCS_PlayerCombatState* ChildState = Cast<UCS_PlayerCombatState>(Child))
@@ -65,6 +70,11 @@ void UCS_PlayerCombatState::SortStates()
 	TArray<UCS_CombatStateBase*> CombinedStates(TransitionStates);
 	CombinedStates.Append(CachedAnyStateTransitions);
 
+	if (!CanTransitionToSelf)
+	{
+		CombinedStates.Remove(this);
+	}
+	
 	CombinedStates.Sort([](const UCS_CombatStateBase& A, const UCS_CombatStateBase& B)
 	{
 		const UCS_PlayerCombatState* StateA = Cast<UCS_PlayerCombatState>(&A);

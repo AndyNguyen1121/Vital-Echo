@@ -55,7 +55,8 @@ namespace CSTags
 				UE_DEFINE_GAMEPLAY_TAG(InputWindowActive, "CSTags.Status.GameplayStates.PlayerStates.InputWindowActive");
 				
 			}
-			
+
+			UE_DEFINE_GAMEPLAY_TAG(RestrictBlocking, "CSTags.Status.GameplayStates.RestrictBlocking");
 			UE_DEFINE_GAMEPLAY_TAG(RestrictMove, "CSTags.Status.GameplayStates.RestrictMove");
 			UE_DEFINE_GAMEPLAY_TAG(RestrictRotate, "CSTags.Status.GameplayStates.RestrictRotate");
 			UE_DEFINE_GAMEPLAY_TAG(IsPerformingAction, "CSTags.Status.GameplayStates.IsPerformingAction");

@@ -40,6 +40,12 @@ public:
 	UPROPERTY(EditAnywhere, Category="Criteria")
 	bool Grounded;
 
+	UPROPERTY(EditAnywhere, Category="Exceptions")
+	bool BypassIsPerformingAction;
+
+	UPROPERTY(EditAnywhere, Category="Exceptions")
+	bool CanTransitionToSelf;
+
 	UPROPERTY(EditAnywhere, Category="SetFlags")
 	FCharacterStateInfo StateInfo;
 
