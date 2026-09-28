@@ -41,6 +41,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Damage;
 
+	// Posture
+	
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Posture;
 
@@ -53,6 +55,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData PostureDamage;
 
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData BrokenPostureRecoverRate;
+
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, Damage);
@@ -60,6 +65,7 @@ public:
 	ATTRIBUTE_ACCESSORS(ThisClass, PostureThreshold);
 	ATTRIBUTE_ACCESSORS(ThisClass, PostureDamage);
 	ATTRIBUTE_ACCESSORS(ThisClass, PostureRecoverRate);
+	ATTRIBUTE_ACCESSORS(ThisClass, BrokenPostureRecoverRate);
 
 	UPROPERTY(VisibleAnywhere)
 	bool bAttributesInitialized;
