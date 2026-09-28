@@ -35,7 +35,7 @@ bool UCS_EnemyStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	{
 		EnemyCharacter->CurrentDamageAttribute = CombatState->DamageAttributes;
 		EnemyCharacter->CurrentDamageVisuals = CombatState->DamageFeedback;
-		EnemyCharacter->SetGameplayState(CombatState->StateInfo.bCanMove, CombatState->StateInfo.bIsPerformingAction, CombatState->StateInfo.bCanRotate, false);
+		//EnemyCharacter->SetGameplayState(CombatState->StateInfo.bCanMove, CombatState->StateInfo.bIsPerformingAction, CombatState->StateInfo.bCanRotate, false);
 	}
 
 	return true;

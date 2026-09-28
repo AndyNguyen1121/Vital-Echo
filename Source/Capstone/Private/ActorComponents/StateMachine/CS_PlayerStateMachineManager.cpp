@@ -68,7 +68,6 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	{
 		PlayerCharacter->CurrentDamageAttribute = CombatState->DamageAttributes;
 		PlayerCharacter->CurrentDamageVisuals = CombatState->DamageFeedback;
-		PlayerCharacter->SetGameplayState(CombatState->StateInfo.bCanMove, CombatState->StateInfo.bIsPerformingAction, CombatState->StateInfo.bCanRotate, false);
 
 		if (CombatState->StateInfo.GravityScale > -1)
 		{
