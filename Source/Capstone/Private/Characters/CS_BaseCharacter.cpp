@@ -99,7 +99,7 @@ void ACS_BaseCharacter::HandlePostureDepletion(float DeltaSeconds)
 		return;
 
 	UCS_AttributeSet* CachedAttributeSet = GetAttributeSet();
-	CachedAttributeSet->SetPosture(-CachedAttributeSet->GetPostureRecoverRate() * DeltaSeconds);
+	CachedAttributeSet->SetPosture(CachedAttributeSet->GetPosture() - CachedAttributeSet->GetPostureRecoverRate() * DeltaSeconds);
 }
 
 void ACS_BaseCharacter::OnHealthChanged(float OldValue, float NewValue, AActor* EventInstigator)
