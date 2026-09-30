@@ -82,7 +82,7 @@ namespace CSTags
 		namespace SetByCaller
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage);
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureSuppressDuration);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureDamage);
 		}
 		
 	}

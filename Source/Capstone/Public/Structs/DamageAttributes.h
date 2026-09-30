@@ -15,6 +15,9 @@ struct FDamageAttributes
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
+	float PostureDamage;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	TSubclassOf<UGameplayEffect> DamageEffect;

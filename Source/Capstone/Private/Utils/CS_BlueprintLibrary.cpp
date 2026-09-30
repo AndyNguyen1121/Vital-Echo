@@ -277,6 +277,7 @@ void UCS_BlueprintLibrary::ApplyDamageAttributes(AActor* TargetActor, AActor* So
 		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(DamageAttributes.DamageEffect, 1.f, ContextHandle);
 
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Spec, CSTags::Effects::SetByCaller::Damage, DamageAttributes.Damage);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Spec, CSTags::Effects::SetByCaller::PostureDamage, DamageAttributes.PostureDamage);
 		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
 	}
 	

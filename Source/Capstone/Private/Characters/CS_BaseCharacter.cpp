@@ -3,6 +3,7 @@
 
 #include "Capstone/Public/Characters/CS_BaseCharacter.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "MotionWarpingComponent.h"
 #include "AbilitySystem/CS_AttributeSet.h"
 #include "ActorComponents/CombatSystem/CS_HitStopComponent.h"
@@ -86,7 +87,10 @@ void ACS_BaseCharacter::InitializeAttributes()
 	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
 	
 	if (GetAttributeSet())
+	{
+		GetAttributeSet()->OnDamaged.AddDynamic(this, &ThisClass::ACS_BaseCharacter::OnHealthChanged);
 		GetAttributeSet()->PostAttributesInitialized();
+	}
 }
 
 void ACS_BaseCharacter::HandlePostureDepletion(float DeltaSeconds)
@@ -95,7 +99,18 @@ void ACS_BaseCharacter::HandlePostureDepletion(float DeltaSeconds)
 		return;
 
 	UCS_AttributeSet* CachedAttributeSet = GetAttributeSet();
-	CachedAttributeSet->AddPostureSafe(-CachedAttributeSet->GetPostureRecoverRate() * DeltaSeconds);
+	CachedAttributeSet->SetPosture(-CachedAttributeSet->GetPostureRecoverRate() * DeltaSeconds);
+}
+
+void ACS_BaseCharacter::OnHealthChanged(float OldValue, float NewValue, AActor* EventInstigator)
+{
+	if (NewValue < OldValue)
+	{
+		FGameplayEventData Payload;
+		Payload.Target = this;
+		Payload.Instigator = EventInstigator;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, CSTags::Events::Gameplay::HitReact, Payload);
+	}
 }
 
 void ACS_BaseCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState)

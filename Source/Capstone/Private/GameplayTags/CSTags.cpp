@@ -82,7 +82,7 @@ namespace CSTags
 		namespace SetByCaller
 		{
 			UE_DEFINE_GAMEPLAY_TAG(Damage, "CSTags.Effects.SetByCaller.Damage");
-			UE_DEFINE_GAMEPLAY_TAG(PostureSuppressDuration, "CSTags.Effects.SetByCaller.PostureSuppressDuration");
+			UE_DEFINE_GAMEPLAY_TAG(PostureDamage, "CSTags.Effects.SetByCaller.PostureDamage");
 		}
 	}
 }

@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Structs/DamageAttributes.h"
 #include "ContextualAnimSceneActorComponent.h"
+#include "AbilitySystem/CS_AttributeSet.h"
 #include "Enums/WeaponTypes.h"
 #include "Interfaces/HitStopComponentInterface.h"
 #include "Interfaces/TokenInterface.h"
@@ -136,4 +137,7 @@ protected:
 
 protected:
 	void HandlePostureDepletion(float DeltaSeconds);
+
+	UFUNCTION()
+	virtual void OnHealthChanged(float OldValue, float NewValue, AActor* EventInstigator);
 };

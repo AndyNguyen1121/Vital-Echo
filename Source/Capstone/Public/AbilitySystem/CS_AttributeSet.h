@@ -15,6 +15,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAttributeInitialized);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPostureIncreased);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDamaged, float, OldValue, float, NewValue, AActor*, Instigator);
 
 UCLASS()
 class CAPSTONE_API UCS_AttributeSet : public UAttributeSet
@@ -24,13 +25,13 @@ class CAPSTONE_API UCS_AttributeSet : public UAttributeSet
 public:
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	void PostAttributesInitialized();
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
 	/** 
 	 * Adds posture while safely clamping value.
 	 */ 
 	void AddPostureSafe(float Value);
 	void AddPostureWithPayload(float Value, AActor* Instigator);
-	
 public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Health;
@@ -72,4 +73,7 @@ public:
 
 	UPROPERTY()
 	FAttributeInitialized OnAttributesInitialized;
+
+	UPROPERTY()
+	FOnDamaged OnDamaged;
 };

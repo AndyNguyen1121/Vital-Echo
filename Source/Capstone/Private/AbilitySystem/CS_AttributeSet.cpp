@@ -13,34 +13,29 @@ void UCS_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMod
 	Super::PostGameplayEffectExecute(Data);
 
 	FGameplayEffectContextHandle Context = Data.EffectSpec.GetEffectContext();
-	FGameplayEventData Payload;
 
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
-		if (!GetOwningAbilitySystemComponent()->HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::ParryWindowActive))
+		float OldValue = GetHealth();
+		SetHealth(GetHealth() - GetDamage());
+
+		if (GetHealth() < OldValue)
 		{
-			
-			Payload.Instigator = Context.GetInstigator();
-			Payload.Target = GetOwningAbilitySystemComponent()->GetAvatarActor();
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), FGameplayTag(CSTags::Events::Gameplay::HitReact), Payload);
-			
-			SetHealth(FMath::Clamp(GetHealth() - GetDamage(), 0, GetMaxHealth()));
-			SetDamage(0);
+			OnDamaged.Broadcast(OldValue, GetHealth(), Context.GetInstigator());
 		}
-		else
-		{
-			Payload.Instigator = GetOwningAbilitySystemComponent()->GetAvatarActor();
-			Payload.Target = Context.GetInstigator();
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Context.GetInstigator(), CSTags::Events::Gameplay::ParryReceive, Payload);
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), CSTags::Events::Gameplay::ParryActivate, Payload);
-		}
+		
+		SetDamage(0);
 	}
 
 	if (Data.EvaluatedData.Attribute == GetPostureDamageAttribute())
 	{
-		AddPostureWithPayload(GetPostureDamage(), Context.GetInstigator());
+		SetPosture(GetPosture() + GetPostureDamage());
 		SetPostureDamage(0.f);
+	}
+
+	if (Data.EvaluatedData.Attribute == GetMaxHealthAttribute())
+	{
+		SetHealth(GetMaxHealth());
 	}
 }
 
@@ -53,25 +48,17 @@ void UCS_AttributeSet::PostAttributesInitialized()
 	}
 }
 
-void UCS_AttributeSet::AddPostureSafe(float Value)
+void UCS_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
-	SetPosture(FMath::Clamp(GetPosture() + Value, 0, GetPostureThreshold()));
+	Super::PreAttributeChange(Attribute, NewValue);
 
-	if (Value > 0 && GetPosture() == GetPostureThreshold())
+	if (Attribute == GetHealthAttribute())
 	{
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), CSTags::Events::Gameplay::PostureBroken, FGameplayEventData());
+		NewValue = FMath::Clamp(NewValue, 0, GetMaxHealth());
 	}
-}
 
-void UCS_AttributeSet::AddPostureWithPayload(float Value, AActor* Instigator)
-{
-	AddPostureSafe(Value);
-	FGameplayEventData Payload;
-	Payload.Instigator = Instigator;
-	Payload.Target = GetOwningAbilitySystemComponent()->GetAvatarActor();
-
-	if (Value > 0 && GetPosture() == GetPostureThreshold())
+	if (Attribute == GetPostureAttribute())
 	{
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwningAbilitySystemComponent()->GetAvatarActor(), CSTags::Events::Gameplay::PostureBroken, Payload);
+		NewValue = FMath::Clamp(NewValue, 0, GetPostureThreshold());
 	}
 }
