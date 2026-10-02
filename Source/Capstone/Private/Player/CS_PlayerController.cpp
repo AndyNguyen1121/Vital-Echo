@@ -50,6 +50,7 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Triggered, this, &ACS_PlayerController::OnBlock);
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Completed, this, &ACS_PlayerController::OnBlockEnd);
 	EnhancedInputComponent->BindAction(TransformAction, ETriggerEvent::Started, this, &ThisClass::OnTransformationInput);
+	EnhancedInputComponent->BindAction(RepositionAction, ETriggerEvent::Started, this, &ThisClass::RepositionInput);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -83,6 +84,7 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 
 void ACS_PlayerController::Primary(const FInputActionValue& Value)
 {
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetPawn(), CSTags::Input::Primary, FGameplayEventData());
 	InputBuffer.Add(FBufferedInput(EInputType::EIT_Primary));
 }
 
@@ -138,7 +140,13 @@ void ACS_PlayerController::OnTransformationInput()
 
 void ACS_PlayerController::JumpInput()
 {
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetPawn(), CSTags::Input::Jump, FGameplayEventData());
 	InputBuffer.Add(FBufferedInput(EInputType::EIT_Jump));
+}
+
+void ACS_PlayerController::RepositionInput()
+{
+	InputBuffer.Add(FBufferedInput(EInputType::EIT_Reposition));
 }
 
 void ACS_PlayerController::ChangeInputDirection(FVector2D InputDirection)

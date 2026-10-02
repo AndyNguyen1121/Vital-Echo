@@ -15,6 +15,9 @@ namespace CSTags
 	namespace Input
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(PauseInputWindowActive);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Primary);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Jump);
+
 	}
 
 	namespace Events

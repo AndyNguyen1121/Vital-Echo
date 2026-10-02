@@ -52,6 +52,10 @@ public:
 	UPROPERTY()
 	TArray<UCS_CombatStateBase*> SortedTransitionStates;
 
+	UPROPERTY(EditAnywhere)
+	TArray<UCS_CombatStateBase*> BlackListedStates;
+
+	UPROPERTY()
 	TArray<UCS_CombatStateBase*> CachedAnyStateTransitions;
 
 	UPROPERTY()

@@ -13,6 +13,8 @@ namespace CSTags
 	namespace Input
 	{
 		UE_DEFINE_GAMEPLAY_TAG(PauseInputWindowActive, "CSTags.Input.PauseInputWindowActive");
+		UE_DEFINE_GAMEPLAY_TAG(Primary, "CSTags.Input.Primary");
+		UE_DEFINE_GAMEPLAY_TAG(Jump, "CSTags.Input.Jump");
 	}
 
 	namespace Events

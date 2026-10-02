@@ -7,6 +7,7 @@ enum class EInputType : uint8
 	EIT_Jump UMETA(DisplayName = "Jump"),
 	EIT_Block UMETA(DisplayName = "Block"),
 	EIT_Transform UMETA(DisplayName = "Transform"),
+	EIT_Reposition UMETA(DisplayName = "Reposition"),
 
 	EIT_Pause UMETA(DisplayName = "Pause"),
 	

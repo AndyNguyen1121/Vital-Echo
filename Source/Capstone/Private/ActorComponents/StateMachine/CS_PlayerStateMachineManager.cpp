@@ -181,6 +181,14 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 	
 	UCS_PlayerCombatState* CombatState = Cast<UCS_PlayerCombatState>(State);
 	if (!CombatState) return false;
+
+	if (UCS_PlayerCombatState* CurrentCombatState = Cast<UCS_PlayerCombatState>(CurrentState))
+	{
+		if (CurrentCombatState->BlackListedStates.Contains(CombatState))
+		{
+			return false;
+		}
+	}
 	
 	if (!CombatState->BypassIsPerformingAction &&
 		PlayerCharacter->HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction)
