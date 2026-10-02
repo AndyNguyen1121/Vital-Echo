@@ -60,7 +60,8 @@ namespace CSTags
 			{
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(CanBeExecuted);
 			}
-			
+
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsBlocking);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictBlocking);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictMove);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictRotate);

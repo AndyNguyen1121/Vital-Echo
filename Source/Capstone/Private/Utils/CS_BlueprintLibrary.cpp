@@ -310,6 +310,17 @@ void UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(AActor* Actor, FGameplayTag
 	}
 }
 
+void UCS_BlueprintLibrary::TurnToFaceActor(AActor* FromActor, AActor* ToActor)
+{
+	if (!IsValid(FromActor) || !IsValid(ToActor)) return;
+
+	FVector DirToActor = ToActor->GetActorLocation() - FromActor->GetActorLocation();
+	DirToActor.Z = 0;
+	DirToActor.Normalize();
+
+	FromActor->SetActorRotation(DirToActor.Rotation());
+}
+
 void UCS_BlueprintLibrary::OnSequenceStarted(AActor* PrimaryActor, AActor* SecondaryActor)
 {
 	SetLooseGameplayTagAsBool(PrimaryActor, CSTags::Status::GameplayStates::IsInScriptedAnimation, true);

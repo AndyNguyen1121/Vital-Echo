@@ -70,6 +70,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void SetLooseGameplayTagAsBool(AActor* Actor, FGameplayTag GameplayTag, bool Active);
 
+	UFUNCTION(BlueprintCallable)
+	static void TurnToFaceActor(AActor* FromActor, AActor* ToActor);
+
 private:
 	static void OnSequenceStarted(AActor* PrimaryActor, AActor* SecondaryActor);
 };

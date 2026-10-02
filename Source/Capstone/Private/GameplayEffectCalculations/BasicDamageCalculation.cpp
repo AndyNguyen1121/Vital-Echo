@@ -40,6 +40,12 @@ void UBasicDamageCalculation::Execute_Implementation(const FGameplayEffectCustom
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetAvatarActor(), CSTags::Events::Gameplay::ParryActivate, Payload);
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceASC->GetAvatarActor(), CSTags::Events::Gameplay::ParryReceive, Payload);
 	}
+
+	if (TargetASC->HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::IsBlocking)))
+	{
+		PostureDamageOut *= 0.5f;
+		DamageOut *= 0.5f;
+	}
 	
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UCS_AttributeSet::GetDamageAttribute(), EGameplayModOp::Override, DamageOut));
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UCS_AttributeSet::GetPostureDamageAttribute(), EGameplayModOp::Override, PostureDamageOut));

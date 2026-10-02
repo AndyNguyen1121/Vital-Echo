@@ -88,24 +88,6 @@ void ACS_PlayerCharacter::BeginPlay()
 void ACS_PlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	/*if (LockOnTarget.IsValid() && !HasMatchingGameplayTag(CSTags::Status::GameplayStates::RestrictRotate))
-	{
-		FVector DirToLockOnEnemy = CachedPlayerController->GetCameraContainer()->GetLockOnActor()->GetActorLocation() - GetActorLocation();
-		DirToLockOnEnemy.Z = 0;
-		DirToLockOnEnemy.Normalize();
-
-		FRotator DesiredRotation = UKismetMathLibrary::RInterpTo_Constant(GetActorRotation(), DirToLockOnEnemy.Rotation(), DeltaSeconds, 500.f);
-
-		SetActorRotation(DesiredRotation);
-	}*/
-
-	/*if (const FMotionWarpingTarget* Target =
-	MotionWarpingComponent->FindWarpTarget(FName("Player")))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Warp Target Location: %s"),
-			*Target->GetLocation().ToString());
-	}*/
 }
 
 UAbilitySystemComponent* ACS_PlayerCharacter::GetAbilitySystemComponent() const

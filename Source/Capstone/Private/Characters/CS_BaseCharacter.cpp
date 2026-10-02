@@ -104,12 +104,18 @@ void ACS_BaseCharacter::HandlePostureDepletion(float DeltaSeconds)
 
 void ACS_BaseCharacter::OnHealthChanged(float OldValue, float NewValue, AActor* EventInstigator)
 {
-	if (NewValue < OldValue)
+	FGameplayEventData Payload;
+	Payload.Target = this;
+	Payload.Instigator = EventInstigator;
+	
+	if (NewValue < OldValue && !HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::IsBlocking)))
 	{
-		FGameplayEventData Payload;
-		Payload.Target = this;
-		Payload.Instigator = EventInstigator;
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, CSTags::Events::Gameplay::HitReact, Payload);
+	}
+	else if (HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::IsBlocking)) && IsValid(EventInstigator))
+	{
+		// turn to face enemy
+		UCS_BlueprintLibrary::TurnToFaceActor(this, EventInstigator);
 	}
 }
 

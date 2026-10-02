@@ -42,6 +42,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData Damage;
 
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData ShieldDamage;
+
 	// Posture
 	
 	UPROPERTY(BlueprintReadOnly)
@@ -62,6 +65,7 @@ public:
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, Damage);
+	ATTRIBUTE_ACCESSORS(ThisClass, ShieldDamage);
 	ATTRIBUTE_ACCESSORS(ThisClass, Posture);
 	ATTRIBUTE_ACCESSORS(ThisClass, PostureThreshold);
 	ATTRIBUTE_ACCESSORS(ThisClass, PostureDamage);
