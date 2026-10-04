@@ -107,6 +107,14 @@ void ACS_BaseCharacter::OnHealthChanged(float OldValue, float NewValue, AActor* 
 	FGameplayEventData Payload;
 	Payload.Target = this;
 	Payload.Instigator = EventInstigator;
+
+	if (NewValue == 0)
+	{
+		// Dead
+		OnDeath.Broadcast();
+		bIsDead = true;
+		return;
+	}
 	
 	if (NewValue < OldValue && !HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::IsBlocking)))
 	{

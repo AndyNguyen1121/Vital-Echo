@@ -60,7 +60,7 @@ public:
 	void WarpToLockOnTarget(float MinRange, float MaxRange, FVector DistanceOffset);
 
 	UFUNCTION(BlueprintCallable)
-	void SetLockOnTarget(AActor* Target);
+	void SetLockOnTarget(AActor* Target, FName SocketName = "LockOnTarget");
 
 	UFUNCTION(BlueprintCallable)
 	AActor* GetLockOnTarget() { return LockOnTarget.Get(); }
@@ -71,6 +71,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SendWeaponSwitchRequest(ACS_WeaponBase* Weapon);
+	
+	bool IsHardLockedOn() const { return bIsHardLockedOn; }
+
+	UFUNCTION()
+	void DisableLockOn();
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
@@ -121,5 +126,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCS_TagChangeTask> InputWindowTask;
+
+	bool bIsHardLockedOn;
 	
 };
