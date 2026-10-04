@@ -124,14 +124,14 @@ void ACS_PlayerCharacter::ToggleLockOn()
 	ACS_PlayerCameraManager* CachedCamera = GetCSCameraManager();
 	if (!IsValid(CachedCamera)) return;
 	
-	if (!GetCSPlayerState()->bIsLockedOn)
+	if (!GetCSPlayerState()->bIsHardLockedOn)
 	{
 		LockOnTarget = CachedCamera->EnableLockOn(LockOnSearchRadius, LockOnMaxAngle);
+		SetLockOnTarget(LockOnTarget.Get());
 	}
 	else
 	{
-		LockOnTarget = nullptr;
-		CachedCamera->DisableLockOn();
+		DisableLockOn();
 	}
 }
 
@@ -163,10 +163,34 @@ void ACS_PlayerCharacter::WarpToLockOnTarget(float MinRange, float MaxRange, FVe
 			RotationOffset);
 }
 
-void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target)
+void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target, FName SocketName)
 {
+	// Remove binding from previous target
+	if (IsValid(GetLockOnTarget()))
+	{
+		if (ACS_BaseCharacter* PrevLockOnTarget = Cast<ACS_BaseCharacter>(LockOnTarget.Get()))
+		{
+			PrevLockOnTarget->OnDeath.RemoveDynamic(this, &ThisClass::DisableLockOn);
+		}
+	}
+
 	LockOnTarget = Target;
+	if (!IsValid(Target))
+	{
+		LockOnReticle->SetVisibility(false);
+		return;
+	}
+	ACS_BaseCharacter* TargetCharacter = Cast<ACS_BaseCharacter>(Target);
+
+	if (IsValid(TargetCharacter))
+	{
+		LockOnReticle->AttachToComponent(TargetCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), SocketName);
+		LockOnReticle->SetVisibility(true);
+		TargetCharacter->OnDeath.AddDynamic(this, &ThisClass::DisableLockOn);
+	}
 }
+
+#pragma endregion 
 
 UCS_AttributeSet* ACS_PlayerCharacter::GetAttributeSet()
 {
@@ -216,6 +240,15 @@ void ACS_PlayerCharacter::SendWeaponSwitchRequest(ACS_WeaponBase* Weapon)
 	CheckWeaponSwitchRequest();
 }
 
+void ACS_PlayerCharacter::DisableLockOn()
+{
+	ACS_PlayerCameraManager* CachedCamera = GetCSCameraManager();
+	if (!IsValid(CachedCamera)) return;
+	
+	SetLockOnTarget(nullptr);
+	CachedCamera->DisableLockOn();
+}
+
 
 void ACS_PlayerCharacter::CheckWeaponSwitchRequest()
 {
@@ -237,7 +270,6 @@ void ACS_PlayerCharacter::CheckWeaponSwitchRequest()
 	}
 }
 
-#pragma endregion 
 
 
 

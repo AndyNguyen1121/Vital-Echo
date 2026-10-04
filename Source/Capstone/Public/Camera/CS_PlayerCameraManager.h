@@ -31,11 +31,14 @@ public:
 	void SwitchLockOnTargets(const FVector2D ControllerInput, ACS_PlayerCharacter* PlayerCharacter);
 	
 private:
-	AActor* FindClosestLockOnTarget(float SearchRadius, float MaxAngle, FLinearColor DebugColor = FLinearColor::Blue);
+	AActor* FindBestLockOnTarget(float SearchRadius, float MaxAngle, FLinearColor DebugColor = FLinearColor::Blue);
 
 	TArray<AActor*> FindValidLockOnTargets(float SearchRadius, float MaxAngle, FLinearColor DebugColor = FLinearColor::Blue);
 
 	UPROPERTY(EditAnywhere)
 	bool bShowLockOnDebug{true};
+
+private:
+	float ScoreTarget(AActor* Candidate, FVector2D ScreenCenter, FVector PlayerLoc);
 	
 };

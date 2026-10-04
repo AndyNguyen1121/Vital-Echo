@@ -10,6 +10,7 @@
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/CS_PlayerController.h"
+#include "Player/CS_PlayerState.h"
 #include "Utils/CS_BlueprintLibrary.h"
 
 // Called when the game starts
@@ -31,23 +32,16 @@ void UCS_SoftLockOnComponent::BeginPlay()
 
 void UCS_SoftLockOnComponent::TrySetLockOnTarget(FVector2D InputDirection)
 {
-	ACharacter* TargetCharacter = nullptr;
-	if (!InputDirection.IsNearlyZero())
+	ACS_BaseCharacter* TargetCharacter = nullptr;
+	if (!CachedPlayerCharacter->GetCSPlayerState()->bIsHardLockedOn &&!InputDirection.IsNearlyZero())
 	{
-		 TargetCharacter = Cast<ACharacter>(FindLockOnTarget(InputDirection));
+		 TargetCharacter = Cast<ACS_BaseCharacter>(FindLockOnTarget(InputDirection));
 	}
 
-	if (IsValid(TargetCharacter))
+	if (IsValid(TargetCharacter) && !TargetCharacter->IsDead())
 	{
 		CachedPlayerCharacter->SetLockOnTarget(TargetCharacter);
-		CachedPlayerCharacter->LockOnReticle->AttachToComponent(TargetCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), FName("LockOnTarget"));
-		CachedPlayerCharacter->LockOnReticle->SetVisibility(true);
 	}
-	/*else
-	{
-		CachedPlayerCharacter->SetLockOnTarget(nullptr);
-		CachedPlayerCharacter->LockOnReticle->SetVisibility(false);
-	}*/
 }
 
 AActor* UCS_SoftLockOnComponent::FindLockOnTarget(FVector2D InputDirection)

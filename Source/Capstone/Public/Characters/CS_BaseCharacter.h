@@ -26,7 +26,7 @@ class UGameplayEffect;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FASCInitialized, UAbilitySystemComponent*, ASC, UAttributeSet*, AS);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponEquipped, ACS_WeaponBase*, NewWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponTypeChanged, EWeaponType, NewWeaponType);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 
 UCLASS()
 class CAPSTONE_API ACS_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public ITokenInterface, public IHitStopComponentInterface
@@ -75,6 +75,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeWeaponType(EWeaponType NewWeaponType);
+
+	UFUNCTION(BlueprintPure)
+	bool IsDead() const { return bIsDead; }
 	
 	
 public:
@@ -92,10 +95,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	FWarpLocationInfo WarpLocationInfo;
-
-	UPROPERTY(VisibleAnywhere)
-	bool bIsDead{false};
-
+	
 	UPROPERTY(BlueprintAssignable)
 	FASCInitialized OnASCInitialized;
 
@@ -104,6 +104,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FWeaponTypeChanged OnWeaponTypeChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDeath OnDeath;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	EWeaponType CurrentEquippedWeaponType;
@@ -118,6 +121,9 @@ private:
 	float InitialGravityScale;
 
 	bool bInitialGravitySet;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bIsDead{false};
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

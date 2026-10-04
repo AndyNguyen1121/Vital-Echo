@@ -26,12 +26,11 @@ void ACS_PlayerCameraManager::BeginPlay()
 
 AActor* ACS_PlayerCameraManager::EnableLockOn(float SearchRadius, float MaxAngle)
 {
-	AActor* TargetActor = FindClosestLockOnTarget(SearchRadius, MaxAngle);
+	AActor* TargetActor = FindBestLockOnTarget(SearchRadius, MaxAngle);
 	ACS_PlayerController* PlayerController = Cast<ACS_PlayerController>(GetOwningPlayerController());
 	if (IsValid(PlayerController) && IsValid(TargetActor))
 	{
-		PlayerController->GetCSPlayerState()->bIsLockedOn = true;
-		PlayerController->GetCSPlayerCharacter()->GetCharacterMovement()->bOrientRotationToMovement = false;
+		PlayerController->GetCSPlayerState()->bIsHardLockedOn = true;
 		GetCameraContainer()->SetLockOnTarget(TargetActor);
 		GetCameraContainer()->SwitchToLockOnCamera();
 	}
@@ -44,8 +43,7 @@ void ACS_PlayerCameraManager::DisableLockOn()
 	ACS_PlayerController* PlayerController = Cast<ACS_PlayerController>(GetOwningPlayerController());
 	if (IsValid(PlayerController))
 	{
-		PlayerController->GetCSPlayerState()->bIsLockedOn = false;
-		PlayerController->GetCSPlayerCharacter()->GetCharacterMovement()->bOrientRotationToMovement = true;
+		PlayerController->GetCSPlayerState()->bIsHardLockedOn = false;
 		GetCameraContainer()->SetLockOnTarget(nullptr);
 		GetCameraContainer()->SwitchToMainCamera();
 	}
@@ -66,7 +64,7 @@ void ACS_PlayerCameraManager::SwitchLockOnTargets(const FVector2D ControllerInpu
 {
 	ACS_PlayerController* PlayerController = Cast<ACS_PlayerController>(GetOwningPlayerController());
 	if (!IsValid(PlayerController) || !IsValid(PlayerCharacter)) return;
-	if (!PlayerController->GetCSPlayerState()->bIsLockedOn || ControllerInput == FVector2D::ZeroVector) return;
+	if (!PlayerController->GetCSPlayerState()->bIsHardLockedOn || ControllerInput == FVector2D::ZeroVector) return;
 
 	TArray<AActor*> ValidActors = FindValidLockOnTargets(PlayerCharacter->LockOnSearchRadius, PlayerCharacter->LockOnMaxAngle);
 	if (ValidActors.Num() == 0) return;
@@ -81,8 +79,8 @@ void ACS_PlayerCameraManager::SwitchLockOnTargets(const FVector2D ControllerInpu
 	{
 		if (Actor == GetCameraContainer()->GetLockOnActor()) continue;
 
-		FVector DirectionRelativeToCamera = (Actor->GetActorLocation() - GetCameraLocation()).GetSafeNormal();
-		float Distance = GetDistanceTo(Actor);
+		FVector DirectionRelativeToCamera = (Actor->GetActorLocation() - GetCameraContainer()->GetLockOnActor()->GetActorLocation()).GetSafeNormal();
+		float Distance = GetCameraContainer()->GetLockOnActor()->GetDistanceTo(Actor);
 		
 		if (Distance < ClosestDistance)
 		{
@@ -106,23 +104,39 @@ void ACS_PlayerCameraManager::SwitchLockOnTargets(const FVector2D ControllerInpu
 
 }
 
-AActor* ACS_PlayerCameraManager::FindClosestLockOnTarget(float SearchRadius, float MaxAngle, FLinearColor DebugColor)
+AActor* ACS_PlayerCameraManager::FindBestLockOnTarget(float SearchRadius, float MaxAngle, FLinearColor DebugColor)
 {
-	AActor* CachedOwnerPawn = GetOwningPlayerController()->GetPawn();
-	if (!IsValid(CachedOwnerPawn)) return nullptr;
-	
 	TArray<AActor*> ValidActors = FindValidLockOnTargets(SearchRadius, MaxAngle);
-	
-	if (ValidActors.Num() == 0) return nullptr;
-	
-	AActor* ClosestActor = UCS_BlueprintLibrary::GetClosestActorToLocation(ValidActors, CachedOwnerPawn->GetActorLocation());
-
-	if (bShowLockOnDebug)
+	ACS_PlayerController* PlayerController = Cast<ACS_PlayerController>(GetOwningPlayerController());
+	ACS_PlayerCharacter* Player = Cast<ACS_PlayerCharacter>(PlayerController->GetPawn());
+	if (!IsValid(Player))
 	{
-		DrawDebugSphere(GetWorld(), ClosestActor->GetActorLocation() + (ClosestActor->GetActorUpVector() * 100), 10.f, 16, DebugColor.ToFColor(true), false, 0.5f);
+		return nullptr;
 	}
 	
-	return ClosestActor;
+	AActor* Best = nullptr;
+	float BestScore = TNumericLimits<float>::Max();
+
+	int32 ViewportX = 0, ViewportY = 0;
+	PlayerController->GetViewportSize(ViewportX, ViewportY);
+	FVector2D ScreenCenter(ViewportX * 0.5f, ViewportY * 0.5f);
+
+	for (AActor* Candidate : ValidActors)
+	{
+		float Score = ScoreTarget(Candidate, ScreenCenter, Player->GetActorLocation());
+
+		if (Candidate == Player->GetLockOnTarget())
+		{
+			Score *= 0.7f;
+		}
+
+		if (Score < BestScore)
+		{
+			BestScore = Score;
+			Best = Candidate;
+		}
+	}
+	return Best;
 }
 
 TArray<AActor*> ACS_PlayerCameraManager::FindValidLockOnTargets(float SearchRadius, float MaxAngle,
@@ -142,8 +156,29 @@ TArray<AActor*> ACS_PlayerCameraManager::FindValidLockOnTargets(float SearchRadi
 		float Dot = GetActorForwardVector().Dot(DirectionToEnemy); 
 		float Angle = FMath::RadiansToDegrees(FMath::Acos(Dot));
 
+		if (ACS_BaseCharacter* BaseCharacter = Cast<ACS_BaseCharacter>(Actor))
+		{
+			// Remove if dead
+			if (BaseCharacter->IsDead())
+			{
+				return true;
+			}
+		}
+
 		return Angle > MaxAngle;
 	});
 
 	return ValidActors;
+	
+}
+
+float ACS_PlayerCameraManager::ScoreTarget(AActor* Candidate, FVector2D ScreenCenter, FVector PlayerLoc)
+{
+	FVector2D ScreenPos;
+	GetOwningPlayerController()->ProjectWorldLocationToScreen(Candidate->GetActorLocation(), ScreenPos);
+
+	const float ScreenDist = FVector2D::Distance(ScreenPos, ScreenCenter);
+	const float WorldDist  = FVector::Dist(Candidate->GetActorLocation(), PlayerLoc);
+	
+	return ScreenDist * 1.0f + WorldDist * 0.15f;
 }
