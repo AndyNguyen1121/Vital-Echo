@@ -31,7 +31,7 @@ public:
 	bool bCanRotate{true};*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsLockedOn{false};
+	bool bIsHardLockedOn{false};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsBlocking{false};

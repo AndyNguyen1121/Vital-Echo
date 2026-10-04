@@ -197,7 +197,7 @@ bool UCS_PlayerStateMachineManager::CheckIfCanTransitionState(UCS_CombatStateBas
 		return false;
 	}
 
-	if (!PlayerCharacter->GetCSPlayerState()->bIsLockedOn && CombatState->bRequireLockOn)
+	if (!PlayerCharacter->GetCSPlayerState()->bIsHardLockedOn && CombatState->bRequireLockOn)
 	{
 		return false;
 	}

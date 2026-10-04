@@ -71,8 +71,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SendWeaponSwitchRequest(ACS_WeaponBase* Weapon);
-	
-	bool IsHardLockedOn() const { return bIsHardLockedOn; }
 
 	UFUNCTION()
 	void DisableLockOn();
@@ -126,7 +124,5 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCS_TagChangeTask> InputWindowTask;
-
-	bool bIsHardLockedOn;
 	
 };

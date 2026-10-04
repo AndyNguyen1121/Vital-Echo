@@ -124,13 +124,9 @@ void ACS_PlayerCharacter::ToggleLockOn()
 	ACS_PlayerCameraManager* CachedCamera = GetCSCameraManager();
 	if (!IsValid(CachedCamera)) return;
 	
-	if (!GetCSPlayerState()->bIsLockedOn)
+	if (!GetCSPlayerState()->bIsHardLockedOn)
 	{
 		LockOnTarget = CachedCamera->EnableLockOn(LockOnSearchRadius, LockOnMaxAngle);
-		if (LockOnTarget.IsValid())
-		{
-			bIsHardLockedOn = true;
-		}
 		SetLockOnTarget(LockOnTarget.Get());
 	}
 	else
@@ -250,7 +246,6 @@ void ACS_PlayerCharacter::DisableLockOn()
 	if (!IsValid(CachedCamera)) return;
 	
 	SetLockOnTarget(nullptr);
-	bIsHardLockedOn = false;
 	CachedCamera->DisableLockOn();
 }
 

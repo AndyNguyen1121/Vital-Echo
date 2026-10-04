@@ -30,7 +30,7 @@ AActor* ACS_PlayerCameraManager::EnableLockOn(float SearchRadius, float MaxAngle
 	ACS_PlayerController* PlayerController = Cast<ACS_PlayerController>(GetOwningPlayerController());
 	if (IsValid(PlayerController) && IsValid(TargetActor))
 	{
-		PlayerController->GetCSPlayerState()->bIsLockedOn = true;
+		PlayerController->GetCSPlayerState()->bIsHardLockedOn = true;
 		GetCameraContainer()->SetLockOnTarget(TargetActor);
 		GetCameraContainer()->SwitchToLockOnCamera();
 	}
@@ -43,7 +43,7 @@ void ACS_PlayerCameraManager::DisableLockOn()
 	ACS_PlayerController* PlayerController = Cast<ACS_PlayerController>(GetOwningPlayerController());
 	if (IsValid(PlayerController))
 	{
-		PlayerController->GetCSPlayerState()->bIsLockedOn = false;
+		PlayerController->GetCSPlayerState()->bIsHardLockedOn = false;
 		GetCameraContainer()->SetLockOnTarget(nullptr);
 		GetCameraContainer()->SwitchToMainCamera();
 	}
@@ -64,7 +64,7 @@ void ACS_PlayerCameraManager::SwitchLockOnTargets(const FVector2D ControllerInpu
 {
 	ACS_PlayerController* PlayerController = Cast<ACS_PlayerController>(GetOwningPlayerController());
 	if (!IsValid(PlayerController) || !IsValid(PlayerCharacter)) return;
-	if (!PlayerController->GetCSPlayerState()->bIsLockedOn || ControllerInput == FVector2D::ZeroVector) return;
+	if (!PlayerController->GetCSPlayerState()->bIsHardLockedOn || ControllerInput == FVector2D::ZeroVector) return;
 
 	TArray<AActor*> ValidActors = FindValidLockOnTargets(PlayerCharacter->LockOnSearchRadius, PlayerCharacter->LockOnMaxAngle);
 	if (ValidActors.Num() == 0) return;

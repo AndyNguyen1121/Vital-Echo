@@ -10,6 +10,7 @@
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/CS_PlayerController.h"
+#include "Player/CS_PlayerState.h"
 #include "Utils/CS_BlueprintLibrary.h"
 
 // Called when the game starts
@@ -32,7 +33,7 @@ void UCS_SoftLockOnComponent::BeginPlay()
 void UCS_SoftLockOnComponent::TrySetLockOnTarget(FVector2D InputDirection)
 {
 	ACS_BaseCharacter* TargetCharacter = nullptr;
-	if (!CachedPlayerCharacter->IsHardLockedOn() &&!InputDirection.IsNearlyZero())
+	if (!CachedPlayerCharacter->GetCSPlayerState()->bIsHardLockedOn &&!InputDirection.IsNearlyZero())
 	{
 		 TargetCharacter = Cast<ACS_BaseCharacter>(FindLockOnTarget(InputDirection));
 	}
