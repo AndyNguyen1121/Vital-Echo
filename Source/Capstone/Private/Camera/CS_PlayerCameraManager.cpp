@@ -79,8 +79,8 @@ void ACS_PlayerCameraManager::SwitchLockOnTargets(const FVector2D ControllerInpu
 	{
 		if (Actor == GetCameraContainer()->GetLockOnActor()) continue;
 
-		FVector DirectionRelativeToCamera = (Actor->GetActorLocation() - GetCameraLocation()).GetSafeNormal();
-		float Distance = GetDistanceTo(Actor);
+		FVector DirectionRelativeToCamera = (Actor->GetActorLocation() - GetCameraContainer()->GetLockOnActor()->GetActorLocation()).GetSafeNormal();
+		float Distance = GetCameraContainer()->GetLockOnActor()->GetDistanceTo(Actor);
 		
 		if (Distance < ClosestDistance)
 		{
