@@ -19,6 +19,7 @@ class ACS_PlayerState;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
+class UEnhancedInputComponent;
 /**
  * 
  */
