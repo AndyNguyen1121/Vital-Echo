@@ -82,3 +82,6 @@ Engine/Programs/UnrealBuildTool/*
 
 # Ignore files added by Finder on Mac
 *.DS_Store
+
+# Local-only MCP plugin
+Plugins/McpAutomationBridge/
