@@ -26,9 +26,10 @@ void UCS_SoftLockOnComponent::BeginPlay()
 		return;
 	}
 
+	
+		CachedPlayerController = CachedPlayerCharacter->GetCSPlayerController();
 	if (CachedPlayerController.IsValid())
 	{
-		CachedPlayerController = CachedPlayerCharacter->GetCSPlayerController();
 		CachedPlayerController->OnInputDirectionChanged.AddDynamic(this, &ThisClass::TrySetLockOnTarget);
 	}
 }
