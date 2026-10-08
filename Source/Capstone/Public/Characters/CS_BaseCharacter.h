@@ -12,6 +12,7 @@
 #include "Enums/WeaponTypes.h"
 #include "Interfaces/HitStopComponentInterface.h"
 #include "Interfaces/TokenInterface.h"
+#include "GameplayEffectTypes.h"
 #include "Structs/WarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
@@ -143,6 +144,8 @@ protected:
 
 protected:
 	void HandlePostureDepletion(float DeltaSeconds);
+	
+	void OnPostureChange(const FOnAttributeChangeData& AttributeChangeData);
 
 	UFUNCTION()
 	virtual void OnHealthChanged(float OldValue, float NewValue, AActor* EventInstigator);
