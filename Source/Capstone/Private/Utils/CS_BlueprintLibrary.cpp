@@ -49,7 +49,7 @@ void UCS_BlueprintLibrary::PlayFinisherWithOriginTransform(AActor* ContextActor,
 }
 
 TArray<AActor*> UCS_BlueprintLibrary::SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset,
-                                                        FGameplayTagContainer TagsToSearch, bool DrawDebug, FLinearColor DebugColor)
+                                                        FGameplayTagContainer TagsToSearch, EFilterType FilterMode, bool DrawDebug, FLinearColor DebugColor)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(AvatarActor, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return TArray<AActor*>();
@@ -78,7 +78,7 @@ TArray<AActor*> UCS_BlueprintLibrary::SphereOverlapTest(AActor* AvatarActor, flo
 		}
 	}
 
-	FilterGameplayTags(TagsToSearch, ActorsHit);
+	FilterGameplayTags(TagsToSearch, ActorsHit, FilterMode);
 
 	if (DrawDebug)
 	{
@@ -107,18 +107,19 @@ void UCS_BlueprintLibrary::DrawSphereOverlapDebug(UObject* ContextObject, const 
 }
 
 void UCS_BlueprintLibrary::FilterGameplayTags(const FGameplayTagContainer& TagsToCheck,
-	TArray<AActor*>& ActorsToFilter)
+                                              TArray<AActor*>& ActorsToFilter, EFilterType FilterMode)
 {
 	if (TagsToCheck.IsEmpty() || TagsToCheck.HasAllExact(FGameplayTagContainer(CSTags::None))) return;
 
-	ActorsToFilter.RemoveAll([&TagsToCheck](AActor* Actor)
+	ActorsToFilter.RemoveAll([&TagsToCheck, FilterMode](AActor* Actor)
 	{
 		bool RemoveActor = true;
 
 		// Check tag container first
 		if (IGameplayTagAssetInterface* TagInterface = Cast<IGameplayTagAssetInterface>(Actor))
 		{
-			if  (TagInterface->HasAnyMatchingGameplayTags(TagsToCheck))
+			if  (TagInterface->HasAnyMatchingGameplayTags(TagsToCheck) && FilterMode == EFilterType::Keep ||
+				 !TagInterface->HasAnyMatchingGameplayTags(TagsToCheck) && FilterMode == EFilterType::Remove)
 			{
 				RemoveActor = false;
 			}
@@ -128,7 +129,8 @@ void UCS_BlueprintLibrary::FilterGameplayTags(const FGameplayTagContainer& TagsT
 		if (RemoveActor)
 		{
 			UAbilitySystemComponent* ACS = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);
-			if (ACS && ACS->HasAnyMatchingGameplayTags(TagsToCheck))
+			if (ACS && (ACS->HasAnyMatchingGameplayTags(TagsToCheck) && FilterMode == EFilterType::Keep ||
+				 !ACS->HasAnyMatchingGameplayTags(TagsToCheck) && FilterMode == EFilterType::Remove))
 			{
 				RemoveActor = false;
 			}

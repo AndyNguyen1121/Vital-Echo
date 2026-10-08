@@ -24,6 +24,13 @@ enum class EHitDirection : uint8
 	Forward
 };
 
+UENUM(BlueprintType)
+enum class EFilterType : uint8
+{
+	Remove,
+	Keep
+};
+
 UCLASS()
 class CAPSTONE_API UCS_BlueprintLibrary : public UBlueprintFunctionLibrary
 {
@@ -35,13 +42,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static TArray<AActor*> SphereOverlapTest(AActor* AvatarActor, float Radius, FVector Offset = FVector::ZeroVector,
-	                                         FGameplayTagContainer TagsToSearch = FGameplayTagContainer(), bool DrawDebug = false, FLinearColor DebugColor =
+	                                         FGameplayTagContainer TagsToSearch = FGameplayTagContainer(), EFilterType FilterMode = EFilterType::Keep, bool DrawDebug = false, FLinearColor DebugColor =
 		                                         FLinearColor::Red);
 
 	static void DrawSphereOverlapDebug(UObject* ContextObject, const TArray<AActor*>& Actors, const FVector& HitBoxLocation, const float HitBoxRadius, FLinearColor
 	                                   DebugColor);
 
-	static void FilterGameplayTags(const FGameplayTagContainer& TagsToCheck, UPARAM(ref) TArray<AActor*>& ActorsToFilter);
+	static void FilterGameplayTags(const FGameplayTagContainer& TagsToCheck, UPARAM(ref) TArray<AActor*>& ActorsToFilter, EFilterType FilterMode);
 
 	UFUNCTION(BlueprintCallable)
 	static EHitDirection GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator);

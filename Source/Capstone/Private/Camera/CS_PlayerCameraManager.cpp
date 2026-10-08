@@ -143,12 +143,12 @@ TArray<AActor*> ACS_PlayerCameraManager::FindValidLockOnTargets(float SearchRadi
 	FLinearColor DebugColor)
 {
 	TArray<AActor*> ValidActors = UCS_BlueprintLibrary::SphereOverlapTest(
-	GetOwningPlayerController()->GetPawn(),
-	SearchRadius,
-	FVector::ZeroVector,
-	FGameplayTagContainer(CSTags::IDs::Enemy),
-	bShowLockOnDebug,
-	FColor::Purple);
+		GetOwningPlayerController()->GetPawn(),
+		SearchRadius,
+		FVector::ZeroVector,
+		FGameplayTagContainer(CSTags::IDs::Enemy),
+		{},
+		bShowLockOnDebug, FColor::Purple);
 	
 	ValidActors.RemoveAll([MaxAngle, this](AActor* Actor)
 	{
