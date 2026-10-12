@@ -89,6 +89,7 @@ void ACS_BaseCharacter::InitializeAttributes()
 	if (GetAttributeSet())
 	{
 		GetAttributeSet()->OnDamaged.AddDynamic(this, &ThisClass::ACS_BaseCharacter::OnHealthChanged);
+		GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(UCS_AttributeSet::GetPostureAttribute()).AddUObject(this, &ACS_BaseCharacter::OnPostureChange);
 		GetAttributeSet()->PostAttributesInitialized();
 	}
 }
@@ -100,6 +101,17 @@ void ACS_BaseCharacter::HandlePostureDepletion(float DeltaSeconds)
 
 	UCS_AttributeSet* CachedAttributeSet = GetAttributeSet();
 	CachedAttributeSet->SetPosture(CachedAttributeSet->GetPosture() - CachedAttributeSet->GetPostureRecoverRate() * DeltaSeconds);
+}
+
+void ACS_BaseCharacter::OnPostureChange(const FOnAttributeChangeData& AttributeChangeData)
+{
+	if (!GetAttributeSet()) return;
+	
+	if (AttributeChangeData.NewValue >= GetAttributeSet()->GetPostureThreshold())
+	{
+		GetAttributeSet()->SetPosture(0);
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, CSTags::Events::Gameplay::PostureBroken, FGameplayEventData());
+	}
 }
 
 void ACS_BaseCharacter::OnHealthChanged(float OldValue, float NewValue, AActor* EventInstigator)

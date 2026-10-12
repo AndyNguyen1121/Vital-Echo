@@ -77,6 +77,7 @@ namespace CSTags
 			UE_DEFINE_GAMEPLAY_TAG(KnockedUp, "CSTags.Status.Debuffs.KnockedUp");
 			UE_DEFINE_GAMEPLAY_TAG(Stunned, "CSTags.Status.Debuffs.Stunned");
 			UE_DEFINE_GAMEPLAY_TAG(Recovering, "CSTags.Status.Debuffs.Recovering");
+			UE_DEFINE_GAMEPLAY_TAG(Vulnerable, "CSTags.Status.Debuffs.Vulnerable");
 		}
 	}
 
