@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AnalyticsProviderETEventCache.h"
 #include "MotionWarpingComponent.h"
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "ActorComponents/CombatSystem/CS_SoftLockOnComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CS_CameraActor.h"

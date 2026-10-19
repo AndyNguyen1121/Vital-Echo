@@ -5,7 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "MotionWarpingComponent.h"
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "ActorComponents/CombatSystem/CS_HitStopComponent.h"
 #include "ActorComponents/TokenManager/CS_TokenManager.h"
 #include "Capstone/Public/Player/CS_PlayerState.h"

@@ -4,7 +4,7 @@
 #include "GameplayEffectCalculations/BasicDamageCalculation.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "GameplayTags/CSTags.h"
 
 void UBasicDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,

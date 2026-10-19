@@ -3,7 +3,7 @@
 
 #include "UI/CS_AttributeWidget.h"
 
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 
 void UCS_AttributeWidget::OnAttributeChange(UCS_AttributeSet* AttributeSet, float OldValue)
 {

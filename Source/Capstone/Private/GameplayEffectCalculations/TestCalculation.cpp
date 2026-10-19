@@ -3,7 +3,7 @@
 
 #include "GameplayEffectCalculations/TestCalculation.h"
 
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 
 void UTestCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
                                               FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const

@@ -4,7 +4,7 @@
 #include "UI/CS_WidgetComponent.h"
 
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "Blueprint/WidgetTree.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_BaseCharacter.h"

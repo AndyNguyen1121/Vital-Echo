@@ -8,7 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Structs/DamageAttributes.h"
 #include "ContextualAnimSceneActorComponent.h"
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "Enums/WeaponTypes.h"
 #include "Interfaces/HitStopComponentInterface.h"
 #include "Interfaces/TokenInterface.h"

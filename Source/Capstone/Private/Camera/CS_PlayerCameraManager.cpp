@@ -147,7 +147,7 @@ TArray<AActor*> ACS_PlayerCameraManager::FindValidLockOnTargets(float SearchRadi
 		SearchRadius,
 		FVector::ZeroVector,
 		FGameplayTagContainer(CSTags::IDs::Enemy),
-		{},
+		EFilterType::Keep,
 		bShowLockOnDebug, FColor::Purple);
 	
 	ValidActors.RemoveAll([MaxAngle, this](AActor* Actor)

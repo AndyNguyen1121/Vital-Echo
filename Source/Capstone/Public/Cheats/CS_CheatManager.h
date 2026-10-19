@@ -19,4 +19,7 @@ class CAPSTONE_API UCS_CheatManager : public UCheatManager
 public:
 	UFUNCTION(Exec)
 	void ToggleDebugHitBoxes();
+
+	UFUNCTION(Exec)
+	void UnlimitedDash();
 };

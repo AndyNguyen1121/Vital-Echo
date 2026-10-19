@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "CS_BaseCharacter.h"
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
-#include "AbilitySystem/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "CS_EnemyCharacter.generated.h"
 
 class UCS_AttributeSet;

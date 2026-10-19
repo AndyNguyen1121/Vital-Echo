@@ -3,6 +3,8 @@
 
 #include "Cheats/CS_CheatManager.h"
 
+#include "AbilitySystem/AttributeSets/CS_Player_AttributeSet.h"
+#include "Characters/CS_PlayerCharacter.h"
 #include "Notifies/NotifyStates/ANS_ActivateAttackWindow.h"
 
 void UCS_CheatManager::InitCheatManager()
@@ -13,4 +15,19 @@ void UCS_CheatManager::InitCheatManager()
 void UCS_CheatManager::ToggleDebugHitBoxes()
 {
 	UANS_ActivateAttackWindow::bDebug = !UANS_ActivateAttackWindow::bDebug;
+}
+
+void UCS_CheatManager::UnlimitedDash()
+{
+	if (!GetPlayerController() || !GetPlayerController()->GetPawn())
+		return;
+
+	ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(GetPlayerController()->GetPawn());
+	UCS_Player_AttributeSet* PlayerAttributeSet = Cast<UCS_Player_AttributeSet>(PlayerCharacter->GetAttributeSet());
+
+	if (!PlayerAttributeSet)
+		return;
+
+	PlayerAttributeSet->SetHeatGaugeLimit(1000000);
+	PlayerAttributeSet->SetHeatGauge(1000000);
 }
