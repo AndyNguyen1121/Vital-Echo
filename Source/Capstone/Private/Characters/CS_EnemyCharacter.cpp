@@ -43,5 +43,11 @@ void ACS_EnemyCharacter::UpdateMoveAmount()
 	MoveAmount = ((GetVelocity().Size()) / GetCharacterMovement()->GetMaxSpeed());
 }
 
+void ACS_EnemyCharacter::DestroyCharacter()
+{
+	Super::DestroyCharacter();
+}
+
+
 
 

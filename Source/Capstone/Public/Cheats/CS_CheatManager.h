@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(Exec)
 	void UnlimitedDash();
+
+	UFUNCTION(Exec)
+	void UnlimitedHealth();
 };

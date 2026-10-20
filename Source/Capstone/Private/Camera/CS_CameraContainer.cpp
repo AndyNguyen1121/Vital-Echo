@@ -52,10 +52,10 @@ void ACS_CameraContainer::Tick(float DeltaSeconds)
 			LockOnCamera->CameraBoom->SocketOffset.Z = (InitialLockOnSocketOffset.Z + (HeightDifference * 0.3f));
 			Controller->SetControlRotation(DesiredRotation);
 		}
-	}
 
-	SetActorLocation(Controller->GetPawn()->GetActorLocation());
-	SetActorRotation(Controller->GetControlRotation());
+		SetActorLocation(Controller->GetPawn()->GetActorLocation());
+		SetActorRotation(Controller->GetControlRotation());
+	}
 }
 
 void ACS_CameraContainer::InitializeContainer(APlayerController* PlayerController)

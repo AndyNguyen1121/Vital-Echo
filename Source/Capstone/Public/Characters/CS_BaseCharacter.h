@@ -149,4 +149,7 @@ protected:
 
 	UFUNCTION()
 	virtual void OnHealthChanged(float OldValue, float NewValue, AActor* EventInstigator);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DestroyCharacter();
 };

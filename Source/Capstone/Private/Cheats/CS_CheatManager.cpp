@@ -31,3 +31,18 @@ void UCS_CheatManager::UnlimitedDash()
 	PlayerAttributeSet->SetHeatGaugeLimit(1000000);
 	PlayerAttributeSet->SetHeatGauge(1000000);
 }
+
+void UCS_CheatManager::UnlimitedHealth()
+{
+	if (!GetPlayerController() || !GetPlayerController()->GetPawn())
+		return;
+
+	ACS_PlayerCharacter* PlayerCharacter = Cast<ACS_PlayerCharacter>(GetPlayerController()->GetPawn());
+	UCS_Player_AttributeSet* PlayerAttributeSet = Cast<UCS_Player_AttributeSet>(PlayerCharacter->GetAttributeSet());
+
+	if (!PlayerAttributeSet)
+		return;
+
+	PlayerAttributeSet->SetMaxHealth(1000000);
+	PlayerAttributeSet->SetHealth(1000000);
+}

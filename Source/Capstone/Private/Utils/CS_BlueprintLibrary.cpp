@@ -259,7 +259,7 @@ void UCS_BlueprintLibrary::PlayContextualAnimation(
 
 void UCS_BlueprintLibrary::ApplyHitStun(AActor* TargetActor, float Duration, float TimeDilation)
 {
-	if (!TargetActor->Implements<UHitStopComponentInterface>()) return;
+	if (!IsValid(TargetActor) || !TargetActor->Implements<UHitStopComponentInterface>()) return;
 
 	UCS_HitStopComponent* HitStopComponent = IHitStopComponentInterface::Execute_GetHitStopComponent(TargetActor);
 

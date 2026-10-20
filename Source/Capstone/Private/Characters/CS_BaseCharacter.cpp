@@ -35,6 +35,7 @@ void ACS_BaseCharacter::BeginPlay()
 	bInitialGravitySet = true;
 	
 	InitializeAttributes();
+	OnDeath.AddDynamic(this, &ThisClass::ACS_BaseCharacter::DestroyCharacter);
 }
 
 void ACS_BaseCharacter::Tick(float DeltaSeconds)
@@ -125,6 +126,7 @@ void ACS_BaseCharacter::OnHealthChanged(float OldValue, float NewValue, AActor* 
 		// Dead
 		OnDeath.Broadcast();
 		bIsDead = true;
+		DestroyCharacter();
 		return;
 	}
 	
@@ -137,6 +139,16 @@ void ACS_BaseCharacter::OnHealthChanged(float OldValue, float NewValue, AActor* 
 		// turn to face enemy
 		UCS_BlueprintLibrary::TurnToFaceActor(this, EventInstigator);
 	}
+}
+
+void ACS_BaseCharacter::DestroyCharacter()
+{
+	if (CurrentEquippedWeapon.Get())
+	{
+		CurrentEquippedWeapon->Destroy();
+	}
+
+	Destroy();
 }
 
 void ACS_BaseCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState)

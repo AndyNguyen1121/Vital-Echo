@@ -49,4 +49,6 @@ protected:
 
 protected:
 	void UpdateMoveAmount();
+
+	virtual void DestroyCharacter() override;
 };
