@@ -55,6 +55,7 @@ namespace CSTags
 			{
 				UE_DEFINE_GAMEPLAY_TAG(ParryWindowActive, "CSTags.Status.GameplayStates.PlayerStates.ParryWindowActive");
 				UE_DEFINE_GAMEPLAY_TAG(InputWindowActive, "CSTags.Status.GameplayStates.PlayerStates.InputWindowActive");
+				UE_DEFINE_GAMEPLAY_TAG(HeatGaugeRegenSuppressed, "CSTags.Status.GameplayStates.PlayerStates.HeatGaugeRegenSuppressed");
 				
 			}
 
@@ -87,6 +88,12 @@ namespace CSTags
 		{
 			UE_DEFINE_GAMEPLAY_TAG(Damage, "CSTags.Effects.SetByCaller.Damage");
 			UE_DEFINE_GAMEPLAY_TAG(PostureDamage, "CSTags.Effects.SetByCaller.PostureDamage");
+			UE_DEFINE_GAMEPLAY_TAG(PostureSupressionDuration, "CSTags.Effects.SetByCaller.PostureSupressionDuration");
+
+			namespace Player
+			{
+				UE_DEFINE_GAMEPLAY_TAG(HeatGaugeSuppressionDuration, "CSTags.Effects.SetByCaller.Player.HeatGaugeSuppressionDuration");
+			}
 		}
 	}
 }

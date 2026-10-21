@@ -57,6 +57,7 @@ namespace CSTags
 			{
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryWindowActive);
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputWindowActive);
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(HeatGaugeRegenSuppressed);
 			}
 
 			namespace EnemyStates
@@ -88,7 +89,14 @@ namespace CSTags
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureDamage);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureSupressionDuration);
+
+			namespace Player
+			{
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(HeatGaugeSuppressionDuration);
+			}
 		}
+
 		
 	}
 

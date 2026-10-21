@@ -97,7 +97,9 @@ void ACS_BaseCharacter::InitializeAttributes()
 
 void ACS_BaseCharacter::HandlePostureDepletion(float DeltaSeconds)
 {
-	if (!GetAttributeSet() || GetAttributeSet()->GetPosture() == 0 || HasMatchingGameplayTag(CSTags::Status::GameplayStates::PostureRegenSupressed))
+	if (!GetAttributeSet() ||
+		GetAttributeSet()->GetPosture() == 0 ||
+		HasMatchingGameplayTag(CSTags::Status::GameplayStates::PostureRegenSupressed))
 		return;
 
 	UCS_AttributeSet* CachedAttributeSet = GetAttributeSet();

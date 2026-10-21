@@ -28,7 +28,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	UCS_EnemyStateMachineManager* GetEnemyStateMachineManager() { return EnemyStateMachineManager; }
 
-	virtual UCS_AttributeSet* GetAttributeSet() override { return AttributeSet; };
+	virtual UCS_AttributeSet* GetAttributeSet() const override { return AttributeSet; };
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="CustomProperties")
