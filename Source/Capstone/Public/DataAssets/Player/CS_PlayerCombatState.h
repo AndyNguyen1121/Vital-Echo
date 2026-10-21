@@ -67,5 +67,8 @@ public:
 	void SortStates();
 
 private:
+#if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+	
 };

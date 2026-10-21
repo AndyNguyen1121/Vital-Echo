@@ -89,6 +89,7 @@ void UCS_PlayerCombatState::SortStates()
 	SortedTransitionStates = CombinedStates;
 }
 
+#if WITH_EDITOR
 void UCS_PlayerCombatState::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -98,3 +99,5 @@ void UCS_PlayerCombatState::PostEditChangeProperty(struct FPropertyChangedEvent&
 
 	//if (GameplayAbility->GetName() == )
 }
+#endif
+

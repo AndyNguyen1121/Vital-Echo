@@ -45,7 +45,7 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ThisClass::Primary);
 	EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOn);
-	EnhancedInputComponent->BindAction(ChangeLockOnAction, ETriggerEvent::Started, this, &ACS_PlayerController::LockOnChange);
+	EnhancedInputComponent->BindAction(ChangeLockOnAction, ETriggerEvent::Triggered, this, &ACS_PlayerController::LockOnChange);
 	EnhancedInputComponent->BindAction(Jump, ETriggerEvent::Started, this, &ACS_PlayerController::JumpInput);
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Triggered, this, &ACS_PlayerController::OnBlock);
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Completed, this, &ACS_PlayerController::OnBlockEnd);
@@ -94,8 +94,8 @@ void ACS_PlayerController::Look(const FInputActionValue& Value)
 	
 	FVector2D LookValue = Value.Get<FVector2D>();
 	
-	AddYawInput(LookValue.X * LookSensitivity);
-	AddPitchInput(-LookValue.Y * LookSensitivity);
+	AddYawInput(LookValue.X * LookSensitivity * GetWorld()->GetDeltaSeconds());
+	AddPitchInput(-LookValue.Y * LookSensitivity * GetWorld()->GetDeltaSeconds());
 }
 
 void ACS_PlayerController::LockOn()
