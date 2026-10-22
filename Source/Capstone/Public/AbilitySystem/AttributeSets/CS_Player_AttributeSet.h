@@ -21,10 +21,17 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData HeatGaugeLimit;
+
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData HeatGaugeRecoverRate;
+
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData HeatGaugeSuppressionDuration;
 	
 	ATTRIBUTE_ACCESSORS(ThisClass, HeatGauge);
-
 	ATTRIBUTE_ACCESSORS(ThisClass, HeatGaugeLimit);
+	ATTRIBUTE_ACCESSORS(ThisClass, HeatGaugeRecoverRate);
+	ATTRIBUTE_ACCESSORS(ThisClass, HeatGaugeSuppressionDuration);
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	

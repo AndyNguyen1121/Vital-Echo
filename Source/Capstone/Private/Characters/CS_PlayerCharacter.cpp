@@ -7,6 +7,7 @@
 #include "AnalyticsProviderETEventCache.h"
 #include "MotionWarpingComponent.h"
 #include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
+#include "AbilitySystem/AttributeSets/CS_Player_AttributeSet.h"
 #include "ActorComponents/CombatSystem/CS_SoftLockOnComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CS_CameraActor.h"
@@ -88,6 +89,7 @@ void ACS_PlayerCharacter::BeginPlay()
 void ACS_PlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	TryReplenishHeatGauge(DeltaSeconds);
 }
 
 UAbilitySystemComponent* ACS_PlayerCharacter::GetAbilitySystemComponent() const
@@ -117,6 +119,11 @@ void ACS_PlayerCharacter::PossessedBy(AController* NewController)
 ACS_PlayerCameraManager* ACS_PlayerCharacter::GetCSCameraManager() const
 {
 	return Cast<ACS_PlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(this, 0));
+}
+
+UCS_Player_AttributeSet* ACS_PlayerCharacter::GetPlayerAttributeSet() const
+{
+	return Cast<UCS_Player_AttributeSet>(GetAttributeSet());
 }
 
 void ACS_PlayerCharacter::ToggleLockOn()
@@ -192,7 +199,7 @@ void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target, FName SocketName)
 
 #pragma endregion 
 
-UCS_AttributeSet* ACS_PlayerCharacter::GetAttributeSet()
+UCS_AttributeSet* ACS_PlayerCharacter::GetAttributeSet() const
 {
 	if (!GetCSPlayerState()) return nullptr;
 	
@@ -268,6 +275,16 @@ void ACS_PlayerCharacter::CheckWeaponSwitchRequest()
 		EquipWeapon(RequestedWeapon.Get());
 		RequestedWeapon = nullptr;
 	}
+}
+
+void ACS_PlayerCharacter::TryReplenishHeatGauge(float DeltaSeconds)
+{
+	if (!GetPlayerAttributeSet()  ||
+		HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::HeatGaugeRegenSuppressed))
+		return;
+
+	UCS_Player_AttributeSet* CachedAttributeSet = GetPlayerAttributeSet();
+	CachedAttributeSet->SetHeatGauge(CachedAttributeSet->GetHeatGauge() + CachedAttributeSet->GetHeatGaugeRecoverRate() * DeltaSeconds);
 }
 
 

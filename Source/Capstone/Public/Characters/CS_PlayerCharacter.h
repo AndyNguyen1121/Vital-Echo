@@ -7,6 +7,7 @@
 #include "CS_BaseCharacter.h"
 #include "Structs/DamageAttributes.h"
 #include "CS_PlayerCharacter.generated.h"
+class UCS_Player_AttributeSet;
 class UWidgetComponent;
 class UWidget;
 class UCS_WidgetComponent;
@@ -50,6 +51,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	ACS_PlayerCameraManager* GetCSCameraManager() const;
 
+	UFUNCTION(BlueprintPure)
+	UCS_Player_AttributeSet* GetPlayerAttributeSet() const;
+
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void RotatePlayerToTargetRotation(FRotator TargetRotation, float Duration);
 
@@ -65,7 +69,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AActor* GetLockOnTarget() { return LockOnTarget.Get(); }
 
-	virtual UCS_AttributeSet* GetAttributeSet() override;
+	virtual UCS_AttributeSet* GetAttributeSet() const override;
 
 	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState) override;
 
@@ -96,6 +100,9 @@ private:
 
 	UFUNCTION()
 	void CheckWeaponSwitchRequest();
+
+	UFUNCTION()
+	void TryReplenishHeatGauge(float DeltaSeconds);
 
 private:
 

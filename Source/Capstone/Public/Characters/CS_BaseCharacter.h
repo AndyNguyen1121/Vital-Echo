@@ -66,7 +66,7 @@ public:
 	FVector2D GetStrafeDirection();
 
 	UFUNCTION(BlueprintPure)
-	virtual UCS_AttributeSet* GetAttributeSet() { return nullptr; };
+	virtual UCS_AttributeSet* GetAttributeSet() const { return nullptr; };
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState);

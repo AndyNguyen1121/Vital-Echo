@@ -57,6 +57,9 @@ public:
 	FGameplayAttributeData PostureRecoverRate;
 
 	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData PostureSuppressionDuration;
+
+	UPROPERTY(BlueprintReadOnly)
 	FGameplayAttributeData PostureDamage;
 
 	UPROPERTY(BlueprintReadOnly)
