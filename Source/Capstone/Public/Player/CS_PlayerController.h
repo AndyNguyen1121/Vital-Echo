@@ -92,6 +92,8 @@ private:
 	void OnTransformationInput();
 	void JumpInput();
 	void RepositionInput();
+	void OnSprint();
+	void OnSprintEnd();
 
 	void ChangeInputDirection(FVector2D InputDirection);
 	void ClampInputDirection(FVector2D InputDirection, float InputDeadzone);
@@ -153,6 +155,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	TObjectPtr<UInputAction> RepositionAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
+	TObjectPtr<UInputAction> SprintAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CS|Input", meta=(AllowPrivateAccess))
 	float LookSensitivity{0.5f};

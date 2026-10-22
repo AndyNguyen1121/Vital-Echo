@@ -91,6 +91,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
 	TObjectPtr<UWidgetComponent> LockOnReticle;
+
+	// Movement
+	UPROPERTY(EditAnywhere)
+	float WalkSpeed;
+
+	UPROPERTY(EditAnywhere)
+	float SprintSpeed;
 	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
@@ -131,5 +138,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCS_TagChangeTask> InputWindowTask;
+
+	
 	
 };

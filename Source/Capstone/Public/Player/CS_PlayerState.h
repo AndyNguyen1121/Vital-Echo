@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsBlocking{false};
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsSprinting{false};
+
 	/*UFUNCTION(BlueprintCallable)
 	void ResetBooleans(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState);
 

@@ -13,6 +13,8 @@
 #include "Characters/CS_PlayerCharacter.h"
 #include "DataAssets/Player/CS_PlayerCombatState.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "GameplayTags/CSTags.h"
 #include "Player/CS_PlayerState.h"
 #include "Structs/BufferedInput.h"
@@ -51,6 +53,8 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Completed, this, &ACS_PlayerController::OnBlockEnd);
 	EnhancedInputComponent->BindAction(TransformAction, ETriggerEvent::Started, this, &ThisClass::OnTransformationInput);
 	EnhancedInputComponent->BindAction(RepositionAction, ETriggerEvent::Started, this, &ThisClass::RepositionInput);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ThisClass::OnSprint);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::OnSprintEnd);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -79,7 +83,7 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 	FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 	FVector MovementDirection = (ForwardDirection * MovementValue.Y) + (RightDirection * MovementValue.X);
-	GetCharacter()->AddMovementInput(MovementDirection , MoveAmount);
+	GetCharacter()->AddMovementInput(MovementDirection);
 }
 
 void ACS_PlayerController::Primary(const FInputActionValue& Value)
@@ -149,6 +153,21 @@ void ACS_PlayerController::RepositionInput()
 	InputBuffer.Add(FBufferedInput(EInputType::EIT_Reposition));
 }
 
+void ACS_PlayerController::OnSprint()
+{
+	if (!GetCSPlayerState() || !GetCSPlayerCharacter()) return;
+	GetCSPlayerState()->bIsSprinting = true;
+	GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->SprintSpeed;
+	
+}
+
+void ACS_PlayerController::OnSprintEnd()
+{
+	if (!GetCSPlayerState() || !GetCSPlayerCharacter()) return;
+	GetCSPlayerState()->bIsSprinting = false;
+	GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->WalkSpeed;
+}
+
 void ACS_PlayerController::ChangeInputDirection(FVector2D InputDirection)
 {
 	PlayerInputDirection = InputDirection;
@@ -196,13 +215,10 @@ void ACS_PlayerController::SetMoveAmount()
 	MoveAmount = 0;
 
 	float MagnitudeSquared = ClampedPlayerInputDirection.SizeSquared();
-	if (MagnitudeSquared >= 0.25 && MagnitudeSquared < 1)
+	if (MagnitudeSquared >= 0.25)
 	{
-		MoveAmount = 0.5f;
-	}
-	else if (MagnitudeSquared > 0.25)
-	{
-		MoveAmount = 1;
+		if (!GetCSPlayerState()) return;
+		MoveAmount = GetCSPlayerState()->bIsSprinting ? 1: 0.5f;
 	}
 	
 }
