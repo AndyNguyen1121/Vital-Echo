@@ -98,6 +98,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float SprintSpeed;
+
+	// Heat Gauge
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	float TimeSinceLastReposition;
 	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;

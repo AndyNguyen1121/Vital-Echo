@@ -286,8 +286,16 @@ void ACS_PlayerCharacter::TryReplenishHeatGauge(float DeltaSeconds)
 		HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::HeatGaugeRegenSuppressed))
 		return;
 
-	UCS_Player_AttributeSet* CachedAttributeSet = GetPlayerAttributeSet();
-	CachedAttributeSet->SetHeatGauge(CachedAttributeSet->GetHeatGauge() + CachedAttributeSet->GetHeatGaugeRecoverRate() * DeltaSeconds);
+	TimeSinceLastReposition += DeltaSeconds;
+
+	if (TimeSinceLastReposition > GetPlayerAttributeSet()->GetHeatGaugeRecoverRate() && GetPlayerAttributeSet()->GetHeatGauge() != GetPlayerAttributeSet()->GetHeatGaugeLimit())
+	{
+		// Will replace hardcoded value with max num of repositions
+		float BarRefillAmount = GetPlayerAttributeSet()->GetHeatGaugeLimit() / 5.f;
+		UCS_Player_AttributeSet* CachedAttributeSet = GetPlayerAttributeSet();
+		CachedAttributeSet->SetHeatGauge(CachedAttributeSet->GetHeatGauge() + BarRefillAmount);
+		TimeSinceLastReposition = 0;
+	}
 }
 
 
