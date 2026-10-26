@@ -37,6 +37,7 @@ void UBasicDamageCalculation::Execute_Implementation(const FGameplayEffectCustom
 	if (TargetASC->HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::PlayerStates::ParryWindowActive)))
 	{
 		DamageOut = 0.f;
+		PostureDamageOut = 0.f;
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetAvatarActor(), CSTags::Events::Gameplay::ParryActivate, Payload);
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceASC->GetAvatarActor(), CSTags::Events::Gameplay::ParryReceive, Payload);
 	}

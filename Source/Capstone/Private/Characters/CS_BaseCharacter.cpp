@@ -5,9 +5,12 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "MotionWarpingComponent.h"
+#include "Abilities/Async/AbilityAsync_WaitGameplayEvent.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "ActorComponents/CombatSystem/CS_HitStopComponent.h"
 #include "ActorComponents/TokenManager/CS_TokenManager.h"
+#include "Capstone/DebugMacros.h"
 #include "Capstone/Public/Player/CS_PlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayTags/CSTags.h"
@@ -92,6 +95,10 @@ void ACS_BaseCharacter::InitializeAttributes()
 		GetAttributeSet()->OnDamaged.AddDynamic(this, &ThisClass::ACS_BaseCharacter::OnHealthChanged);
 		GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(UCS_AttributeSet::GetPostureAttribute()).AddUObject(this, &ACS_BaseCharacter::OnPostureChange);
 		GetAttributeSet()->PostAttributesInitialized();
+
+		OnParryActivateTask = UAbilityAsync_WaitGameplayEvent::WaitGameplayEventToActor(this, CSTags::Events::Gameplay::ParryActivate);
+		OnParryActivateTask->EventReceived.AddDynamic(this, &ThisClass::ACS_BaseCharacter::OnParryRecieved);
+		static_cast<UBlueprintAsyncActionBase*>(OnParryActivateTask)->Activate();
 	}
 }
 
@@ -151,6 +158,13 @@ void ACS_BaseCharacter::DestroyCharacter()
 	}
 
 	Destroy();
+}
+
+void ACS_BaseCharacter::OnParryRecieved(FGameplayEventData Payload)
+{
+	DEBUG_LOG("Parry activate")
+	AActor* MutableActor = const_cast<AActor*>(Payload.Instigator.Get());
+	UCS_BlueprintLibrary::TurnToFaceActor(this, MutableActor);
 }
 
 void ACS_BaseCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState)

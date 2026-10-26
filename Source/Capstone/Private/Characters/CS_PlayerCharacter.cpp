@@ -288,6 +288,7 @@ void ACS_PlayerCharacter::TryReplenishHeatGauge(float DeltaSeconds)
 
 	TimeSinceLastReposition += DeltaSeconds;
 
+	// If cooldown is over and heat gauge value is 0
 	if (TimeSinceLastReposition > GetPlayerAttributeSet()->GetHeatGaugeRecoverRate() && GetPlayerAttributeSet()->GetHeatGauge() != GetPlayerAttributeSet()->GetHeatGaugeLimit())
 	{
 		// Will replace hardcoded value with max num of repositions

@@ -36,6 +36,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="CustomProperties")
 	float MaxRetreatDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CustomProperties")
+	bool bIsAggro;
 	
 protected:
 	UPROPERTY(VisibleAnywhere)

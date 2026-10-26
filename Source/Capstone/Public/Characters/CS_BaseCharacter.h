@@ -16,6 +16,8 @@
 #include "Structs/WarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
+class UAbilityAsync_WaitGameplayEvent;
+class UAbilityTask_WaitGameplayEvent;
 class ACS_WeaponBase;
 class UCS_AttributeSet;
 class UCS_HitStopComponent;
@@ -112,6 +114,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	EWeaponType CurrentEquippedWeaponType;
 
+	UPROPERTY()
+	UAbilityAsync_WaitGameplayEvent* OnParryActivateTask;
+
 private:
 	void InitializeAttributes();
 	
@@ -152,4 +157,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void DestroyCharacter();
+
+	UFUNCTION()
+	virtual void OnParryRecieved(FGameplayEventData Payload);
 };
