@@ -53,8 +53,8 @@ void ACS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(BlockAction, ETriggerEvent::Completed, this, &ACS_PlayerController::OnBlockEnd);
 	EnhancedInputComponent->BindAction(TransformAction, ETriggerEvent::Started, this, &ThisClass::OnTransformationInput);
 	EnhancedInputComponent->BindAction(RepositionAction, ETriggerEvent::Started, this, &ThisClass::RepositionInput);
-	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ThisClass::OnSprint);
-	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::OnSprintEnd);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ThisClass::OnSprint);
+	//EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::OnSprintEnd);
 }
 
 void ACS_PlayerController::Move(const FInputActionValue& Value)
@@ -156,8 +156,12 @@ void ACS_PlayerController::RepositionInput()
 void ACS_PlayerController::OnSprint()
 {
 	if (!GetCSPlayerState() || !GetCSPlayerCharacter()) return;
-	GetCSPlayerState()->bIsSprinting = true;
-	GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->SprintSpeed;
+	GetCSPlayerState()->bIsSprinting = !GetCSPlayerState()->bIsSprinting;
+
+	if (GetCSPlayerState()->bIsSprinting)
+		GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->SprintSpeed;
+	else
+		GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->WalkSpeed;
 	
 }
 
