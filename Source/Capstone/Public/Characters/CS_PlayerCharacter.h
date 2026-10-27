@@ -79,6 +79,9 @@ public:
 	UFUNCTION()
 	void DisableLockOn();
 
+	UFUNCTION(BlueprintCallable)
+	void RestoreOriginalGroundFriction();
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
 	float LockOnSearchRadius{500.f};
@@ -99,9 +102,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	float SprintSpeed;
 
+	UPROPERTY(VisibleAnywhere)
+	float OriginalGroundFriction;
+
 	// Heat Gauge
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	float TimeSinceLastReposition;
+
+	// Jump
+	UPROPERTY(BlueprintReadWrite)
+	bool bCanDoubleJump{true};
 	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
@@ -114,6 +124,8 @@ private:
 
 	UFUNCTION()
 	void TryReplenishHeatGauge(float DeltaSeconds);
+
+	virtual void Landed(const FHitResult& Hit) override;
 
 private:
 
@@ -142,7 +154,5 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCS_TagChangeTask> InputWindowTask;
-
-	
 	
 };

@@ -96,9 +96,11 @@ namespace CSTags
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(HeatGaugeSuppressionDuration);
 			}
 		}
-
-		
 	}
 
-	
+	namespace AbilityID
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Reposition);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Block);
+	}
 }

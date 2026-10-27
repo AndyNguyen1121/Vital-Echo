@@ -96,4 +96,11 @@ namespace CSTags
 			}
 		}
 	}
+
+	namespace AbilityID
+	{
+		UE_DEFINE_GAMEPLAY_TAG(Reposition, "CSTags.AbilityID.Reposition");
+		UE_DEFINE_GAMEPLAY_TAG(Block, "CSTags.AbilityID.Block");
+
+	}
 }
