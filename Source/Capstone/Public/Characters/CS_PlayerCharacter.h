@@ -108,6 +108,10 @@ public:
 	// Heat Gauge
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	float TimeSinceLastReposition;
+
+	// Jump
+	UPROPERTY(BlueprintReadWrite)
+	bool bCanDoubleJump;
 	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
@@ -120,6 +124,8 @@ private:
 
 	UFUNCTION()
 	void TryReplenishHeatGauge(float DeltaSeconds);
+
+	virtual void Landed(const FHitResult& Hit) override;
 
 private:
 
@@ -148,7 +154,5 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCS_TagChangeTask> InputWindowTask;
-
-	
 	
 };

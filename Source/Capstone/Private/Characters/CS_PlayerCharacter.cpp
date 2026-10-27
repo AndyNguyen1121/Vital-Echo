@@ -77,6 +77,7 @@ void ACS_PlayerCharacter::BeginPlay()
 		&ThisClass::ACS_PlayerCharacter::CheckIfActionStopped
 	);
 
+	// Also listen for InputWindowActive
 	InputWindowTask = UCS_TagChangeTask::ListenForTagChange(
 		GetAbilitySystemComponent(),
 		CSTags::Status::GameplayStates::PlayerStates::InputWindowActive
@@ -87,6 +88,7 @@ void ACS_PlayerCharacter::BeginPlay()
 		&ThisClass::ACS_PlayerCharacter::CheckIfActionStopped
 	);
 
+	// Makes sure the weapon switches only happens when the player is not performing action
 	OnActionStopped.AddDynamic(this, &ThisClass::CheckWeaponSwitchRequest);
 }
 
@@ -113,6 +115,7 @@ void ACS_PlayerCharacter::PossessedBy(AController* NewController)
 
 	if (!GetAbilitySystemComponent()) return;
 
+	// Required GAS setup
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 
 	CachedPlayerState = Cast<ACS_PlayerState>(GetPlayerState());
@@ -186,6 +189,8 @@ void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target, FName SocketName)
 	}
 
 	LockOnTarget = Target;
+
+	// Disable lock on reticle if no target
 	if (!IsValid(Target))
 	{
 		LockOnReticle->SetVisibility(false);
@@ -193,10 +198,13 @@ void ACS_PlayerCharacter::SetLockOnTarget(AActor* Target, FName SocketName)
 	}
 	ACS_BaseCharacter* TargetCharacter = Cast<ACS_BaseCharacter>(Target);
 
+	// Enable lock on
 	if (IsValid(TargetCharacter))
 	{
 		LockOnReticle->AttachToComponent(TargetCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), SocketName);
 		LockOnReticle->SetVisibility(true);
+
+		// Disable when enemy dies
 		TargetCharacter->OnDeath.AddDynamic(this, &ThisClass::DisableLockOn);
 	}
 }
@@ -225,6 +233,7 @@ void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, 
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
 
+	// Change collision profile based on grounded vs airborne
 	if (GetCharacterMovement()->MovementMode == MOVE_Falling || GetCharacterMovement()->MovementMode == MOVE_Flying)
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(FName("AirbornePawn"));
@@ -238,6 +247,7 @@ void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, 
 
 void ACS_PlayerCharacter::CheckIfActionStopped(FGameplayTag Tag, int32 NewCount)
 {
+	// Boradcasts the exact moment the player is not performing action
 	if ((Tag == CSTags::Status::GameplayStates::IsPerformingAction && NewCount == 0)
 		|| (Tag == CSTags::Status::GameplayStates::PlayerStates::InputWindowActive && NewCount == 1))
 	{
@@ -268,17 +278,20 @@ void ACS_PlayerCharacter::RestoreOriginalGroundFriction()
 
 void ACS_PlayerCharacter::CheckWeaponSwitchRequest()
 {
+	// If stunned, return
 	if (HasMatchingGameplayTag(CSTags::Status::Debuffs::Stunned))
 	{
 		return;
 	}
-	
+
+	// If performing action, return
 	if (HasMatchingGameplayTag(CSTags::Status::GameplayStates::IsPerformingAction) &&
 		!HasMatchingGameplayTag(CSTags::Status::GameplayStates::PlayerStates::InputWindowActive))
 	{
 		return;
 	}
-	
+
+	// Equip weapon
 	if (RequestedWeapon.IsValid())
 	{
 		EquipWeapon(RequestedWeapon.Get());
@@ -304,6 +317,14 @@ void ACS_PlayerCharacter::TryReplenishHeatGauge(float DeltaSeconds)
 		TimeSinceLastReposition = 0;
 	}
 }
+
+void ACS_PlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	bCanDoubleJump = true;
+}
+
 
 
 
