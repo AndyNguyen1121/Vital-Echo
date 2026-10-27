@@ -64,6 +64,7 @@ void ACS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	GetAbilitySystemComponent()->AddLooseGameplayTag(CSTags::IDs::Player);
+	OriginalGroundFriction = GetCharacterMovement()->GroundFriction;
 
 	// Listen for IsPerformingAction
 	PerformingActionTask = UCS_TagChangeTask::ListenForTagChange(
@@ -257,6 +258,11 @@ void ACS_PlayerCharacter::DisableLockOn()
 	
 	SetLockOnTarget(nullptr);
 	CachedCamera->DisableLockOn();
+}
+
+void ACS_PlayerCharacter::RestoreOriginalGroundFriction()
+{
+	GetCharacterMovement()->GroundFriction = OriginalGroundFriction;
 }
 
 

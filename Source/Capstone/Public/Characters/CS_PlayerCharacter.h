@@ -79,6 +79,9 @@ public:
 	UFUNCTION()
 	void DisableLockOn();
 
+	UFUNCTION(BlueprintCallable)
+	void RestoreOriginalGroundFriction();
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category="CS|LockOn")
 	float LockOnSearchRadius{500.f};
@@ -98,6 +101,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float SprintSpeed;
+
+	UPROPERTY(VisibleAnywhere)
+	float OriginalGroundFriction;
 
 	// Heat Gauge
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
