@@ -24,6 +24,11 @@ namespace CSTags
 			UE_DEFINE_GAMEPLAY_TAG(EndBlock, "CSTags.Events.Player.EndBlock");
 		}
 
+		namespace Enemy
+		{
+			UE_DEFINE_GAMEPLAY_TAG(CounterAttack, "CSTags.Events.Enemy.CounterAttack");
+		}
+
 		namespace Gameplay
 		{
 			UE_DEFINE_GAMEPLAY_TAG(TraceAttack, "CSTags.Events.Gameplay.TraceAttack");
@@ -35,7 +40,7 @@ namespace CSTags
 
 			UE_DEFINE_GAMEPLAY_TAG(DeflectActivate, "CSTags.Events.Gameplay.DeflectActivate");
 			UE_DEFINE_GAMEPLAY_TAG(DeflectReceive, "CSTags.Events.Gameplay.DeflectReceive");
-
+			UE_DEFINE_GAMEPLAY_TAG(RestrictDeflect, "CSTags.Events.Gameplay.RestrictDeflect");
 			
 			UE_DEFINE_GAMEPLAY_TAG(PostureBroken, "CSTags.Events.Gameplay.PostureBroken");
 		}

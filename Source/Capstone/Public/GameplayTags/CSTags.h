@@ -26,6 +26,11 @@ namespace CSTags
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(EndBlock);
 		}
+
+		namespace Enemy
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(CounterAttack);
+		}
 		
 		namespace Gameplay
 		{
@@ -69,7 +74,7 @@ namespace CSTags
 			{
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(CanBeExecuted);
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(CanDeflect);
-
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictDeflect);
 			}
 
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsBlocking);

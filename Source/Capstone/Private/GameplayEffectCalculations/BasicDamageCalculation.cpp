@@ -43,7 +43,7 @@ void UBasicDamageCalculation::Execute_Implementation(const FGameplayEffectCustom
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceASC->GetAvatarActor(), CSTags::Events::Gameplay::ParryReceive, Payload);
 	}
 
-	// Enemy parries
+	// Enemy deflects
 	if (TargetASC->HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::EnemyStates::CanDeflect)))
 	{
 		DamageOut = 0.f;
