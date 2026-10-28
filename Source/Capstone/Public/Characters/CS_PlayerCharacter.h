@@ -112,6 +112,10 @@ public:
 	// Jump
 	UPROPERTY(BlueprintReadWrite)
 	bool bCanDoubleJump{true};
+
+	// Air Reposition
+	UPROPERTY(BlueprintReadWrite)
+	bool bCanAirReposition{true};
 	
 private:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;

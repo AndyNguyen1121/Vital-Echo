@@ -323,6 +323,7 @@ void ACS_PlayerCharacter::Landed(const FHitResult& Hit)
 	Super::Landed(Hit);
 
 	bCanDoubleJump = true;
+	bCanAirReposition = true;
 }
 
 
