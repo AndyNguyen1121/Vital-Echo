@@ -29,8 +29,14 @@ namespace CSTags
 			UE_DEFINE_GAMEPLAY_TAG(TraceAttack, "CSTags.Events.Gameplay.TraceAttack");
 			UE_DEFINE_GAMEPLAY_TAG(HitReact, "CSTags.Events.Gameplay.HitReact");
 			UE_DEFINE_GAMEPLAY_TAG(KnockedUp, "CSTags.Events.Gameplay.KnockedUp");
+			
 			UE_DEFINE_GAMEPLAY_TAG(ParryActivate, "CSTags.Events.Gameplay.ParryActivate");
 			UE_DEFINE_GAMEPLAY_TAG(ParryReceive, "CSTags.Events.Gameplay.ParryReceive");
+
+			UE_DEFINE_GAMEPLAY_TAG(DeflectActivate, "CSTags.Events.Gameplay.DeflectActivate");
+			UE_DEFINE_GAMEPLAY_TAG(DeflectReceive, "CSTags.Events.Gameplay.DeflectReceive");
+
+			
 			UE_DEFINE_GAMEPLAY_TAG(PostureBroken, "CSTags.Events.Gameplay.PostureBroken");
 		}
 	}
@@ -42,6 +48,7 @@ namespace CSTags
 		namespace EnemyType
 		{
 			UE_DEFINE_GAMEPLAY_TAG(Basic, "CSTags.IDs.Enemy.Basic");
+			UE_DEFINE_GAMEPLAY_TAG(Parry, "CSTags.IDs.Enemy.Parry");
 		}
 		
 		UE_DEFINE_GAMEPLAY_TAG(Player, "CSTags.IDs.Player");
@@ -62,6 +69,7 @@ namespace CSTags
 			namespace EnemyStates
 			{
 				UE_DEFINE_GAMEPLAY_TAG(CanBeExecuted, "CSTags.Status.GameplayStates.EnemyStates.CanBeExecuted");
+				UE_DEFINE_GAMEPLAY_TAG(CanDeflect, "CSTags.Status.GameplayStates.EnemyStates.CanDeflect");
 			}
 
 			UE_DEFINE_GAMEPLAY_TAG(IsBlocking, "CSTags.Status.GameplayStates.IsBlocking");

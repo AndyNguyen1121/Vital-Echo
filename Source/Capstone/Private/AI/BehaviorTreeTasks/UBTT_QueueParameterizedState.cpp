@@ -8,7 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_BaseCharacter.h"
-#include "Characters/CS_EnemyCharacter.h"
+#include "Characters/Enemy/CS_EnemyCharacter.h"
 #include "DataAssets/Enemy/CS_EnemyCombatProfile.h"
 #include "DataAssets/Enemy/CS_EnemyCombatState.h"
 
