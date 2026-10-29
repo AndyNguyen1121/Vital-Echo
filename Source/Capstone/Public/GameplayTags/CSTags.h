@@ -27,13 +27,23 @@ namespace CSTags
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(EndBlock);
 		}
 
+		namespace Enemy
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(CounterAttack);
+		}
+		
 		namespace Gameplay
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(TraceAttack);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(HitReact);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnockedUp);
+			
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryActivate);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(ParryReceive);
+
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(DeflectActivate);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(DeflectReceive);
+			
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostureBroken);
 		}
 	}
@@ -63,6 +73,8 @@ namespace CSTags
 			namespace EnemyStates
 			{
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(CanBeExecuted);
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(CanDeflect);
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(RestrictDeflect);
 			}
 
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(IsBlocking);

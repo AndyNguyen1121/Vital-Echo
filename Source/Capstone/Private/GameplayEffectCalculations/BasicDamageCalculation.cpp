@@ -33,7 +33,8 @@ void UBasicDamageCalculation::Execute_Implementation(const FGameplayEffectCustom
 	FGameplayEventData Payload;
 	Payload.Target = TargetASC->GetAvatarActor();
 	Payload.Instigator = SourceASC->GetAvatarActor();
-	
+
+	// Player parries
 	if (TargetASC->HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::PlayerStates::ParryWindowActive)))
 	{
 		DamageOut = 0.f;
@@ -42,6 +43,15 @@ void UBasicDamageCalculation::Execute_Implementation(const FGameplayEffectCustom
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceASC->GetAvatarActor(), CSTags::Events::Gameplay::ParryReceive, Payload);
 	}
 
+	// Enemy deflects
+	if (TargetASC->HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::EnemyStates::CanDeflect)))
+	{
+		DamageOut = 0.f;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetAvatarActor(), CSTags::Events::Gameplay::DeflectActivate, Payload);
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(SourceASC->GetAvatarActor(), CSTags::Events::Gameplay::DeflectReceive, Payload);
+	}
+
+	// Is blocking
 	if (TargetASC->HasAnyMatchingGameplayTags(FGameplayTagContainer(CSTags::Status::GameplayStates::IsBlocking)))
 	{
 		PostureDamageOut *= 0.5f;

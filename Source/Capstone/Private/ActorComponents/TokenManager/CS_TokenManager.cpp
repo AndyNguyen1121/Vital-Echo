@@ -39,7 +39,7 @@ bool UCS_TokenManager::ReserveTokensFromActor_Implementation(AActor* Actor, int3
 		{
 			if (ActorTokenManager->OwnedTokens < NumberOfTokens)
 			{
-				return  false;
+				return false;
 			}
 
 			ActorTokenManager->TakeTokens(NumberOfTokens);

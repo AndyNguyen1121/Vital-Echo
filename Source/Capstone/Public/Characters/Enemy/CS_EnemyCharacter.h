@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CS_BaseCharacter.h"
+#include "../CS_BaseCharacter.h"
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
 #include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "CS_EnemyCharacter.generated.h"
@@ -30,6 +30,8 @@ public:
 
 	virtual UCS_AttributeSet* GetAttributeSet() const override { return AttributeSet; };
 
+	void CheckConsecutiveHitCooldown();
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="CustomProperties")
 	float MinRetreatDistance;
@@ -38,7 +40,23 @@ public:
 	float MaxRetreatDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CustomProperties")
-	bool bIsAggro;
+	bool bIsAggroOnStart;
+
+	// Number of times player hit enemy and is successfully blocked
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Capstone")
+	int32 ConsecutiveHits;
+
+	// How many hits to activate parry
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Capstone")
+	int32 ConsecutiveHitThreshold;
+
+	// How long to wait before resetting ConsecutiveHits
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Capstone")
+	int32 ConsecutiveHitCooldown;
+
+	// Time elapsed since the player has hit enemy
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	float TimeSinceLastConsecutiveAttack;
 	
 protected:
 	UPROPERTY(VisibleAnywhere)

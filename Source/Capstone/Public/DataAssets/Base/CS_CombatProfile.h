@@ -19,4 +19,7 @@ class CAPSTONE_API UCS_CombatProfile : public UCS_CombatStateBase
 public:
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<UGameplayEffect>> StartupEffects;
 };

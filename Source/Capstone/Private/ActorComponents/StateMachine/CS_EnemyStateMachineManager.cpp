@@ -5,7 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "Characters/CS_EnemyCharacter.h"
+#include "Characters/Enemy/CS_EnemyCharacter.h"
 #include "DataAssets/Enemy/CS_EnemyCombatProfile.h"
 #include "DataAssets/Enemy/CS_EnemyCombatState.h"
 

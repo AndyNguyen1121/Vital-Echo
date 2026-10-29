@@ -72,6 +72,22 @@ void UCS_StateMachineManagerBase::GiveStartupAbilities(UCS_CombatProfile* Defaul
 	}
 }
 
+void UCS_StateMachineManagerBase::GiveStartupEffects(UCS_CombatProfile* DefaultState)
+{
+	if (!IsValid(GetOwner()) || !DefaultState) return;
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
+	if (!ASC) return;
+	
+	for (TSubclassOf<UGameplayEffect> Effect : DefaultState->StartupEffects)
+	{
+		if (!Effect) continue;
+		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(Effect, 1.f, FGameplayEffectContextHandle());
+		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+
+		DEBUG_LOG("Effect applied")
+	}
+}
+
 void UCS_StateMachineManagerBase::RemoveStartupAbilities()
 {
 	if (!IsValid(GetOwner())) return;
@@ -95,6 +111,7 @@ void UCS_StateMachineManagerBase::SwitchCombatProfile(UCS_CombatProfile* NewComb
 	if (NewCombatProfile)
 	{
 		GiveStartupAbilities(NewCombatProfile);
+		GiveStartupEffects(NewCombatProfile);\
 	}
 	
 	SwitchState(NewCombatProfile);
