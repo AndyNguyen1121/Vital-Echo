@@ -18,9 +18,6 @@ class CAPSTONE_API UCS_PlayerStateMachineManager : public UCS_StateMachineManage
 public:
 	UCS_PlayerStateMachineManager();
 	virtual bool SwitchState(UCS_CombatStateBase* NextState) override;
-
-	UFUNCTION(BlueprintCallable)
-	void ResetToDefaultState();
 	
 
 protected:

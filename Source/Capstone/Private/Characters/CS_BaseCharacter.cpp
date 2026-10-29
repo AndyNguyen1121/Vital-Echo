@@ -9,6 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/AttributeSets/CS_AttributeSet.h"
 #include "ActorComponents/CombatSystem/CS_HitStopComponent.h"
+#include "ActorComponents/StateMachine/CS_StateMachineManagerBase.h"
 #include "ActorComponents/TokenManager/CS_TokenManager.h"
 #include "Capstone/DebugMacros.h"
 #include "Capstone/Public/Player/CS_PlayerState.h"
@@ -50,6 +51,11 @@ void ACS_BaseCharacter::Tick(float DeltaSeconds)
 UAbilitySystemComponent* ACS_BaseCharacter::GetAbilitySystemComponent() const
 {
 	return nullptr;
+}
+
+UCS_AbilitySystemComponent* ACS_BaseCharacter::GetCSAbilitySystemComponent() const
+{
+	return Cast<UCS_AbilitySystemComponent>(GetAbilitySystemComponent());
 }
 
 
@@ -172,6 +178,11 @@ void ACS_BaseCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, 
 	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::RestrictMove, !CanMove);
 	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::IsPerformingAction, IsPerformingAction);
 	UCS_BlueprintLibrary::SetLooseGameplayTagAsBool(this, CSTags::Status::GameplayStates::RestrictRotate, !CanRotate);
+
+	if (ResetToDefaultState && GetStateMachine())
+	{
+		GetStateMachine()->ResetToDefaultState();
+	}
 }
 
 void ACS_BaseCharacter::EquipWeapon(ACS_WeaponBase* NewWeapon)

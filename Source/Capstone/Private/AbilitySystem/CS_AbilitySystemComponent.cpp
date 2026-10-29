@@ -7,6 +7,42 @@
 #include "GameplayTags/CSTags.h"
 
 
+bool UCS_AbilitySystemComponent::CanActivateAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass) const
+{
+	if (!AbilityClass)
+		return false;
+
+	// Find the granted ability
+	FGameplayAbilitySpec* Spec = FindAbilitySpecFromClass(AbilityClass);
+
+	if (!Spec)
+		return false;
+	
+	UGameplayAbility* Ability = Spec->GetPrimaryInstance();
+
+	if (!Ability)
+		Ability = Spec->Ability;
+
+	if (!Ability)
+		return false;
+
+	// Get the ASC's actor information
+	const FGameplayAbilityActorInfo* ActorInfo = AbilityActorInfo.Get();
+
+	if (!ActorInfo || !ActorInfo->OwnerActor.IsValid()
+		|| !ActorInfo->AvatarActor.IsValid())
+		return false;
+
+	// Check without activating
+	return Ability->CanActivateAbility(
+		Spec->Handle,
+		ActorInfo,
+		nullptr,
+		nullptr,
+		nullptr
+	);
+}
+
 void UCS_AbilitySystemComponent::OnGiveAbility(FGameplayAbilitySpec& AbilitySpec)
 {
 	Super::OnGiveAbility(AbilitySpec);
