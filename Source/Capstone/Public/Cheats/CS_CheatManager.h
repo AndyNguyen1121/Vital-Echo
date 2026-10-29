@@ -25,4 +25,7 @@ public:
 
 	UFUNCTION(Exec)
 	void UnlimitedHealth();
+
+	UFUNCTION(Exec)
+	void EnemiesNeverDie();
 };

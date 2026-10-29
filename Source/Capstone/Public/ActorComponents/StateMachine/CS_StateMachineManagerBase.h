@@ -11,6 +11,8 @@ class UCS_CombatStateBase;
 class UCS_CombatProfile;
 class UCS_PlayerCombatState;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStateChanged, UCS_CombatStateBase*, State);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CAPSTONE_API UCS_StateMachineManagerBase : public UActorComponent
 {
@@ -29,6 +31,12 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool SwitchState(UCS_CombatStateBase* NextState);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetToDefaultState();
+
+	UPROPERTY()
+	FOnStateChanged OnStateChanged;
 
 protected:
 	// Called when the game starts

@@ -123,6 +123,11 @@ void ACS_PlayerCharacter::PossessedBy(AController* NewController)
 	CachedPlayerController = Cast<ACS_PlayerController>(NewController);
 }
 
+UCS_StateMachineManagerBase* ACS_PlayerCharacter::GetStateMachine() const
+{
+	return PlayerStateMachineManager;
+}
+
 #pragma region Lock On
 ACS_PlayerCameraManager* ACS_PlayerCharacter::GetCSCameraManager() const
 {
@@ -217,17 +222,6 @@ UCS_AttributeSet* ACS_PlayerCharacter::GetAttributeSet() const
 	if (!GetCSPlayerState()) return nullptr;
 	
 	return GetCSPlayerState()->GetAttributeSet();
-}
-
-void ACS_PlayerCharacter::SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate,
-	bool ResetToDefaultState)
-{
-	Super::SetGameplayState(CanMove, IsPerformingAction, CanRotate, ResetToDefaultState);
-
-	if (ResetToDefaultState && PlayerStateMachineManager)
-	{
-		PlayerStateMachineManager->ResetToDefaultState();
-	}
 }
 
 void ACS_PlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)

@@ -28,6 +28,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	UCS_EnemyStateMachineManager* GetEnemyStateMachineManager() { return EnemyStateMachineManager; }
 
+	virtual UCS_StateMachineManagerBase* GetStateMachine() const override;
+
 	virtual UCS_AttributeSet* GetAttributeSet() const override { return AttributeSet; };
 
 	void CheckConsecutiveHitCooldown();

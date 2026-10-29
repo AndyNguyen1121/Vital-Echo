@@ -35,9 +35,11 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void PossessedBy(AController* NewController) override;
-
+	
 	UFUNCTION(BlueprintPure)
-	UCS_PlayerStateMachineManager* GetStateMachineManager() {return PlayerStateMachineManager;}
+	UCS_PlayerStateMachineManager* GetPlayerStateMachineManager() {return PlayerStateMachineManager;}
+
+	virtual UCS_StateMachineManagerBase* GetStateMachine() const override;
 
 	UFUNCTION(BlueprintPure)
 	UCS_SoftLockOnComponent* GetSoftLockOnComponent() const {return SoftLockOnComponent;}
@@ -70,8 +72,6 @@ public:
 	AActor* GetLockOnTarget() { return LockOnTarget.Get(); }
 
 	virtual UCS_AttributeSet* GetAttributeSet() const override;
-
-	virtual void SetGameplayState(bool CanMove, bool IsPerformingAction, bool CanRotate, bool ResetToDefaultState) override;
 
 	UFUNCTION(BlueprintCallable)
 	void SendWeaponSwitchRequest(ACS_WeaponBase* Weapon);

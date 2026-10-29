@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Capstone/DebugMacros.h"
 #include "Characters/Enemy/CS_EnemyCharacter.h"
 #include "DataAssets/Enemy/CS_EnemyCombatProfile.h"
 #include "DataAssets/Enemy/CS_EnemyCombatState.h"
@@ -24,13 +25,26 @@ bool UCS_EnemyStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 
 	if (NextState->GameplayAbility)
 	{
-		bool bCanActivate = EnemyCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
+		bool bCanActivate = EnemyCharacter->GetCSAbilitySystemComponent()->CanActivateAbilityByClass(NextState->GameplayAbility);
+		
 		if (!bCanActivate)
 		{
 			return false;
 		}
-	}
 
+		// Signals that current state is going to end
+		if (CurrentState)
+		{
+			DEBUG_LOG(CurrentState->GetName());
+		}
+		
+		EnemyCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
+		
+	}
+	
+	OnStateChanged.Broadcast(CurrentState);
+	CurrentState = NextState;
+	
 	if (UCS_EnemyCombatState* CombatState = Cast<UCS_EnemyCombatState>(NextState))
 	{
 		EnemyCharacter->CurrentDamageAttribute = CombatState->DamageAttributes;

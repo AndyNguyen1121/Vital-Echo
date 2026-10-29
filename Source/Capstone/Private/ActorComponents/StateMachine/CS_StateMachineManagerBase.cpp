@@ -33,6 +33,11 @@ bool UCS_StateMachineManagerBase::SwitchState(UCS_CombatStateBase* NextState)
 	return true;
 }
 
+void UCS_StateMachineManagerBase::ResetToDefaultState()
+{
+	SwitchState(CombatProfile);
+}
+
 void UCS_StateMachineManagerBase::RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList)
 {
 	if (!State)

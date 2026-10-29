@@ -12,6 +12,10 @@ class CAPSTONE_API UCS_AbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 
+public:
+	UFUNCTION(BlueprintPure, Category = "Abilities")
+	bool CanActivateAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass) const;
+
 protected:
 	virtual void OnGiveAbility(FGameplayAbilitySpec& AbilitySpec) override;
 

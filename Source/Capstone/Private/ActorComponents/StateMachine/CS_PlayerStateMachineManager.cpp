@@ -53,14 +53,20 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 
 	if (NextState->GameplayAbility)
 	{
-		bool bCanActivate = PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
+		bool bCanActivate = PlayerCharacter->GetCSAbilitySystemComponent()->CanActivateAbilityByClass(NextState->GameplayAbility);
 		if (!bCanActivate)
 		{
 			return false;
 		}
+
+		
+		PlayerCharacter->GetAbilitySystemComponent()->TryActivateAbilityByClass(NextState->GameplayAbility);
 	}
 
 	PlayerCharacter->ResetGravityScale();
+	
+	// Signals that current state is going to end
+	OnStateChanged.Broadcast(CurrentState);
 	CurrentState = NextState;
 	
 
@@ -97,11 +103,6 @@ bool UCS_PlayerStateMachineManager::SwitchState(UCS_CombatStateBase* NextState)
 	
 	PlayerCharacter->ActorsHit.Empty();
 	return true;
-}
-
-void UCS_PlayerStateMachineManager::ResetToDefaultState()
-{
-	SwitchState(CombatProfile);
 }
 
 void UCS_PlayerStateMachineManager::RetrieveStates(UCS_CombatStateBase* State, TSet<UCS_CombatStateBase*>& StateList)

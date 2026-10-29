@@ -16,6 +16,8 @@
 #include "Structs/WarpLocationInfo.h"
 #include "CS_BaseCharacter.generated.h"
 
+class UCS_StateMachineManagerBase;
+class UCS_AbilitySystemComponent;
 class UAbilityAsync_WaitGameplayEvent;
 class UAbilityTask_WaitGameplayEvent;
 class ACS_WeaponBase;
@@ -42,6 +44,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UCS_AbilitySystemComponent* GetCSAbilitySystemComponent() const;
 
 	UFUNCTION(BlueprintPure)
 	UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
@@ -55,6 +58,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	virtual ACS_WeaponBase* GetCurrentEquippedWeapon() { return CurrentEquippedWeapon.Get(); }
+
+	UFUNCTION(BlueprintPure)
+	virtual UCS_StateMachineManagerBase* GetStateMachine() const { return nullptr; }
 
 	UFUNCTION(BlueprintPure)
 	float GetInitialGravityScale() const { return InitialGravityScale; }

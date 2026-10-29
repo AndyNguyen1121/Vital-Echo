@@ -49,6 +49,11 @@ void ACS_EnemyCharacter::Tick(float DeltaSeconds)
 	CheckConsecutiveHitCooldown();
 }
 
+UCS_StateMachineManagerBase* ACS_EnemyCharacter::GetStateMachine() const
+{
+	return EnemyStateMachineManager;
+}
+
 void ACS_EnemyCharacter::CheckConsecutiveHitCooldown()
 {
 	TimeSinceLastConsecutiveAttack += GetWorld()->GetDeltaSeconds();
