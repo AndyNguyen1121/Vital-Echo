@@ -77,13 +77,17 @@ void ACS_PlayerController::Move(const FInputActionValue& Value)
 	}
 	
 	SetMoveAmount();
-	FRotator YawRotation(0, PlayerCameraManager->GetCameraRotation().Yaw, 0);
-	
-	FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	FVector MovementDirection = (ForwardDirection * MovementValue.Y) + (RightDirection * MovementValue.X);
-	GetCharacter()->AddMovementInput(MovementDirection);
+	if (MoveAmount > 0)
+	{
+		FRotator YawRotation(0, PlayerCameraManager->GetCameraRotation().Yaw, 0);
+	
+		FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		FVector MovementDirection = (ForwardDirection * MovementValue.Y) + (RightDirection * MovementValue.X);
+		GetCharacter()->AddMovementInput(MovementDirection.GetSafeNormal());
+	}
 }
 
 void ACS_PlayerController::Primary(const FInputActionValue& Value)
@@ -158,10 +162,10 @@ void ACS_PlayerController::OnSprint()
 	if (!GetCSPlayerState() || !GetCSPlayerCharacter()) return;
 	GetCSPlayerState()->bIsSprinting = !GetCSPlayerState()->bIsSprinting;
 
-	if (GetCSPlayerState()->bIsSprinting)
+	/*if (GetCSPlayerState()->bIsSprinting)
 		GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->SprintSpeed;
 	else
-		GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->WalkSpeed;
+		GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = GetCSPlayerCharacter()->WalkSpeed;*/
 	
 }
 
@@ -219,11 +223,20 @@ void ACS_PlayerController::SetMoveAmount()
 	MoveAmount = 0;
 
 	float MagnitudeSquared = ClampedPlayerInputDirection.SizeSquared();
-	if (MagnitudeSquared >= 0.25)
+	if (MagnitudeSquared >= 0.05)
 	{
 		if (!GetCSPlayerState()) return;
-		MoveAmount = GetCSPlayerState()->bIsSprinting ? 1: 0.5f;
+		if (MagnitudeSquared < 0.5f)
+		{
+			MoveAmount = 0.5f;
+		}
+		else if (MagnitudeSquared >= 0.5f)
+		{
+			MoveAmount = 1;
+		}
 	}
+
+	GetCSPlayerCharacter()->GetCharacterMovement()->MaxWalkSpeed = MoveAmount == 1 ? GetCSPlayerCharacter()->SprintSpeed : GetCSPlayerCharacter()->WalkSpeed;
 	
 }
 
