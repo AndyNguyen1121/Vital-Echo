@@ -222,15 +222,15 @@ void ACS_PlayerController::SetMoveAmount()
 {
 	MoveAmount = 0;
 
-	float MagnitudeSquared = ClampedPlayerInputDirection.SizeSquared();
-	if (MagnitudeSquared >= 0.05)
+	float Magnitude = ClampedPlayerInputDirection.Size();
+	if (Magnitude >= 0)
 	{
 		if (!GetCSPlayerState()) return;
-		if (MagnitudeSquared < 0.5f)
+		if (Magnitude < 0.525f)
 		{
-			MoveAmount = 0.5f;
+			MoveAmount = 0.45f;
 		}
-		else if (MagnitudeSquared >= 0.5f)
+		else if (Magnitude >= 0.5f)
 		{
 			MoveAmount = 1;
 		}
