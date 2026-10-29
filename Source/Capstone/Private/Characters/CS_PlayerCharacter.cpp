@@ -65,6 +65,7 @@ void ACS_PlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	GetAbilitySystemComponent()->AddLooseGameplayTag(CSTags::IDs::Player);
 	OriginalGroundFriction = GetCharacterMovement()->GroundFriction;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
 	// Listen for IsPerformingAction
 	PerformingActionTask = UCS_TagChangeTask::ListenForTagChange(
