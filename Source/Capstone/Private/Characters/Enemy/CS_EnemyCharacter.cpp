@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/CS_EnemyCharacter.h"
+#include "Characters/Enemy/CS_EnemyCharacter.h"
 
 #include "RootMotionModifier.h"
 #include "AbilitySystem/CS_AbilitySystemComponent.h"
@@ -10,6 +10,7 @@
 #include "GameplayTags/CSTags.h"
 #include "MotionWarpingComponent.h"
 #include "ActorComponents/StateMachine/CS_EnemyStateMachineManager.h"
+#include "AI/CS_AIControllerBase.h"
 #include "Utils/CS_BlueprintLibrary.h"
 
 
@@ -23,18 +24,39 @@ ACS_EnemyCharacter::ACS_EnemyCharacter()
 	AbilitySystemComponent->AddLooseGameplayTag(CSTags::IDs::Enemy);
 	EnemyStateMachineManager = CreateDefaultSubobject<UCS_EnemyStateMachineManager>("EnemyStateMachineManager");
 	AttributeSet = CreateDefaultSubobject<UCS_AttributeSet>("AttributeSet");
+
+	GetCharacterMovement()->GravityScale = 2.0f;
 }
 
 void ACS_EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	if (bIsAggroOnStart)
+	{
+		if (ACS_AIControllerBase* AiController = Cast<ACS_AIControllerBase>(GetController()))
+		{
+			AiController->SetAggro(true);
+		}
+	}
 }
 
 void ACS_EnemyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	UpdateMoveAmount();
+	CheckConsecutiveHitCooldown();
+}
+
+void ACS_EnemyCharacter::CheckConsecutiveHitCooldown()
+{
+	TimeSinceLastConsecutiveAttack += GetWorld()->GetDeltaSeconds();
+
+	if (TimeSinceLastConsecutiveAttack > ConsecutiveHitCooldown)
+	{
+		ConsecutiveHits = 0;
+	}
 }
 
 
@@ -47,6 +69,8 @@ void ACS_EnemyCharacter::DestroyCharacter()
 {
 	Super::DestroyCharacter();
 }
+
+
 
 
 

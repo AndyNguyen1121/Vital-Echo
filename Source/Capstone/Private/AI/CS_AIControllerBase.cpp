@@ -4,7 +4,7 @@
 #include "AI/CS_AIControllerBase.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Characters/CS_EnemyCharacter.h"
+#include "Characters/Enemy/CS_EnemyCharacter.h"
 
 
 // Sets default values
