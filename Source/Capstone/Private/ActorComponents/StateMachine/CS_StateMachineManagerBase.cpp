@@ -20,7 +20,6 @@ UCS_StateMachineManagerBase::UCS_StateMachineManagerBase()
 	// ...
 }
 
-
 // Called when the game starts
 void UCS_StateMachineManagerBase::BeginPlay()
 {

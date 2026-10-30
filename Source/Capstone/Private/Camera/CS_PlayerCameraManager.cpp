@@ -7,6 +7,7 @@
 #include "Camera/CS_CameraContainer.h"
 #include "Capstone/DebugMacros.h"
 #include "Characters/CS_PlayerCharacter.h"
+#include "Components/PostProcessComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayTags/CSTags.h"
@@ -16,12 +17,26 @@
 
 ACS_PlayerCameraManager::ACS_PlayerCameraManager()
 {
-	
+	PostProcessComponent = CreateDefaultSubobject<UPostProcessComponent>("PostProcessComponent");
 }
 
 void ACS_PlayerCameraManager::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ACS_PlayerCameraManager::ApplyCameraModifiers(float DeltaTime, FMinimalViewInfo& InOutPOV)
+{
+	Super::ApplyCameraModifiers(DeltaTime, InOutPOV);
+
+	if (PostProcessComponent)
+	{
+		AddCachedPPBlend(
+			PostProcessComponent->Settings,
+			1.0f,
+			VTBlendOrder_Override
+		);
+	}
 }
 
 AActor* ACS_PlayerCameraManager::EnableLockOn(float SearchRadius, float MaxAngle)
@@ -104,6 +119,10 @@ void ACS_PlayerCameraManager::SwitchLockOnTargets(const FVector2D ControllerInpu
 
 }
 
+void ACS_PlayerCameraManager::BlurScreen_Implementation(UCurveFloat* Curve)
+{
+}
+
 AActor* ACS_PlayerCameraManager::FindBestLockOnTarget(float SearchRadius, float MaxAngle, FLinearColor DebugColor)
 {
 	TArray<AActor*> ValidActors = FindValidLockOnTargets(SearchRadius, MaxAngle);
@@ -169,7 +188,6 @@ TArray<AActor*> ACS_PlayerCameraManager::FindValidLockOnTargets(float SearchRadi
 	});
 
 	return ValidActors;
-	
 }
 
 float ACS_PlayerCameraManager::ScoreTarget(AActor* Candidate, FVector2D ScreenCenter, FVector PlayerLoc)
